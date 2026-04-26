@@ -23,6 +23,10 @@ Route::get('/profile', function () {
     return view('profile');
 });
 
+Route::get('/profile/data-diri', function () {
+    return view('data-diri');
+});
+
 Route::get('/kamar/detail', function () {
     return view('detail-kamar');
 });
@@ -35,7 +39,17 @@ Route::get('/kamar/detail/pembayaran', function () {
     return view('pembayaran');
 });
 
-Route::get('/logout', [AuthController::class, 'getLogout']);
+// Route::middleware('auth')->group(function () {
+//     // Profile
+//     Route::get('/profile', [ProfileController::class, 'getProfile']);
+//     Route::put('/profile', [ProfileController::class, 'updateProfile']);
+
+//     // Update Password
+//     Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+
+//     // Logout
+//     Route::get('/logout', [AuthController::class, 'getLogout']);
+// });
 
 Route::middleware('guest')->group(function () {
     // Register
