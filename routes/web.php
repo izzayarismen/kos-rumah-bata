@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,15 +20,7 @@ Route::get('/activity', function () {
     return view('activity');
 });
 
-Route::get('/profile', function () {
-    return view('profile');
-});
-
-Route::get('/profile/data-diri', function () {
-    return view('data-diri');
-});
-
-Route::get('/kamar/detail', function () {
+Route::get('/kamar/{id}', function () {
     return view('detail-kamar');
 });
 
@@ -39,17 +32,29 @@ Route::get('/kamar/detail/pembayaran', function () {
     return view('pembayaran');
 });
 
-// Route::middleware('auth')->group(function () {
-//     // Profile
-//     Route::get('/profile', [ProfileController::class, 'getProfile']);
-//     Route::put('/profile', [ProfileController::class, 'updateProfile']);
+Route::middleware('auth')->group(function () {
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'getProfile']);
+    Route::put('/profile', [ProfileController::class, 'updateProfile']);
 
-//     // Update Password
-//     Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+    Route::get('/profile/data-diri', function () {
+        return view('data-diri');
+    });
 
-//     // Logout
-//     Route::get('/logout', [AuthController::class, 'getLogout']);
-// });
+    Route::get('/profile/status-pembayaran', function () {
+        return view('status-pembayaran');
+    });
+
+    Route::get('/profile/laporan-fasilitas', function () {
+        return view('laporan-fasilitas');
+    });
+
+    // Update Password
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+
+    // Logout
+    Route::get('/logout', [AuthController::class, 'getLogout']);
+});
 
 Route::middleware('guest')->group(function () {
     // Register

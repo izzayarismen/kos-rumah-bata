@@ -17,7 +17,7 @@ class AuthController extends Controller
     public function postRegister(Request $request)
     {
         if($request->confirm != $request->password) {
-            return back()->with('error', 'Password dan Konfirmasi Password harus sama!');
+            return back()->with('error', 'Password dan Konfirmasi tidak cocok!');
         }
 
         if(!$request->nama && !$request->email && !$request->no_hp && !$request->password) {
@@ -55,7 +55,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if(!$user) {
-            return back()->with('error', 'Email belum terdaftar!');
+            return back()->with('error', 'Email tidak ditemukan!');
         }
 
         if(!Hash::check($request->password, $user->password)) {
