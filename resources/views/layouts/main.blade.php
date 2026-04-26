@@ -37,30 +37,34 @@
                             </div>
                         </a>
                         <nav class="hidden md:flex items-center gap-1">
-                            <a href="/" 
+                            <a href="/"
                             class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('/') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}"
                             aria-current="{{ request()->is('/') ? 'page' : 'false' }}">
                             Beranda
                             </a>
 
-                            <a href="/kamar" 
+                            <a href="/kamar"
                             class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('kamar*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
                             Kamar
                             </a>
 
-                            <a href="/about" 
+                            <a href="/about"
                             class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('about*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
                             About Us
                             </a>
 
-                            <a href="/activity" 
+                            <a href="/activity"
                             class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('activity*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
                             Activity
                             </a>
                         </nav>
                         <div class="flex items-center gap-2">
+                            @auth
+                            <button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-2 rounded-full pl-1.5 pr-3" type="button" id="radix-:r0:" aria-haspopup="menu" aria-expanded="true" data-state="open" aria-controls="radix-:r1:"><span class="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">{{ Str::upper(substr(auth()->user()->nama, 0, 1)) }}</span><span class="hidden sm:inline text-sm">{{ auth()->user()->nama }}</span></button>
+                            @else
                             <a href="/login"><button class="items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 hidden sm:inline-flex">Login</button></a>
                             <a href="/register"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">Register</button></a>
+                            @endauth
                             <button class="md:hidden grid h-9 w-9 place-items-center rounded-md hover:bg-secondary" aria-label="Menu">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5">
                                 <line x1="4" x2="20" y1="12" y2="12"></line>

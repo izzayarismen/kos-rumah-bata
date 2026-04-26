@@ -2,6 +2,12 @@
 
 @section("content")
 
+@if (session('error'))
+    <script>
+        alert("{{ session('error') }}");
+    </script>
+@endif
+
 <main class="flex-1 grid place-items-center py-12">
     <div class="w-full max-w-md mx-auto px-4">
         <div class="text-center mb-6">
@@ -14,7 +20,8 @@
             <h1 class="text-2xl font-bold mt-3">Selamat Datang Kembali</h1>
             <p class="text-sm text-muted-foreground mt-1">Masuk untuk lanjut mengajukan sewa.</p>
         </div>
-        <form class="bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-4">
+        <form action="/login" method="POST" class="bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-4">
+            @csrf
             <div class="space-y-1.5">
                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="email">Email</label>
                 <div class="relative">
@@ -22,7 +29,7 @@
                         <rect width="20" height="16" x="2" y="4" rx="2"></rect>
                         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                     </svg>
-                    <input type="email" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pl-9" id="email" placeholder="kamu@email.com" required="" value="">
+                    <input type="email" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pl-9" id="email" name="email" placeholder="kamu@email.com" required="" value="">
                 </div>
             </div>
             <div class="space-y-1.5">
@@ -32,7 +39,7 @@
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
-                    <input type="password" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pl-9" id="password" placeholder="••••••••" required="" value="">
+                    <input type="password" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pl-9" id="password" name="password" placeholder="••••••••" required="" value="">
                 </div>
             </div>
             <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full" type="submit">Login</button>
