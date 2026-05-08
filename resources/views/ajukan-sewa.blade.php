@@ -2,13 +2,13 @@
 
 @section("content")
 <div class="container-app pt-6">
-    <button class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+    <a href="/kamar/{id}" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
             <path d="m12 19-7-7 7-7"></path>
             <path d="M19 12H5"></path>
         </svg>
         Kembali
-    </button>
+    </a>
 </div>
 <section class="container-app py-6 grid lg:grid-cols-3 gap-6">
     <form class="lg:col-span-2 bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-5">
@@ -67,11 +67,11 @@
             </svg>
             Data Anda aman dan hanya digunakan untuk proses sewa.
         </div>
-        <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full" type="submit">Lanjut ke Pembayaran</button>
+        <a href="/kamar/detail/pembayaran" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full" type="submit">Lanjut ke Pembayaran</a>
     </form>
     <aside class="bg-card border border-border/60 rounded-2xl p-5 shadow-soft self-start lg:sticky lg:top-20 space-y-4">
         <p class="text-sm font-semibold">Ringkasan Kamar</p>
-        <div class="rounded-xl overflow-hidden aspect-[4/3] bg-muted"><img src="3.jpg" alt="Kamar A1 — Standard" class="h-full w-full object-cover"></div>
+        <div class="rounded-xl overflow-hidden aspect-[4/3] bg-muted"><img src="{{ asset('3.jpg') }}" alt="Kamar A1 — Standard" class="h-full w-full object-cover"></div>
         <div>
             <h2 class="font-bold leading-tight">Kamar A1 — Standard</h2>
             <div class="flex items-center gap-2 mt-2">

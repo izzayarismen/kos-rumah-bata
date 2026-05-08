@@ -2,7 +2,7 @@
 
 @section("content")
 <div class="container-app pt-6">
-    <a href="/kamar/detail/ajukan-sewa" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+    <a href="/profile/status-pembayaran" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
             <path d="m12 19-7-7 7-7"></path>
             <path d="M19 12H5"></path>
@@ -14,7 +14,29 @@
     <div class="lg:col-span-2 space-y-6">
         <div class="bg-card border border-border/60 rounded-2xl p-6 shadow-card">
             <h2 class="font-semibold">Metode Pembayaran</h2>
-            <div class="mt-4 grid gap-3">
+            <div class="mt-4 grid sm:grid-cols-2 gap-3">
+                <button type="button" class="rounded-xl border-2 p-4 flex items-center gap-3 text-left transition-colors border-primary bg-primary-soft/40">
+                    <span class="h-10 w-10 grid place-items-center rounded-lg bg-secondary text-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-qr-code h-5 w-5">
+                            <rect width="5" height="5" x="3" y="3" rx="1"></rect>
+                            <rect width="5" height="5" x="16" y="3" rx="1"></rect>
+                            <rect width="5" height="5" x="3" y="16" rx="1"></rect>
+                            <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+                            <path d="M21 21v.01"></path>
+                            <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+                            <path d="M3 12h.01"></path>
+                            <path d="M12 3h.01"></path>
+                            <path d="M12 16v.01"></path>
+                            <path d="M16 12h1"></path>
+                            <path d="M21 12v.01"></path>
+                            <path d="M12 21v-1"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="font-medium">QRIS</p>
+                        <p class="text-xs text-muted-foreground">Scan QR via mobile banking / e-wallet</p>
+                    </div>
+                </button>
                 <button type="button" class="rounded-xl border-2 p-4 flex items-center gap-3 text-left transition-colors border-border hover:border-primary/50">
                     <span class="h-10 w-10 grid place-items-center rounded-lg bg-secondary text-foreground">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 h-5 w-5">
@@ -36,33 +58,12 @@
         </div>
         <div class="bg-card border border-border/60 rounded-2xl p-6 shadow-card">
             <h2 class="font-semibold">Pilih Pembayaran</h2>
-            <div role="radiogroup" aria-required="false" dir="ltr" class="mt-4 grid sm:grid-cols-2 gap-3" tabindex="0" style="outline: none;">
-                <label for="pay-Lunas" class="rounded-xl border-2 p-4 cursor-pointer transition-colors border-primary bg-primary-soft/40">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <button type="button" role="radio" aria-checked="true" data-state="checked" value="Lunas" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="pay-Lunas" tabindex="0" data-radix-collection-item="">
-                                <span data-state="checked" class="flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle h-2.5 w-2.5 fill-current text-current">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                    </svg>
-                                </span>
-                            </button>
-                            <p class="font-medium">Lunas (100%)</p>
-                        </div>
-                        <p class="font-bold text-primary">Rp&nbsp;8.400.000</p>
-                    </div>
-                    <p class="text-xs text-muted-foreground mt-2 ml-7">Sewa langsung diproses untuk approval.</p>
-                </label>
-                <label for="pay-DP" class="rounded-xl border-2 p-4 cursor-pointer transition-colors border-border hover:border-primary/50">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <button type="button" role="radio" aria-checked="false" data-state="unchecked" value="DP" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="pay-DP" tabindex="-1" data-radix-collection-item=""></button>
-                            <p class="font-medium">DP (50%)</p>
-                        </div>
-                        <p class="font-bold text-primary">Rp&nbsp;4.200.000</p>
-                    </div>
-                    <p class="text-xs text-muted-foreground mt-2 ml-7">Status berubah menjadi Booked sampai pelunasan.</p>
-                </label>
+            <div class="mt-4 rounded-xl border-2 border-primary bg-primary-soft/40 p-4">
+                <div class="flex items-center justify-between">
+                    <p class="font-medium">Pelunasan (100%)</p>
+                    <p class="font-bold text-primary">Rp&nbsp;6.900.000</p>
+                </div>
+                <p class="text-xs text-muted-foreground mt-2">Sisa pembayaran dari total Rp&nbsp;13.800.000 (sudah dibayar Rp&nbsp;6.900.000). Status sewa akan menunggu approval admin.</p>
             </div>
         </div>
         <div class="bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-4">
@@ -96,17 +97,18 @@
         <p class="text-sm font-semibold">Ringkasan</p>
         <div>
             <p class="text-sm text-muted-foreground">Kamar</p>
-            <p class="font-bold">Kamar A1 — Standard</p>
-            <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mt-2">ID: R-1776694987139</div>
+            <p class="font-bold">Kamar B1 — Deluxe AC</p>
+            <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 mt-2">ID: R-1777970464572</div>
         </div>
         <div class="space-y-2 pt-3 border-t border-border text-sm">
-            <div class="flex justify-between"><span class="text-muted-foreground">Harga / tahun</span><span>Rp&nbsp;8.400.000</span></div>
-            <div class="flex justify-between"><span class="text-muted-foreground">Tipe Pembayaran</span><span>Lunas</span></div>
+            <div class="flex justify-between"><span class="text-muted-foreground">Harga / tahun</span><span>Rp&nbsp;13.800.000</span></div>
+            <div class="flex justify-between"><span class="text-muted-foreground">Sudah dibayar</span><span>Rp&nbsp;6.900.000</span></div>
+            <div class="flex justify-between"><span class="text-muted-foreground">Tipe Pembayaran</span><span>Pelunasan</span></div>
             <div class="flex justify-between"><span class="text-muted-foreground">Metode</span><span>QRIS</span></div>
         </div>
         <div class="pt-3 border-t border-border flex items-baseline justify-between">
             <p class="text-sm text-muted-foreground">Total bayar</p>
-            <p class="text-2xl font-bold text-primary">Rp&nbsp;8.400.000</p>
+            <p class="text-2xl font-bold text-primary">Rp&nbsp;6.900.000</p>
         </div>
     </aside>
 </section>

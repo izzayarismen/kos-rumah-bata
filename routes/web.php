@@ -31,6 +31,9 @@ Route::get('/kamar/detail/ajukan-sewa', function () {
 Route::get('/kamar/detail/pembayaran', function () {
     return view('pembayaran');
 });
+Route::get('/pelunasan', function () {
+    return view('pelunasan');
+});
 
 Route::middleware('auth')->group(function () {
     // Profile

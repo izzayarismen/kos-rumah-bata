@@ -2,18 +2,18 @@
 
 @section("content")
 <div class="container-app pt-6">
-    <button class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+    <a href="/kamar" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
             <path d="m12 19-7-7 7-7"></path>
             <path d="M19 12H5"></path>
         </svg>
         Kembali
-    </button>
+    </a>
 </div>
 <section class="container-app py-6 grid lg:grid-cols-5 gap-8">
     <div class="lg:col-span-3">
-        <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-card"><img src="3.jpg" alt="Kamar A1 — Standard foto 1" class="h-full w-full object-cover" width="1200" height="900"></div>
-        <div class="mt-3 grid grid-cols-4 gap-3"><button class="aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-primary shadow-soft"><img src="4.jpg" alt="" class="h-full w-full object-cover" loading="lazy"></button><button class="aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-transparent opacity-70 hover:opacity-100"><img src="4.jpg" alt="" class="h-full w-full object-cover" loading="lazy"></button><button class="aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-transparent opacity-70 hover:opacity-100"><img src="5.jpg" alt="" class="h-full w-full object-cover" loading="lazy"></button></div>
+        <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-card"><img src="{{ asset('3.jpg') }}" alt="Kamar A1 — Standard foto 1" class="h-full w-full object-cover" width="1200" height="900"></div>
+        <div class="mt-3 grid grid-cols-4 gap-3"><button class="aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-primary shadow-soft"><img src="{{ asset('3.jpg') }}" alt="" class="h-full w-full object-cover" loading="lazy"></button><button class="aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-transparent opacity-70 hover:opacity-100"><img src="{{ asset('4.jpg') }}" alt="" class="h-full w-full object-cover" loading="lazy"></button><button class="aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-transparent opacity-70 hover:opacity-100"><img src="{{ asset('5.jpg') }}" alt="" class="h-full w-full object-cover" loading="lazy"></button></div>
         <div class="mt-8 bg-card rounded-2xl border border-border/60 p-6 shadow-soft">
             <h2 class="font-semibold text-lg">Deskripsi Kamar</h2>
             <p class="text-sm text-muted-foreground mt-2 leading-relaxed">Kamar standar nyaman untuk satu orang. Cocok untuk pelajar atau pekerja yang mengutamakan kenyamanan dengan harga terjangkau. Sirkulasi udara baik dengan jendela besar.</p>
@@ -114,7 +114,7 @@
                 <p class="text-xs text-muted-foreground">Harga sewa</p>
                 <p class="text-3xl font-bold text-primary mt-0.5">Rp&nbsp;8.400.000<span class="text-sm font-normal text-muted-foreground"> / tahun</span></p>
             </div>
-            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full mt-5 rounded-full shadow-elevated">Ajukan Sewa</button>
+            <a href="/kamar/detail/ajukan-sewa" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full mt-5 rounded-full shadow-elevated">Ajukan Sewa</a>
             <div class="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check h-4 w-4 text-accent">
                     <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>

@@ -36,25 +36,13 @@
         <div class="relative animate-fade-up" style="animation-delay: 120ms;">
             <div class="relative aspect-4/5 rounded-3xl overflow-hidden shadow-elevated"><img src="2.jpg" alt="Tampilan depan Kos Rumah Bata" class="h-full w-full object-cover" width="1600" height="1000"></div>
             <div class="hidden md:block absolute -left-8 bottom-8 bg-surface rounded-2xl p-4 shadow-elevated border border-border/60 max-w-[220px]">
-                <div class="flex items-center gap-3">
-                <div class="h-10 w-10 rounded-full bg-accent/20 grid place-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check h-5 w-5 text-accent">
-                        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path>
-                        <path d="m9 12 2 2 4-4"></path>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-xs text-muted-foreground">Dokumen aman</p>
-                    <p class="text-sm font-semibold">Surat sewa digital</p>
-                </div>
-                </div>
             </div>
             <div class="hidden md:flex absolute -right-6 top-10 bg-surface rounded-2xl px-4 py-3 shadow-elevated border border-border/60 items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 text-primary">
                 <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                 <circle cx="12" cy="10" r="3"></circle>
                 </svg>
-                <p class="text-sm font-medium">Yogyakarta</p>
+                <p class="text-sm font-medium">Bogor</p>
             </div>
         </div>
     </div>
