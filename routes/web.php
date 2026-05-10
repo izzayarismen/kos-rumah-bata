@@ -69,3 +69,112 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'postLogin']);
 
 });
+
+// admin
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+});
+
+Route::get('/admin/kamar', function () {
+    return view('admin.kamar');
+});
+
+Route::get('/admin/kamar/create', function () {
+    return view('admin.kamar_create');
+});
+
+Route::get('/admin/kamar/edit', function () {
+    return view('admin.kamar_edit');
+});
+
+Route::get('/admin/penghuni', function () {
+    return view('admin.penghuni');
+});
+
+Route::get('/admin/penghuni/create', function () {
+    return view('admin.penghuni_create');
+});
+
+Route::get('/admin/penghuni/edit', function () {
+    return view('admin.penghuni_edit');
+});
+
+Route::get('/admin/penghuni/detail', function () {
+    return view('admin.penghuni_detail');
+});
+
+Route::get('/admin/pembayaran', function () {
+    return view('admin.pembayaran');
+});
+
+Route::get('/admin/pembayaran/create', function () {
+    return view('admin.pembayaran_create');
+});
+
+Route::get('/admin/pembayaran/edit', function () {
+    return view('admin.pembayaran_edit');
+});
+
+Route::get('/admin/pembayaran/detail', function () {
+    return view('admin.pembayaran_detail');
+});
+
+Route::get('/admin/maintenance', function () {
+    return view('admin.maintenance');
+});
+
+Route::get('/admin/maintenance/create', function () {
+    return view('admin.maintenance_create');
+});
+
+Route::get('/admin/maintenance/edit', function () {
+    return view('admin.maintenance_edit');
+});
+
+Route::get('/admin/pengajuan-maintenance', function () {
+    return view('admin.pengajuan_maintenance');
+});
+
+Route::get('/admin/pengajuan-maintenance/detail', function () {
+    return view('admin.pengajuan_maintenance_detail');
+});
+
+Route::get('/admin/laporan', function () {
+    return view('admin.laporan');
+});
+
+Route::get('/admin/profile', function () {
+    return view('admin.profile');
+});
+
+Route::get('/admin/pengajuan-sewa', function () {
+    return view('admin.pengajuan_sewa');
+});
+
+Route::get('/admin/pengajuan-sewa/detail', function () {
+    return view('admin.pengajuan_sewa_detail');
+});
+
+Route::get('/admin/konten/faq', function () {
+    return view('admin.konten_faq');
+});
+
+Route::get('/admin/konten/faq/edit', function () {
+    return view('admin.konten_faq_edit');
+});
+
+Route::get('/admin/konten/activity', function () {
+    return view('admin.konten_activity');
+});
+
+Route::get('/admin/konten/activity/edit', function () {
+    return view('admin.konten_activity_edit');
+});
+
+Route::get('/admin/konten/galeri', function () {
+    return view('admin.konten_galeri');
+});
+
+Route::get('/admin/konten/galeri/edit', function () {
+    return view('admin.konten_galeri_edit');
+});
