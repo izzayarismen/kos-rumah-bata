@@ -348,39 +348,19 @@
     .decision-approve {
         background: #c8664a;
         color: #ffffff;
-        outline: none; /* Menghilangkan garis outline hitam bawaan browser */
     }
 
     .decision-approve:hover {
         background: #b75a41;
     }
 
-    /* Menjaga warna tetap terakota saat diklik atau di-select */
-    .decision-approve:focus, 
-    .decision-approve:active {
-        background: #b75a41;
-        color: #ffffff;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.2); /* Efek glow halus warna terakota */
-    }
-
     .decision-reupload {
         background: #f4ddd4;
         color: #c8664a;
-        outline: none; /* Menghilangkan garis outline hitam bawaan browser */
     }
 
     .decision-reupload:hover {
         background: #ebcec2;
-    }
-
-    /* Menjaga warna tetap krem saat diklik atau di-select */
-    .decision-reupload:focus, 
-    .decision-reupload:active {
-        background: #ebcec2;
-        color: #c8664a;
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.1); /* Efek glow halus warna terakota transparan */
     }
 
     .decision-note {
