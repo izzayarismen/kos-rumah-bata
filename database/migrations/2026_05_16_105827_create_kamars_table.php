@@ -19,9 +19,15 @@ return new class extends Migration
             $table->bigInteger('harga');
             $table->string('luas', 30);
             $table->text('fasilitas');
-            $table->text('deskripsi')->nullable(); // <-- TAMBAHKAN KOLOM INI
+            $table->text('deskripsi')->nullable();
             $table->enum('status', ['tersedia', 'penuh'])->default('tersedia');
-            $table->string('foto')->nullable();
+
+            // Pembaruan Kolom Foto
+            $table->string('foto_utama')->nullable();
+            $table->string('foto_tambahan_1')->nullable();
+            $table->string('foto_tambahan_2')->nullable();
+            $table->string('foto_tambahan_3')->nullable();
+
             $table->timestamps();
         });
     }

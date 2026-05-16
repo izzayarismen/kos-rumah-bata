@@ -9,40 +9,48 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminKamarController extends Controller
 {
-    // Tampilan daftar kamar di Admin
     public function index()
     {
-        // Mengurutkan berdasarkan ID terbesar (terbaru dimasukkan)
         $kamars = Kamar::orderBy('id', 'desc')->get();
-
         return view('admin.kamar', compact('kamars'));
     }
 
-    // Form Tambah Kamar
     public function create()
     {
         return view('admin.kamar_create');
     }
 
-    // Proses Simpan Kamar Baru
+    // PROSES SIMPAN KAMAR BARU
     public function store(Request $request)
     {
         $request->validate([
-            'nomor_kamar' => 'required|string|max:10',
-            'tower'       => 'required|string|max:50',
-            'tipe_kamar'  => 'required|in:ac,non-ac',
-            'harga'       => 'required|numeric',
-            'luas'        => 'required|string|max:30',
-            'fasilitas'   => 'required|array', // Diinput berupa array checkbox/tag
-            'deskripsi'   => 'nullable|string', // <-- TAMBAHKAN VALIDASI DESKRIPSI DI SINI
-            'status'      => 'required|in:tersedia,penuh',
-            'foto'        => 'nullable|image|mimes:jpeg,png,jpg'
+            'nomor_kamar'     => 'required|string|max:10',
+            'tower'           => 'required|string|max:50',
+            'tipe_kamar'      => 'required|in:ac,non-ac',
+            'harga'           => 'required|numeric',
+            'luas'            => 'required|string|max:30',
+            'fasilitas'       => 'required|array',
+            'deskripsi'       => 'nullable|string',
+            'status'          => 'required|in:tersedia,penuh',
+            'foto_utama'      => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_1' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_2' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_3' => 'nullable|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         $data = $request->all();
 
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('kamar', 'public');
+        // Upload Foto Utama
+        if ($request->hasFile('foto_utama')) {
+            $data['foto_utama'] = $request->file('foto_utama')->store('kamar', 'public');
+        }
+
+        // Upload Foto Tambahan (1, 2, 3)
+        for ($i = 1; $i <= 3; $i++) {
+            $inputName = 'foto_tambahan_' . $i;
+            if ($request->hasFile($inputName)) {
+                $data[$inputName] = $request->file($inputName)->store('kamar', 'public');
+            }
         }
 
         Kamar::create($data);
@@ -50,38 +58,52 @@ class AdminKamarController extends Controller
         return redirect('/admin/kamar')->with('success', 'Kamar berhasil ditambahkan!');
     }
 
-    // Form Edit Kamar
     public function edit($id)
     {
         $kamar = Kamar::findOrFail($id);
         return view('admin.kamar_edit', compact('kamar'));
     }
 
-    // Proses Update Data Kamar
+    // PROSES UPDATE DATA KAMAR
     public function update(Request $request, $id)
     {
         $kamar = Kamar::findOrFail($id);
 
         $request->validate([
-            'nomor_kamar' => 'required|string|max:10',
-            'tower'       => 'required|string|max:50',
-            'tipe_kamar'  => 'required|in:ac,non-ac',
-            'harga'       => 'required|numeric',
-            'luas'        => 'required|string|max:30',
-            'fasilitas'   => 'required|array',
-            'deskripsi'   => 'nullable|string', // <-- TAMBAHKAN VALIDASI DESKRIPSI DI SINI
-            'status'      => 'required|in:tersedia,penuh',
-            'foto'        => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'nomor_kamar'     => 'required|string|max:10',
+            'tower'           => 'required|string|max:50',
+            'tipe_kamar'      => 'required|in:ac,non-ac',
+            'harga'           => 'required|numeric',
+            'luas'            => 'required|string|max:30',
+            'fasilitas'       => 'required|array',
+            'deskripsi'       => 'nullable|string',
+            'status'          => 'required|in:tersedia,penuh',
+            'foto_utama'      => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_1' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_2' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_3' => 'nullable|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         $data = $request->all();
 
-        if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
-            if ($kamar->foto && Storage::disk('public')->exists($kamar->foto)) {
-                Storage::disk('public')->delete($kamar->foto);
+        // Update Foto Utama
+        if ($request->hasFile('foto_utama')) {
+            if ($kamar->foto_utama && Storage::disk('public')->exists($kamar->foto_utama)) {
+                Storage::disk('public')->delete($kamar->foto_utama);
             }
-            $data['foto'] = $request->file('foto')->store('kamar', 'public');
+            $data['foto_utama'] = $request->file('foto_utama')->store('kamar', 'public');
+        }
+
+        // Update Foto Tambahan (1, 2, 3)
+        for ($i = 1; $i <= 3; $i++) {
+            $inputName = 'foto_tambahan_' . $i;
+            if ($request->hasFile($inputName)) {
+                // Hapus foto tambahan lama jika ada file baru yang masuk
+                if ($kamar->$inputName && Storage::disk('public')->exists($kamar->$inputName)) {
+                    Storage::disk('public')->delete($kamar->$inputName);
+                }
+                $data[$inputName] = $request->file($inputName)->store('kamar', 'public');
+            }
         }
 
         $kamar->update($data);
@@ -89,13 +111,22 @@ class AdminKamarController extends Controller
         return redirect('/admin/kamar')->with('success', 'Data kamar berhasil diperbarui!');
     }
 
-    // Proses Hapus Kamar
+    // PROSES HAPUS KAMAR TOTAL beserta seluruh fotonya
     public function destroy($id)
     {
         $kamar = Kamar::findOrFail($id);
 
-        if ($kamar->foto && Storage::disk('public')->exists($kamar->foto)) {
-            Storage::disk('public')->delete($kamar->foto);
+        // Hapus Foto Utama dari Storage
+        if ($kamar->foto_utama && Storage::disk('public')->exists($kamar->foto_utama)) {
+            Storage::disk('public')->delete($kamar->foto_utama);
+        }
+
+        // Hapus Seluruh Foto Tambahan dari Storage
+        for ($i = 1; $i <= 3; $i++) {
+            $fieldName = 'foto_tambahan_' . $i;
+            if ($kamar->$fieldName && Storage::disk('public')->exists($kamar->$fieldName)) {
+                Storage::disk('public')->delete($kamar->$fieldName);
+            }
         }
 
         $kamar->delete();

@@ -18,9 +18,12 @@ class Kamar extends Model
         'harga',
         'luas',
         'fasilitas',
-        'deskripsi', // <-- TAMBAHKAN INI
+        'deskripsi',
         'status',
-        'foto'
+        'foto_utama',      // <-- Update
+        'foto_tambahan_1',  // <-- Tambah
+        'foto_tambahan_2',  // <-- Tambah
+        'foto_tambahan_3'   // <-- Tambah
     ];
 
     protected $casts = [
