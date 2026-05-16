@@ -22,7 +22,8 @@
         display: grid;
         grid-template-columns: 1fr 340px;
         gap: 24px;
-        align-items: end;
+        /* GANTI dari 'end' ke 'flex-start' supaya teks judul aman terkunci di posisi atas */
+        align-items: flex-start;
     }
 
     .report-hero h2 {
@@ -43,13 +44,43 @@
 
     .report-filter {
         display: grid;
-        gap: 10px;
+        gap: 12px;
+    }
+
+    /* Tab Style untuk pilihan Bulanan / Tahunan */
+    .report-type-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: #fbf5f1;
+        padding: 4px;
+        border-radius: 12px;
+        border: 1px solid #ead6ce;
+    }
+
+    .tab-btn {
+        height: 38px;
+        border: none;
+        background: transparent;
+        color: #86766f;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 9px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: 0.2s ease;
+    }
+
+    .tab-btn.active {
+        background: #ffffff;
+        color: #c8664a;
+        box-shadow: 0 2px 8px rgba(80, 48, 31, 0.04);
     }
 
     .report-filter label {
         color: #211713;
         font-size: 14px;
         font-weight: 600;
+        margin-top: 4px;
     }
 
     .report-filter select {
@@ -70,7 +101,7 @@
         box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
     }
 
-    .report-filter button {
+    .report-filter button.btn-apply {
         height: 46px;
         border: none;
         border-radius: 14px;
@@ -83,7 +114,7 @@
         transition: 0.2s ease;
     }
 
-    .report-filter button:hover {
+    .report-filter button.btn-apply:hover {
         background: #b75a41;
     }
 
@@ -351,31 +382,42 @@
     <div class="report-panel">
         <div class="report-hero">
             <div>
-                <h2>Laporan Keuangan Bulanan</h2>
+                <h2 style="white-space: nowrap; margin-bottom: 6px;">Laporan Keuangan Kos</h2>
                 <p>
-                    Laporan ini menampilkan total pendapatan dan pengeluaran kos dalam satu periode bulan.
-                    Data ini nanti dapat disambungkan ke backend agar berubah otomatis sesuai bulan yang dipilih.
+                    Laporan ini menampilkan total pendapatan dan pengeluaran kos dalam satu periode bulanan atau tahunan terpilih.
                 </p>
             </div>
 
             <form action="/admin/laporan" method="GET" class="report-filter">
-                <label>Pilih Bulan Laporan</label>
-                <select name="bulan">
-                    <option value="januari-2026">Januari 2026</option>
-                    <option value="februari-2026">Februari 2026</option>
-                    <option value="maret-2026">Maret 2026</option>
-                    <option value="april-2026">April 2026</option>
-                    <option value="mei-2026">Mei 2026</option>
-                    <option value="juni-2026" selected>Juni 2026</option>
-                    <option value="juli-2026">Juli 2026</option>
-                    <option value="agustus-2026">Agustus 2026</option>
-                    <option value="september-2026">September 2026</option>
-                    <option value="oktober-2026">Oktober 2026</option>
-                    <option value="november-2026">November 2026</option>
-                    <option value="desember-2026">Desember 2026</option>
+                <input type="hidden" name="tipe" id="report_type_input" value="{{ request('tipe', 'bulanan') }}">
+
+                <div class="report-type-tabs">
+                    <button type="button" class="tab-btn {{ request('tipe', 'bulanan') == 'bulanan' ? 'active' : '' }}" onclick="switchReportType('bulanan')">Bulanan</button>
+                    <button type="button" class="tab-btn {{ request('tipe') == 'tahunan' ? 'active' : '' }}" onclick="switchReportType('tahunan')">Tahunan</button>
+                </div>
+
+                <label id="filter_label">{{ request('tipe') == 'tahunan' ? 'Pilih Tahun Laporan' : 'Pilih Bulan Laporan' }}</label>
+                
+                <select name="bulan" id="select_bulan" style="{{ request('tipe') == 'tahunan' ? 'display: none;' : '' }}">
+                    @php
+                        $daftarBulan = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
+                        $bulanPilihan = request('bulan', 'juni-2026');
+                    @endphp
+                    @foreach($daftarBulan as $b)
+                        <option value="{{ $b }}-2026" {{ $bulanPilihan == $b.'-2026' ? 'selected' : '' }}>{{ ucfirst($b) }} 2026</option>
+                    @endforeach
                 </select>
 
-                <button type="submit">Terapkan</button>
+                <select name="tahun" id="select_tahun" style="{{ request('tipe') == 'tahunan' ? '' : 'display: none;' }}">
+                    @php
+                        $tahunPilihan = request('tahun', '2026');
+                    @endphp
+                    <option value="2025" {{ $tahunPilihan == '2025' ? 'selected' : '' }}>Tahun 2025</option>
+                    <option value="2026" {{ $tahunPilihan == '2026' ? 'selected' : '' }}>Tahun 2026</option>
+                    <option value="2027" {{ $tahunPilihan == '2027' ? 'selected' : '' }}>Tahun 2027</option>
+                </select>
+
+                <button type="submit" class="btn-apply">Terapkan</button>
             </form>
         </div>
     </div>
@@ -383,13 +425,13 @@
     <div class="report-total-grid">
         <div class="report-total-card">
             <span>Total Pendapatan</span>
-            <h3>Rp 36.000.000</h3>
-            <p>Pendapatan berasal dari pembayaran lunas dan DP penghuni selama bulan Juni 2026.</p>
+            <h3>{{ $totalPendapatan ?? 'Rp 36.000.000' }}</h3>
+            <p>Pendapatan berasal dari pembayaran lunas dan DP penghuni selama periode {{ $periodeAktif ?? 'Juni 2026' }}.</p>
         </div>
 
         <div class="report-total-card">
             <span>Total Pengeluaran</span>
-            <h3>Rp 2.500.000</h3>
+            <h3>{{ $totalPengeluaran ?? 'Rp 2.500.000' }}</h3>
             <p>Pengeluaran berasal dari biaya maintenance kamar dan kebutuhan operasional kos.</p>
         </div>
     </div>
@@ -403,33 +445,45 @@
                     <p>Daftar pemasukan dan pengeluaran yang tercatat pada periode terpilih.</p>
                 </div>
 
-                <span class="report-period">Juni 2026</span>
+                <span class="report-period" id="display_period">{{ $periodeAktif ?? 'Juni 2026' }}</span>
             </div>
 
             <div class="transaction-list">
-                <div class="transaction-item">
-                    <div>
-                        <strong>Pembayaran Lunas</strong>
-                        <span>12 penghuni melakukan pembayaran penuh.</span>
+                @if(isset($transaksi) && count($transaksi) > 0)
+                    @foreach($transaksi as $t)
+                        <div class="transaction-item">
+                            <div>
+                                <strong>{{ $t['nama'] }}</strong>
+                                <span>{{ $t['deskripsi'] }}</span>
+                            </div>
+                            <b>{{ $t['jumlah'] }}</b>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="transaction-item">
+                        <div>
+                            <strong>Pembayaran Lunas</strong>
+                            <span>Penghuni melakukan pembayaran penuh pada periode ini.</span>
+                        </div>
+                        <b>{{ request('tipe') == 'tahunan' ? 'Rp 288.000.000' : 'Rp 24.000.000' }}</b>
                     </div>
-                    <b>Rp 24.000.000</b>
-                </div>
 
-                <div class="transaction-item">
-                    <div>
-                        <strong>Pembayaran DP</strong>
-                        <span>6 penghuni melakukan pembayaran tahap pertama.</span>
+                    <div class="transaction-item">
+                        <div>
+                            <strong>Pembayaran DP</strong>
+                            <span>Penghuni melakukan pembayaran tahap pertama (DP).</span>
+                        </div>
+                        <b>{{ request('tipe') == 'tahunan' ? 'Rp 144.000.000' : 'Rp 12.000.000' }}</b>
                     </div>
-                    <b>Rp 12.000.000</b>
-                </div>
 
-                <div class="transaction-item">
-                    <div>
-                        <strong>Maintenance Kamar</strong>
-                        <span>Biaya perbaikan AC, lampu, saluran air, dan cat ulang kamar.</span>
+                    <div class="transaction-item">
+                        <div>
+                            <strong>Maintenance Kamar</strong>
+                            <span>Biaya perbaikan sarana AC, lampu, air, dan operasional bangunan.</span>
+                        </div>
+                        <b>{{ request('tipe') == 'tahunan' ? 'Rp 30.000.000' : 'Rp 2.500.000' }}</b>
                     </div>
-                    <b>Rp 2.500.000</b>
-                </div>
+                @endif
             </div>
 
             <div class="report-actions">
@@ -442,45 +496,70 @@
             <div class="report-section-head">
                 <div>
                     <h3>Ringkasan</h3>
-                    <p>Rekap singkat kondisi keuangan bulan ini.</p>
+                    <p>Rekap singkat kondisi keuangan periode ini.</p>
                 </div>
             </div>
 
             <div class="monthly-summary">
                 <div class="summary-row">
                     <span>Pendapatan</span>
-                    <strong>Rp 36.000.000</strong>
+                    <strong>{{ $totalPendapatan ?? (request('tipe') == 'tahunan' ? 'Rp 432.000.000' : 'Rp 36.000.000') }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Pengeluaran</span>
-                    <strong>Rp 2.500.000</strong>
+                    <strong>{{ $totalPengeluaran ?? (request('tipe') == 'tahunan' ? 'Rp 30.000.000' : 'Rp 2.500.000') }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Selisih Bersih</span>
-                    <strong>Rp 33.500.000</strong>
+                    <strong>{{ $selisihBersih ?? (request('tipe') == 'tahunan' ? 'Rp 402.000.000' : 'Rp 33.500.000') }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Transaksi Masuk</span>
-                    <strong>18 transaksi</strong>
+                    <strong>{{ request('tipe') == 'tahunan' ? '216 transaksi' : '18 transaksi' }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Maintenance Dibayar</span>
-                    <strong>5 pekerjaan</strong>
+                    <strong>{{ request('tipe') == 'tahunan' ? '60 pekerjaan' : '5 pekerjaan' }}</strong>
                 </div>
             </div>
 
             <div class="report-note">
-                Catatan: Untuk frontend sementara, data masih statis. Saat backend sudah dibuat,
-                nilai pendapatan, pengeluaran, dan rincian transaksi bisa berubah otomatis berdasarkan bulan yang dipilih.
+                Catatan: Menggunakan filter <b>{{ request('tipe', 'bulanan') }}</b>. Nilai di atas akan menyesuaikan struktur data dinamis ketika disambungkan ke Eloquent DB / Backend.
             </div>
         </div>
 
     </div>
 
 </div>
+
+<script>
+    function switchReportType(type) {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const selectBulan = document.getElementById('select_bulan');
+        const selectTahun = document.getElementById('select_tahun');
+        const filterLabel = document.getElementById('filter_label');
+        const typeInput = document.getElementById('report_type_input');
+
+        typeInput.value = type;
+
+        tabBtns.forEach(btn => btn.classList.remove('active'));
+        
+        if (type === 'bulanan') {
+            event.target.classList.add('active');
+            selectBulan.style.display = 'block';
+            selectTahun.style.display = 'none';
+            filterLabel.innerText = 'Pilih Bulan Laporan';
+        } else {
+            event.target.classList.add('active');
+            selectBulan.style.display = 'none';
+            selectTahun.style.display = 'block';
+            filterLabel.innerText = 'Pilih Tahun Laporan';
+        }
+    }
+</script>
 
 @endsection
