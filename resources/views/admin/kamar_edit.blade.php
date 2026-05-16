@@ -169,7 +169,7 @@
 
     .photo-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr)); /* Diubah menjadi 3 kolom agar rapi untuk foto tambahan 1-3 */
         gap: 14px;
     }
 
@@ -214,6 +214,10 @@
 
         .facility-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .photo-grid {
+            grid-template-columns: 1fr;
         }
     }
 
@@ -347,7 +351,6 @@
 
                 <div class="form-full form-group">
                     <label>Deskripsi Kamar</label>
-                    {{-- Sekarang deskripsi terikat dengan database --}}
                     <textarea name="deskripsi">{{ old('deskripsi', $kamar->deskripsi) }}</textarea>
                 </div>
 
@@ -355,8 +358,8 @@
                     <div class="current-photo">
                         <label>Foto Utama Saat Ini</label>
 
-                        @if($kamar->foto)
-                            <img id="editImagePreview" src="{{ asset('storage/' . $kamar->foto) }}" alt="Foto kamar">
+                        @if($kamar->foto_utama)
+                            <img id="editImagePreview" src="{{ asset('storage/' . $kamar->foto_utama) }}" alt="Foto kamar">
                         @else
                             @if($kamar->nomor_kamar == '02')
                                 <img id="editImagePreview" src="{{ asset('2.jpg') }}" alt="Foto kamar 02">
@@ -374,7 +377,7 @@
                         @endif
 
                         <label>Ganti Foto Utama</label>
-                        <input type="file" name="foto" id="editFotoInput" accept="image/*">
+                        <input type="file" name="foto_utama" id="editFotoInput" accept="image/*">
                         <span class="form-hint">Kosongkan jika tidak ingin mengganti foto utama.</span>
                     </div>
                 </div>
@@ -383,12 +386,41 @@
                     <div class="photo-grid">
                         <div class="photo-upload">
                             <label>Ganti Foto Tambahan 1</label>
-                            <input type="file" name="foto_tambahan_1" accept="image/*" disabled placeholder="Opsional">
+                            <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px solid #ead6ce; display: flex; align-items: center; justify-content: center;">
+                                @if($kamar->foto_tambahan_1)
+                                    <img id="preview_tambahan_1" src="{{ asset('storage/' . $kamar->foto_tambahan_1) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <img id="preview_tambahan_1" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                    <span id="text_tambahan_1" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
+                                @endif
+                            </div>
+                            <input type="file" name="foto_tambahan_1" id="input_tambahan_1" accept="image/*">
                         </div>
 
                         <div class="photo-upload">
                             <label>Ganti Foto Tambahan 2</label>
-                            <input type="file" name="foto_tambahan_2" accept="image/*" disabled placeholder="Opsional">
+                            <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px solid #ead6ce; display: flex; align-items: center; justify-content: center;">
+                                @if($kamar->foto_tambahan_2)
+                                    <img id="preview_tambahan_2" src="{{ asset('storage/' . $kamar->foto_tambahan_2) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <img id="preview_tambahan_2" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                    <span id="text_tambahan_2" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
+                                @endif
+                            </div>
+                            <input type="file" name="foto_tambahan_2" id="input_tambahan_2" accept="image/*">
+                        </div>
+
+                        <div class="photo-upload">
+                            <label>Ganti Foto Tambahan 3</label>
+                            <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px solid #ead6ce; display: flex; align-items: center; justify-content: center;">
+                                @if($kamar->foto_tambahan_3)
+                                    <img id="preview_tambahan_3" src="{{ asset('storage/' . $kamar->foto_tambahan_3) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <img id="preview_tambahan_3" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                    <span id="text_tambahan_3" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
+                                @endif
+                            </div>
+                            <input type="file" name="foto_tambahan_3" id="input_tambahan_3" accept="image/*">
                         </div>
                     </div>
                 </div>
@@ -405,6 +437,7 @@
 </div>
 
 <script>
+    // Preview Ganti Foto Utama
     document.getElementById('editFotoInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
         const preview = document.getElementById('editImagePreview');
@@ -417,6 +450,29 @@
             reader.readAsDataURL(file);
         }
     });
+
+    // Fungsi Reusable Preview Ganti Foto Tambahan
+    function setupAdditionalEditPreview(inputId, previewId, textId) {
+        document.getElementById(inputId).addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById(previewId);
+            const statusText = document.getElementById(textId);
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    if (statusText) statusText.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    setupAdditionalEditPreview('input_tambahan_1', 'preview_tambahan_1', 'text_tambahan_1');
+    setupAdditionalEditPreview('input_tambahan_2', 'preview_tambahan_2', 'text_tambahan_2');
+    setupAdditionalEditPreview('input_tambahan_3', 'preview_tambahan_3', 'text_tambahan_3');
 </script>
 
 @endsection

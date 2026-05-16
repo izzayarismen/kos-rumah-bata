@@ -463,8 +463,9 @@
                  data-type="{{ $kamar->tipe_kamar }}">
 
                 <div class="room-image">
-                    @if($kamar->foto)
-                        <img src="{{ asset('storage/' . $kamar->foto) }}" alt="Kamar {{ $kamar->nomor_kamar }}">
+                    {{-- DIUBAH: Mengecek variabel foto_utama hasil sinkronisasi migrasi baru --}}
+                    @if($kamar->foto_utama)
+                        <img src="{{ asset('storage/' . $kamar->foto_utama) }}" alt="Kamar {{ $kamar->nomor_kamar }}">
                     @else
                         {{-- Menggunakan gambar bawaan proyek dari folder public --}}
                         @if($kamar->nomor_kamar == '02')

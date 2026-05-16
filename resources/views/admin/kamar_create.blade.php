@@ -182,7 +182,7 @@
 
     .photo-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr)); /* Diubah menjadi 3 kolom agar muat foto tambahan 1-3 */
         gap: 14px;
         margin-top: 14px;
     }
@@ -228,6 +228,10 @@
 
         .facility-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .photo-grid {
+            grid-template-columns: 1fr;
         }
     }
 
@@ -356,25 +360,41 @@
                 <div class="form-full">
                     <div class="upload-area">
                         <div class="upload-main" id="uploadMainContainer">
-                            {{-- Image Element untuk Preview --}}
                             <img id="imagePreview" src="" alt="Preview" style="display: none; width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">
 
                             <label class="upload-label">
                                 <span id="uploadLabelText">Upload foto utama kamar</span>
                                 <span id="uploadHintText">Format JPG, PNG, atau WEBP</span>
-                                <input type="file" name="foto" id="fotoInput" accept="image/*">
+                                <input type="file" name="foto_utama" id="fotoInput" accept="image/*">
                             </label>
                         </div>
 
                         <div class="photo-grid">
                             <div class="photo-upload">
                                 <label>Foto Tambahan 1</label>
-                                <input type="file" name="foto_tambahan_1" accept="image/*" placeholder="Opsional">
+                                <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px dashed #ead6ce; display: flex; align-items: center; justify-content: center;">
+                                    <img id="preview_tambahan_1" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                    <span id="text_tambahan_1" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
+                                </div>
+                                <input type="file" name="foto_tambahan_1" id="input_tambahan_1" accept="image/*">
                             </div>
 
                             <div class="photo-upload">
                                 <label>Foto Tambahan 2</label>
-                                <input type="file" name="foto_tambahan_2" accept="image/*" placeholder="Opsional">
+                                <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px dashed #ead6ce; display: flex; align-items: center; justify-content: center;">
+                                    <img id="preview_tambahan_2" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                    <span id="text_tambahan_2" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
+                                </div>
+                                <input type="file" name="foto_tambahan_2" id="input_tambahan_2" accept="image/*">
+                            </div>
+
+                            <div class="photo-upload">
+                                <label>Foto Tambahan 3</label>
+                                <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px dashed #ead6ce; display: flex; align-items: center; justify-content: center;">
+                                    <img id="preview_tambahan_3" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                    <span id="text_tambahan_3" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
+                                </div>
+                                <input type="file" name="foto_tambahan_3" id="input_tambahan_3" accept="image/*">
                             </div>
                         </div>
                     </div>
@@ -391,8 +411,8 @@
     </div>
 </div>
 
-{{-- Skrip Preview Gambar Otomatis --}}
 <script>
+    // Preview Foto Utama
     document.getElementById('fotoInput').addEventListener('change', function(event) {
         const file = event.target.files[0];
         const preview = document.getElementById('imagePreview');
@@ -401,18 +421,14 @@
 
         if (file) {
             const reader = new FileReader();
-
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                preview.style.display = 'block'; // Tampilkan gambar preview
-
-                // Ubah teks label menjadi sedikit transparan/overlay di atas gambar jika diinginkan
+                preview.style.display = 'block';
                 labelText.textContent = "Ganti foto utama kamar";
                 labelText.style.color = "#ffffff";
                 labelText.style.textShadow = "1px 1px 4px rgba(0,0,0,0.6)";
                 hintText.style.display = "none";
             }
-
             reader.readAsDataURL(file);
         } else {
             preview.src = "";
@@ -423,6 +439,33 @@
             hintText.style.display = "block";
         }
     });
+
+    // Fungsi Reusable Preview Foto Tambahan
+    function setupAdditionalPreview(inputId, previewId, textId) {
+        document.getElementById(inputId).addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById(previewId);
+            const statusText = document.getElementById(textId);
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    statusText.style.display = 'none';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+                preview.style.display = 'none';
+                statusText.style.display = 'block';
+            }
+        });
+    }
+
+    setupAdditionalPreview('input_tambahan_1', 'preview_tambahan_1', 'text_tambahan_1');
+    setupAdditionalPreview('input_tambahan_2', 'preview_tambahan_2', 'text_tambahan_2');
+    setupAdditionalPreview('input_tambahan_3', 'preview_tambahan_3', 'text_tambahan_3');
 </script>
 
 @endsection
