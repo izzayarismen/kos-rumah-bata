@@ -67,8 +67,38 @@
 
         <div class="space-y-1.5"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="address">Alamat Domisili *</label><textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="address" rows="3" required=""></textarea></div>
         
-        <div>
-            <p class="text-sm font-medium mb-1.5">Upload Surat Perjanjian <span class="text-destructive">*</span></p>
+        <div class="space-y-3">
+            <div>
+                <p class="text-sm font-medium">Surat Komitmen<span class="text-destructive">*</span></p>
+                <p class="text-xs text-muted-foreground mt-0.5">Unduh berkas template, isi dan tanda tangani, kemudian unggah kembali di bawah ini.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 border border-primary/20 bg-primary-soft/10 rounded-xl">
+                <div class="flex items-start gap-2.5 min-w-0">
+                    <span class="p-2 rounded-lg bg-primary/10 text-primary mt-0.5 shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
+                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                            <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                            <path d="M10 9H8"></path>
+                            <path d="M16 13H8"></path>
+                            <path d="M16 17H8"></path>
+                        </svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-semibold truncate text-foreground">Template Surat Komitmen</p>
+                        <p class="text-xs text-muted-foreground mt-0.5">Ukuran berkas: ~140 KB</p>
+                    </div>
+                </div>
+                <a href="{{ asset('Surat-Komitmen.docx') }}" download class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-xs font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 shadow-soft shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-3.5 w-3.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" x2="12" y1="3" y2="15"></line>
+                    </svg>
+                    Unduh Template
+                </a>
+            </div>
+
             <button type="button" class="w-full rounded-xl border-2 border-dashed p-4 text-left transition-colors border-border hover:border-primary hover:bg-primary-soft/30">
                 <div class="flex items-center gap-3">
                     <span class="h-10 w-10 grid place-items-center rounded-lg bg-secondary text-muted-foreground">
@@ -79,8 +109,8 @@
                         </svg>
                     </span>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">Klik untuk pilih file</p>
-                        <p class="text-xs text-muted-foreground">Dokumen persetujuan sewa. Format: PDF/JPG/PNG.</p>
+                        <p class="text-sm font-medium truncate">Klik untuk pilih file surat komitmen</p>
+                        <p class="text-xs text-muted-foreground">Format yang didukung: PDF/JPG/PNG.</p>
                     </div>
                 </div>
             </button>
