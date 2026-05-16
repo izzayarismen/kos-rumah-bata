@@ -121,8 +121,8 @@
     }
 
     .filter-btn.active {
-        background: #211713;
-        border-color: #211713;
+        background: #c8664a;
+        border-color: #c8664a;
         color: #ffffff;
     }
 
@@ -309,6 +309,7 @@
         cursor: pointer;
         text-decoration: none;
         transition: 0.2s ease;
+        width: 100%; /* Memastikan button mengisi penuh ruang grid */
     }
 
     .edit-btn {
@@ -448,299 +449,94 @@
             </div>
         </div>
 
+        @if(session('success'))
+            <div style="padding: 14px 20px; background-color: #e5f7e8; color: #2e8b45; border: 1px solid #ccecd2; border-radius: 15px; margin-bottom: 18px; font-size: 14px; font-weight: 500;">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <div class="room-grid" id="roomGrid">
+            @foreach($kamars as $kamar)
+            <div class="room-card"
+                 data-name="kamar {{ $kamar->nomor_kamar }} tower {{ strtolower($kamar->tower) }} {{ $kamar->tipe_kamar }} {{ $kamar->status }}"
+                 data-status="{{ $kamar->status }}"
+                 data-type="{{ $kamar->tipe_kamar }}">
 
-            <div class="room-card" data-name="kamar 01 tower ganjil non ac tersedia" data-status="tersedia" data-type="non-ac">
                 <div class="room-image">
-                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=900&q=80" alt="Kamar 01">
+                    @if($kamar->foto)
+                        <img src="{{ asset('storage/' . $kamar->foto) }}" alt="Kamar {{ $kamar->nomor_kamar }}">
+                    @else
+                        {{-- Menggunakan gambar bawaan proyek dari folder public --}}
+                        @if($kamar->nomor_kamar == '02')
+                            <img src="{{ asset('2.jpg') }}" alt="Kamar 02">
+                        @elseif($kamar->nomor_kamar == '03')
+                            <img src="{{ asset('3.jpg') }}" alt="Kamar 03">
+                        @elseif($kamar->nomor_kamar == '04')
+                            <img src="{{ asset('4.jpg') }}" alt="Kamar 04">
+                        @elseif($kamar->nomor_kamar == '05')
+                            <img src="{{ asset('5.jpg') }}" alt="Kamar 05">
+                        @elseif($kamar->nomor_kamar == '06')
+                            <img src="{{ asset('6.jpg') }}" alt="Kamar 06">
+                        @else
+                            <img src="{{ asset('1.jpg') }}" alt="Kamar 01">
+                        @endif
+                    @endif
 
                     <div class="room-badges">
-                        <span class="room-chip">Non AC</span>
-                        <span class="room-chip available">Tersedia</span>
+                        <span class="room-chip">{{ $kamar->tipe_kamar == 'ac' ? 'AC' : 'Non AC' }}</span>
+                        <span class="room-chip {{ $kamar->status == 'tersedia' ? 'available' : 'full' }}">
+                            {{ $kamar->status == 'tersedia' ? 'Tersedia' : 'Penuh' }}
+                        </span>
                     </div>
                 </div>
 
                 <div class="room-body">
                     <div class="room-top">
                         <div>
-                            <h3 class="room-name">Kamar 01</h3>
-                            <p class="room-type">Tower Ganjil · Non AC</p>
+                            <h3 class="room-name">Kamar {{ $kamar->nomor_kamar }}</h3>
+                            <p class="room-type">Tower {{ $kamar->tower }} · {{ $kamar->tipe_kamar == 'ac' ? 'AC' : 'Non AC' }}</p>
                         </div>
 
-                        <span class="room-number">01</span>
+                        <span class="room-number">{{ $kamar->nomor_kamar }}</span>
                     </div>
 
                     <div class="room-price">
-                        <strong>Rp 8.400.000/tahun</strong>
+                        {{-- Mengubah parameter kedua menjadi 0 untuk menghilangkan .00 --}}
+                        <strong>Rp {{ number_format($kamar->harga, 0, ',', '.') }}/tahun</strong>
                     </div>
 
                     <div class="room-detail">
                         <div class="room-detail-row">
                             <span>Luas</span>
-                            <strong>3 × 3 meter</strong>
+                            <strong>{{ $kamar->luas }}</strong>
                         </div>
 
                         <div class="room-detail-row">
                             <span>Fasilitas</span>
 
                             <div class="facility-tags">
-                                <b>Kasur</b>
-                                <b>Lemari</b>
-                                <b>KM Dalam</b>
+                                @if(is_array($kamar->fasilitas))
+                                    @foreach($kamar->fasilitas as $fasilitas)
+                                        <b>{{ $fasilitas }}</b>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
 
                     <div class="room-footer">
-                        <a href="/admin/kamar/edit" class="edit-btn">Edit</a>
-                        <button type="button" class="delete-btn" onclick="confirmDelete()">Hapus</button>
+                        <a href="/admin/kamar/{{ $kamar->id }}/edit" class="edit-btn">Edit</a>
+
+                        {{-- Mengubah display inline menjadi grid agar tombol mengikuti lebar kolom footer --}}
+                        <form action="/admin/kamar/{{ $kamar->id }}" method="POST" style="display: grid;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kamar ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="delete-btn">Hapus</button>
+                        </form>
                     </div>
                 </div>
             </div>
-
-            <div class="room-card" data-name="kamar 02 tower genap ac tersedia" data-status="tersedia" data-type="ac">
-                <div class="room-image">
-                    <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=900&q=80" alt="Kamar 02">
-
-                    <div class="room-badges">
-                        <span class="room-chip">AC</span>
-                        <span class="room-chip available">Tersedia</span>
-                    </div>
-                </div>
-
-                <div class="room-body">
-                    <div class="room-top">
-                        <div>
-                            <h3 class="room-name">Kamar 02</h3>
-                            <p class="room-type">Tower Genap · AC</p>
-                        </div>
-
-                        <span class="room-number">02</span>
-                    </div>
-
-                    <div class="room-price">
-                        <strong>Rp 13.800.000/tahun</strong>
-                    </div>
-
-                    <div class="room-detail">
-                        <div class="room-detail-row">
-                            <span>Luas</span>
-                            <strong>3 × 3 meter</strong>
-                        </div>
-
-                        <div class="room-detail-row">
-                            <span>Fasilitas</span>
-
-                            <div class="facility-tags">
-                                <b>Kasur</b>
-                                <b>Lemari</b>
-                                <b>KM Dalam</b>
-                                <b>AC</b>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="room-footer">
-                        <a href="/admin/kamar/edit" class="edit-btn">Edit</a>
-                        <button type="button" class="delete-btn" onclick="confirmDelete()">Hapus</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="room-card" data-name="kamar 03 tower ganjil non ac penuh" data-status="penuh" data-type="non-ac">
-                <div class="room-image">
-                    <img src="https://images.unsplash.com/photo-1560448204-603b3fc33ddc?auto=format&fit=crop&w=900&q=80" alt="Kamar 03">
-
-                    <div class="room-badges">
-                        <span class="room-chip">Non AC</span>
-                        <span class="room-chip full">Penuh</span>
-                    </div>
-                </div>
-
-                <div class="room-body">
-                    <div class="room-top">
-                        <div>
-                            <h3 class="room-name">Kamar 03</h3>
-                            <p class="room-type">Tower Ganjil · Non AC</p>
-                        </div>
-
-                        <span class="room-number">03</span>
-                    </div>
-
-                    <div class="room-price">
-                        <strong>Rp 8.400.000/tahun</strong>
-                    </div>
-
-                    <div class="room-detail">
-                        <div class="room-detail-row">
-                            <span>Luas</span>
-                            <strong>3 × 3 meter</strong>
-                        </div>
-
-                        <div class="room-detail-row">
-                            <span>Fasilitas</span>
-
-                            <div class="facility-tags">
-                                <b>Kasur</b>
-                                <b>Lemari</b>
-                                <b>KM Dalam</b>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="room-footer">
-                        <a href="/admin/kamar/edit" class="edit-btn">Edit</a>
-                        <button type="button" class="delete-btn" onclick="confirmDelete()">Hapus</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="room-card" data-name="kamar 04 tower genap ac tersedia" data-status="tersedia" data-type="ac">
-                <div class="room-image">
-                    <img src="https://images.unsplash.com/photo-1615874694520-474822394e73?auto=format&fit=crop&w=900&q=80" alt="Kamar 04">
-
-                    <div class="room-badges">
-                        <span class="room-chip">AC</span>
-                        <span class="room-chip available">Tersedia</span>
-                    </div>
-                </div>
-
-                <div class="room-body">
-                    <div class="room-top">
-                        <div>
-                            <h3 class="room-name">Kamar 04</h3>
-                            <p class="room-type">Tower Genap · AC</p>
-                        </div>
-
-                        <span class="room-number">04</span>
-                    </div>
-
-                    <div class="room-price">
-                        <strong>Rp 13.800.000/tahun</strong>
-                    </div>
-
-                    <div class="room-detail">
-                        <div class="room-detail-row">
-                            <span>Luas</span>
-                            <strong>3 × 3 meter</strong>
-                        </div>
-
-                        <div class="room-detail-row">
-                            <span>Fasilitas</span>
-
-                            <div class="facility-tags">
-                                <b>Kasur</b>
-                                <b>Lemari</b>
-                                <b>KM Dalam</b>
-                                <b>AC</b>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="room-footer">
-                        <a href="/admin/kamar/edit" class="edit-btn">Edit</a>
-                        <button type="button" class="delete-btn" onclick="confirmDelete()">Hapus</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="room-card" data-name="kamar 05 tower ganjil non ac tersedia" data-status="tersedia" data-type="non-ac">
-                <div class="room-image">
-                    <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=900&q=80" alt="Kamar 05">
-
-                    <div class="room-badges">
-                        <span class="room-chip">Non AC</span>
-                        <span class="room-chip available">Tersedia</span>
-                    </div>
-                </div>
-
-                <div class="room-body">
-                    <div class="room-top">
-                        <div>
-                            <h3 class="room-name">Kamar 05</h3>
-                            <p class="room-type">Tower Ganjil · Non AC</p>
-                        </div>
-
-                        <span class="room-number">05</span>
-                    </div>
-
-                    <div class="room-price">
-                        <strong>Rp 8.400.000/tahun</strong>
-                    </div>
-
-                    <div class="room-detail">
-                        <div class="room-detail-row">
-                            <span>Luas</span>
-                            <strong>3 × 3 meter</strong>
-                        </div>
-
-                        <div class="room-detail-row">
-                            <span>Fasilitas</span>
-
-                            <div class="facility-tags">
-                                <b>Kasur</b>
-                                <b>Lemari</b>
-                                <b>KM Dalam</b>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="room-footer">
-                        <a href="/admin/kamar/edit" class="edit-btn">Edit</a>
-                        <button type="button" class="delete-btn" onclick="confirmDelete()">Hapus</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="room-card" data-name="kamar 06 tower genap ac penuh" data-status="penuh" data-type="ac">
-                <div class="room-image">
-                    <img src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4?auto=format&fit=crop&w=900&q=80" alt="Kamar 06">
-
-                    <div class="room-badges">
-                        <span class="room-chip">AC</span>
-                        <span class="room-chip full">Penuh</span>
-                    </div>
-                </div>
-
-                <div class="room-body">
-                    <div class="room-top">
-                        <div>
-                            <h3 class="room-name">Kamar 06</h3>
-                            <p class="room-type">Tower Genap · AC</p>
-                        </div>
-
-                        <span class="room-number">06</span>
-                    </div>
-
-                    <div class="room-price">
-                        <strong>Rp 13.800.000/tahun</strong>
-                    </div>
-
-                    <div class="room-detail">
-                        <div class="room-detail-row">
-                            <span>Luas</span>
-                            <strong>3 × 3 meter</strong>
-                        </div>
-
-                        <div class="room-detail-row">
-                            <span>Fasilitas</span>
-
-                            <div class="facility-tags">
-                                <b>Kasur</b>
-                                <b>Lemari</b>
-                                <b>KM Dalam</b>
-                                <b>AC</b>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="room-footer">
-                        <a href="/admin/kamar/edit" class="edit-btn">Edit</a>
-                        <button type="button" class="delete-btn" onclick="confirmDelete()">Hapus</button>
-                    </div>
-                </div>
-            </div>
-
+            @endforeach
         </div>
 
         <div class="empty-state" id="emptyState">
@@ -753,7 +549,6 @@
 
 <script>
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const roomCards = document.querySelectorAll('.room-card');
     const roomSearch = document.getElementById('roomSearch');
     const emptyState = document.getElementById('emptyState');
 
@@ -763,7 +558,9 @@
         const keyword = roomSearch.value.toLowerCase().trim();
         let visibleCount = 0;
 
-        roomCards.forEach(card => {
+        const dynamicRoomCards = document.querySelectorAll('.room-card');
+
+        dynamicRoomCards.forEach(card => {
             const name = card.dataset.name;
             const status = card.dataset.status;
             const type = card.dataset.type;

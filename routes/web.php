@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminKamarController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +86,11 @@ Route::get('/admin/kamar/create', function () {
 
 Route::get('/admin/kamar/edit', function () {
     return view('admin.kamar_edit');
+});
+
+Route::prefix('admin')->group(function () {
+    // CRUD Kamar Admin
+    Route::resource('/kamar', AdminKamarController::class);
 });
 
 Route::get('/admin/penghuni', function () {

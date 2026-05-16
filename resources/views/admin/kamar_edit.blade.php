@@ -254,31 +254,42 @@
             <p>Ubah data kamar sesuai informasi terbaru yang akan tampil pada halaman pelanggan.</p>
         </div>
 
-        <form action="/admin/kamar/update" method="POST" enctype="multipart/form-data">
+        @if ($errors->any())
+            <div style="padding: 14px 20px; background-color: #fce8e6; color: #c0392b; border: 1px solid #f9cfcc; border-radius: 15px; margin-bottom: 18px; font-size: 14px;">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        {{-- Route dinamis mengarah ke ID kamar spesifik menggunakan spoofing method PUT --}}
+        <form action="/admin/kamar/{{ $kamar->id }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
 
             <div class="form-grid">
 
                 <div class="form-group">
                     <label>Nomor Kamar</label>
-                    <input type="text" name="nomor_kamar" value="01">
+                    <input type="text" name="nomor_kamar" value="{{ old('nomor_kamar', $kamar->nomor_kamar) }}" required>
                     <span class="form-hint">Gunakan format angka, misalnya 01, 02, 03.</span>
                 </div>
 
                 <div class="form-group">
                     <label>Status Kamar</label>
                     <select name="status">
-                        <option value="tersedia" selected>Tersedia</option>
-                        <option value="penuh">Penuh</option>
-                        <option value="maintenance">Maintenance</option>
+                        <option value="tersedia" {{ old('status', $kamar->status) == 'tersedia' ? 'selected' : '' }}>Tersedia</option>
+                        <option value="penuh" {{ old('status', $kamar->status) == 'penuh' ? 'selected' : '' }}>Penuh</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Tower</label>
                     <select name="tower">
-                        <option value="ganjil" selected>Tower Ganjil</option>
-                        <option value="genap">Tower Genap</option>
+                        <option value="Ganjil" {{ old('tower', $kamar->tower) == 'Ganjil' ? 'selected' : '' }}>Tower Ganjil</option>
+                        <option value="Genap" {{ old('tower', $kamar->tower) == 'Genap' ? 'selected' : '' }}>Tower Genap</option>
                     </select>
                     <span class="form-hint">Tower ganjil untuk kamar Non AC.</span>
                 </div>
@@ -286,20 +297,20 @@
                 <div class="form-group">
                     <label>Tipe Kamar</label>
                     <select name="tipe_kamar">
-                        <option value="non-ac" selected>Non AC</option>
-                        <option value="ac">AC</option>
+                        <option value="non-ac" {{ old('tipe_kamar', $kamar->tipe_kamar) == 'non-ac' ? 'selected' : '' }}>Non AC</option>
+                        <option value="ac" {{ old('tipe_kamar', $kamar->tipe_kamar) == 'ac' ? 'selected' : '' }}>AC</option>
                     </select>
                     <span class="form-hint">Tower genap untuk kamar AC.</span>
                 </div>
 
                 <div class="form-group">
                     <label>Luas Kamar</label>
-                    <input type="text" name="luas" value="3 × 3 meter">
+                    <input type="text" name="luas" value="{{ old('luas', $kamar->luas) }}" required>
                 </div>
 
                 <div class="form-group">
                     <label>Harga Sewa / Tahun</label>
-                    <input type="text" name="harga" value="Rp 8.400.000">
+                    <input type="number" name="harga" value="{{ old('harga', (int)$kamar->harga) }}" required>
                 </div>
 
                 <div class="form-full">
@@ -307,23 +318,27 @@
                         <p class="facility-title">Fasilitas Kamar</p>
 
                         <div class="facility-grid">
+                            @php
+                                $fasilitas_kamar = is_array($kamar->fasilitas) ? $kamar->fasilitas : [];
+                            @endphp
+
                             <label class="facility-check">
-                                <input type="checkbox" name="fasilitas[]" value="Kasur" checked>
+                                <input type="checkbox" name="fasilitas[]" value="Kasur" {{ in_array('Kasur', old('fasilitas', $fasilitas_kamar)) ? 'checked' : '' }}>
                                 Kasur
                             </label>
 
                             <label class="facility-check">
-                                <input type="checkbox" name="fasilitas[]" value="Lemari" checked>
+                                <input type="checkbox" name="fasilitas[]" value="Lemari" {{ in_array('Lemari', old('fasilitas', $fasilitas_kamar)) ? 'checked' : '' }}>
                                 Lemari
                             </label>
 
                             <label class="facility-check">
-                                <input type="checkbox" name="fasilitas[]" value="Kamar Mandi Dalam" checked>
+                                <input type="checkbox" name="fasilitas[]" value="KM Dalam" {{ in_array('KM Dalam', old('fasilitas', $fasilitas_kamar)) ? 'checked' : '' }}>
                                 KM Dalam
                             </label>
 
                             <label class="facility-check">
-                                <input type="checkbox" name="fasilitas[]" value="AC">
+                                <input type="checkbox" name="fasilitas[]" value="AC" {{ in_array('AC', old('fasilitas', $fasilitas_kamar)) ? 'checked' : '' }}>
                                 AC
                             </label>
                         </div>
@@ -332,17 +347,34 @@
 
                 <div class="form-full form-group">
                     <label>Deskripsi Kamar</label>
-                    <textarea name="deskripsi">Kamar nyaman untuk satu orang dengan fasilitas dasar lengkap.</textarea>
+                    {{-- Sekarang deskripsi terikat dengan database --}}
+                    <textarea name="deskripsi">{{ old('deskripsi', $kamar->deskripsi) }}</textarea>
                 </div>
 
                 <div class="form-full">
                     <div class="current-photo">
                         <label>Foto Utama Saat Ini</label>
 
-                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=80" alt="Foto kamar">
+                        @if($kamar->foto)
+                            <img id="editImagePreview" src="{{ asset('storage/' . $kamar->foto) }}" alt="Foto kamar">
+                        @else
+                            @if($kamar->nomor_kamar == '02')
+                                <img id="editImagePreview" src="{{ asset('2.jpg') }}" alt="Foto kamar 02">
+                            @elseif($kamar->nomor_kamar == '03')
+                                <img id="editImagePreview" src="{{ asset('3.jpg') }}" alt="Foto kamar 03">
+                            @elseif($kamar->nomor_kamar == '04')
+                                <img id="editImagePreview" src="{{ asset('4.jpg') }}" alt="Foto kamar 04">
+                            @elseif($kamar->nomor_kamar == '05')
+                                <img id="editImagePreview" src="{{ asset('5.jpg') }}" alt="Foto kamar 05">
+                            @elseif($kamar->nomor_kamar == '06')
+                                <img id="editImagePreview" src="{{ asset('6.jpg') }}" alt="Foto kamar 06">
+                            @else
+                                <img id="editImagePreview" src="{{ asset('1.jpg') }}" alt="Foto kamar 01">
+                            @endif
+                        @endif
 
                         <label>Ganti Foto Utama</label>
-                        <input type="file" name="foto_utama" accept="image/*">
+                        <input type="file" name="foto" id="editFotoInput" accept="image/*">
                         <span class="form-hint">Kosongkan jika tidak ingin mengganti foto utama.</span>
                     </div>
                 </div>
@@ -351,12 +383,12 @@
                     <div class="photo-grid">
                         <div class="photo-upload">
                             <label>Ganti Foto Tambahan 1</label>
-                            <input type="file" name="foto_tambahan_1" accept="image/*">
+                            <input type="file" name="foto_tambahan_1" accept="image/*" disabled placeholder="Opsional">
                         </div>
 
                         <div class="photo-upload">
                             <label>Ganti Foto Tambahan 2</label>
-                            <input type="file" name="foto_tambahan_2" accept="image/*">
+                            <input type="file" name="foto_tambahan_2" accept="image/*" disabled placeholder="Opsional">
                         </div>
                     </div>
                 </div>
@@ -364,12 +396,27 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn">Update</button>
-                <a href="/admin/kamar" class="btn btn-secondary">Batal</a>
+                <button type="submit" class="btn" style="border: 1px solid #c8664a; background: #c8664a; color: #ffffff; padding: 13px 18px; border-radius: 15px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;">Update</button>
+                <a href="/admin/kamar" class="btn btn-secondary" style="text-decoration: none; border: 1px solid #ead6ce; background: #fbf5f1; color: #7a5d52; padding: 13px 18px; border-radius: 15px; font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; font-family: inherit;">Batal</a>
             </div>
         </form>
 
     </div>
 </div>
+
+<script>
+    document.getElementById('editFotoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('editImagePreview');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 
 @endsection
