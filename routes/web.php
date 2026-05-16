@@ -24,7 +24,7 @@ Route::get('/activity', function () {
     return view('activity');
 });
 
-Route::get('/kamar/detail/ajukan-sewa', function () {
+Route::get('/kamar/{id}/ajukan-sewa', function () {
     return view('ajukan-sewa');
 });
 

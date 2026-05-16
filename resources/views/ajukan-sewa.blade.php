@@ -16,16 +16,16 @@
             <h1 class="text-2xl font-bold">Form Pengajuan Sewa</h1>
             <p class="text-sm text-muted-foreground mt-1">Lengkapi data diri &amp; dokumen untuk mengajukan sewa.</p>
         </div>
-        
+
         <div class="space-y-1.5">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="fullName">Nama Lengkap *</label>
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="fullName">Nama Lengkap <span class="text-destructive">*</span></label>
             <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="fullName" required="" value="">
         </div>
 
         <div class="space-y-1.5">
-            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="residentType">Tipe Penghuni *</label>
+            <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="residentType">Tipe Penghuni <span class="text-destructive">*</span></label>
             <div class="relative">
-                <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10 text-muted-foreground" 
+                <select class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10 text-muted-foreground"
                         style="-webkit-appearance: none; -moz-appearance: none; appearance: none;"
                         id="residentType" required="" onchange="this.classList.toggle('text-muted-foreground', this.value === '').classList.toggle('text-foreground', this.value !== '')">
                     <option value="" disabled selected hidden>Pilih tipe penghuni</option>
@@ -61,12 +61,12 @@
         </div>
 
         <div class="grid sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="phone">No HP *</label><input type="tel" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="phone" required="" value=""></div>
-            <div class="space-y-1.5"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="emergencyPhone">No HP Orang Tua / Emergency *</label><input type="tel" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="emergencyPhone" required="" value=""></div>
+            <div class="space-y-1.5"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="phone">No HP <span class="text-destructive">*</span></label><input type="tel" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="phone" required="" value=""></div>
+            <div class="space-y-1.5"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="emergencyPhone">No HP Orang Tua / Emergency <span class="text-destructive">*</span></label><input type="tel" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="emergencyPhone" required="" value=""></div>
         </div>
 
-        <div class="space-y-1.5"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="address">Alamat Domisili *</label><textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="address" rows="3" required=""></textarea></div>
-        
+        <div class="space-y-1.5"><label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="address">Alamat Domisili <span class="text-destructive">*</span></label><textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="address" rows="3" required=""></textarea></div>
+
         <div class="space-y-3">
             <div>
                 <p class="text-sm font-medium">Surat Komitmen<span class="text-destructive">*</span></p>
@@ -86,7 +86,7 @@
                     </span>
                     <div class="min-w-0">
                         <p class="text-sm font-semibold truncate text-foreground">Template Surat Komitmen</p>
-                        <p class="text-xs text-muted-foreground mt-0.5">Ukuran berkas: ~140 KB</p>
+                        <p class="text-xs text-muted-foreground mt-0.5">Tipe berkas: .docx</p>
                     </div>
                 </div>
                 <a href="{{ asset('Surat-Komitmen.docx') }}" download class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-xs font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 shadow-soft shrink-0">
