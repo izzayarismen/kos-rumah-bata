@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminKamarController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KamarController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,9 +10,11 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/kamar', function () {
-    return view('kamar');
-});
+// Route untuk melihat semua kamar di sisi pelanggan
+Route::get('/kamar', [KamarController::class, 'index']);
+
+// Route untuk melihat detail kamar spesifik di sisi pelanggan
+Route::get('/kamar/{id}', [KamarController::class, 'show']);
 
 Route::get('/about', function () {
     return view('about');
@@ -19,10 +22,6 @@ Route::get('/about', function () {
 
 Route::get('/activity', function () {
     return view('activity');
-});
-
-Route::get('/kamar/{id}', function () {
-    return view('detail-kamar');
 });
 
 Route::get('/kamar/detail/ajukan-sewa', function () {
@@ -74,18 +73,6 @@ Route::middleware('guest')->group(function () {
 // admin
 Route::get('/admin', function () {
     return view('admin.dashboard');
-});
-
-Route::get('/admin/kamar', function () {
-    return view('admin.kamar');
-});
-
-Route::get('/admin/kamar/create', function () {
-    return view('admin.kamar_create');
-});
-
-Route::get('/admin/kamar/edit', function () {
-    return view('admin.kamar_edit');
 });
 
 Route::prefix('admin')->group(function () {
