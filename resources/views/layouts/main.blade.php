@@ -3,7 +3,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Kos Rumah Bata | Hunian Nyaman, Booking Online</title>
-        <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
+        <link rel="icon" type="image/png" href="/logo.png">
         <meta name="description" content="Kos modern di Yogyakarta. Eksplorasi kamar, ajukan sewa, dan bayar online dengan praktis di Kos Rumah Bata.">
         <meta name="author" content="Kos Rumah Bata">
         <meta property="og:type" content="website">
