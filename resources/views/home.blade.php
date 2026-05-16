@@ -412,7 +412,7 @@
                 </svg>
             </a>
         </div>
-        <div class="aspect-4/3 rounded-2xl overflow-hidden border border-white/20"><iframe title="Lokasi Kos Rumah Bata" src="https://www.openstreetmap.org/export/embed.html?bbox=110.36%2C-7.79%2C110.39%2C-7.77&amp;layer=mapnik" class="h-full w-full" loading="lazy"></iframe></div>
+        <div class="aspect-4/3 rounded-2xl overflow-hidden border border-white/20"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.4407536609333!2d106.80501227430405!3d-6.5920120644385225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69c589173195e5%3A0x5ee079d689237b51!2sRumah%20bata%20kost%20wanita%20dekat%20kampus%20ipb%20bogor%20kota%20cibelende!5e0!3m2!1sid!2sid!4v1778941761238!5m2!1sid!2sid" width="600" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
     </div>
 </section>
 

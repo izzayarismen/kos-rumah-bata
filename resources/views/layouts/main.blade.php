@@ -53,14 +53,14 @@
                             Kamar
                             </a>
 
-                            <a href="/about"
-                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('about*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
-                            About Us
+                            <a href="/tentang-kami"
+                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('tentang*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
+                            Tentang Kami
                             </a>
 
-                            <a href="/activity"
-                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('activity*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
-                            Activity
+                            <a href="/aktivitas"
+                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('aktivitas*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
+                            Aktivitas
                             </a>
                         </nav>
                         <div class="flex items-center gap-2">
@@ -102,20 +102,21 @@
                                     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
                                     <circle cx="12" cy="10" r="3"></circle>
                                 </svg>
-                                Jl. Mawar No. 12, Yogyakarta
+                                Jl. Sancang Dalam No.26, Kota Bogor
                                 </li>
                                 <li class="flex items-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone h-4 w-4 text-primary">
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                                 </svg>
-                                +62 812-3456-7890
+                                +62 819-4001-701
                                 </li>
                                 <li class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail h-4 w-4 text-primary">
-                                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram h-4 w-4 text-primary">
+                                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
                                 </svg>
-                                halo@kosrumahbata.id
+                                kos.rumahbata
                                 </li>
                             </ul>
                         </div>

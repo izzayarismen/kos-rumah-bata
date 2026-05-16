@@ -16,11 +16,11 @@ Route::get('/kamar', [KamarController::class, 'index']);
 // Route untuk melihat detail kamar spesifik di sisi pelanggan
 Route::get('/kamar/{id}', [KamarController::class, 'show']);
 
-Route::get('/about', function () {
+Route::get('/tentang-kami', function () {
     return view('about');
 });
 
-Route::get('/activity', function () {
+Route::get('/aktivitas', function () {
     return view('activity');
 });
 
