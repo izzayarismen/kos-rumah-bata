@@ -131,7 +131,6 @@
                     <div class="border-t border-border/60">
                         <div class="container-app py-4 text-xs text-muted-foreground flex flex-wrap justify-between gap-2">
                             <p>© 2026 Kos Rumah Bata. All rights reserved.</p>
-                            <p>Dibuat dengan ❤️ untuk hunian yang lebih baik.</p>
                         </div>
                     </div>
                 </footer>

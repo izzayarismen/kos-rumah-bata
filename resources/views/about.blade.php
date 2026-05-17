@@ -4,7 +4,7 @@
 <section class="relative overflow-hidden">
     <div class="container-app pt-12 pb-12 md:pt-16 md:pb-16 grid lg:grid-cols-2 gap-10 items-center">
         <div class="animate-fade-up">
-            <span class="inline-flex items-center gap-2 rounded-full bg-primary-soft text-primary px-3.5 py-1.5 text-xs font-semibold">About Us</span>
+            <span class="inline-flex items-center gap-2 rounded-full bg-primary-soft text-primary px-3.5 py-1.5 text-xs font-semibold">Tentang Kami</span>
             <h1 class="mt-5 text-4xl md:text-5xl font-bold leading-tight tracking-tight">Kos <span class="text-primary">Rumah Bata</span></h1>
             <p class="mt-4 text-base md:text-lg text-muted-foreground max-w-lg">Hunian kos modern bernuansa hangat di tengah Yogyakarta. Dirancang untuk pelajar dan profesional muda yang mencari kenyamanan, keamanan, dan komunitas yang sehat.</p>
             <div class="mt-7 flex flex-wrap gap-3">
@@ -66,6 +66,7 @@
         </div>
     </div>
 </section>
+
 <section class="container-app py-10 pb-16">
     <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
         <div>
@@ -74,15 +75,77 @@
             <p class="text-muted-foreground mt-2 max-w-lg">Foto kamar, lingkungan, dan aktivitas penghuni.</p>
         </div>
     </div>
+    
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]"><img src="2.jpg" alt="Kamar standard" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square"><img src="2.jpg" alt="Kamar deluxe AC" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square"><img src="3.jpg" alt="Dapur bersama" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square"><img src="6.jpg" alt="Taman kos" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square"><img src="5.jpg" alt="Area parkir" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]"><img src="1.jpg" alt="Kamar tipe lain" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square"><img src="5.jpg" alt="Kamar premium" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
-        <div class="overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square"><img src="1.jpg" alt="Aktivitas penghuni" loading="lazy" class="h-full w-full object-cover hover:scale-105 transition-transform duration-500"></div>
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]">
+            <img src="2.jpg" alt="Kamar standard" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-6 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-xl md:text-2xl tracking-wide" style="font-family: Georgia, serif;">Kamar Standard</p>
+                <p class="text-white text-xs md:text-sm mt-3 leading-relaxed max-w-[200px]">Desain minimalis dan fungsional untuk kenyamanan belajar.</p>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+            <img src="2.jpg" alt="Kamar deluxe AC" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Kamar Deluxe AC</p>
+                <p class="text-white text-xs mt-2 leading-relaxed">Fasilitas pendingin ruangan dan kamar mandi dalam premium.</p>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+            <img src="3.jpg" alt="Dapur bersama" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Dapur Bersama</p>
+                <p class="text-white text-xs mt-2 leading-relaxed">Bersih, luas, dan dilengkapi peralatan masak lengkap.</p>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+            <img src="6.jpg" alt="Taman kos" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Area Terbuka</p>
+                <p class="text-white text-xs mt-2 leading-relaxed">Area terbuka hijau untuk melepas penat di sore hari.</p>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+            <img src="5.jpg" alt="Area parkir" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Area Parkir</p>
+                <p class="text-white text-xs mt-2 leading-relaxed">Sistem parkir kendaraan roda dua yang luas dan aman.</p>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]">
+            <img src="1.jpg" alt="Kamar tipe lain" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-6 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-xl md:text-2xl tracking-wide" style="font-family: Georgia, serif;">Fasad Bangunan</p>
+                <p class="text-white text-xs md:text-sm mt-3 leading-relaxed max-w-[200px]">Sentuhan arsitektur bata ekspos yang ikonik dan estetik.</p>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+            <img src="5.jpg" alt="Kamar premium" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Kamar Premium</p>
+                <p class="text-white text-xs mt-2 leading-relaxed">Pencahayaan alami maksimal dengan jendela besar.</p>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+            <img src="1.jpg" alt="Aktivitas penghuni" loading="lazy" class="h-full w-full object-cover">
+            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Aktivitas Bersama</p>
+                <p class="text-white text-xs mt-2 leading-relaxed">Membangun kebersamaan hangat antar penghuni kos.</p>
+            </div>
+        </div>
     </div>
 </section>
+
+<a href="https://wa.me/6281234567890?text=Halo%20Admin%20Kos%20Rumah%20Bata%2C%20saya%20ingin%20bertanya%20mengenai%20ketersediaan%20kamar." target="_blank" rel="noreferrer" class="transition-all duration-300 hover:scale-110" style="position: fixed !important; bottom: 24px !important; right: 24px !important; z-index: 999999 !important; display: flex !important; height: 56px !important; width: 56px !important; align-items: center !important; justify-content: center !important; border-radius: 50% !important; background-color: #CD6D4D !important; color: white !important; box-shadow: 0 8px 30px rgba(205, 109, 77, 0.5) !important;" aria-label="Hubungi Admin via WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle">
+        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+    </svg>
+</a>
 @endsection
