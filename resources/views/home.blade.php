@@ -341,7 +341,7 @@
                 </svg>
             </a>
         </div>
-        <div class="bg-card border border-border/60 rounded-2xl p-2 sm:p-4 shadow-card">
+        {{-- <div class="bg-card border border-border/60 rounded-2xl p-2 sm:p-4 shadow-card">
             <div class="w-full" data-orientation="vertical">
                 <div data-state="open" data-orientation="vertical" class="border-b last:border-b-0 px-3">
                 <h3 data-orientation="vertical" data-state="open" class="flex">
@@ -400,6 +400,56 @@
                 </h3>
                 <div data-state="closed" id="radix-:r9:" hidden="" role="region" aria-labelledby="radix-:r8:" data-orientation="vertical" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style="--radix-accordion-content-height: var(--radix-collapsible-content-height); --radix-accordion-content-width: var(--radix-collapsible-content-width);"></div>
                 </div>
+            </div> --}}
+            <div class="bg-card border border-border/60 rounded-2xl p-2 sm:p-4 shadow-card">
+            <div class="w-full">
+                <details class="border-b last:border-b-0 px-3 group" open>
+                    <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
+                        Bagaimana sistem pembayaran sewa di Kos Rumah Bata?
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
+                            <path d="m6 9 6 6 6-6"></path>
+                        </svg>
+                    </summary>
+                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
+                        Pembayaran dilakukan untuk satu tahun penuh, dengan perhitungan masa sewa masuk dan keluar per tanggal 1 Juni.
+                    </div>
+                </details>
+
+                <details class="border-b last:border-b-0 px-3 group">
+                    <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
+                        Berapa ukuran kamar dan apa saja isi fasilitas di dalamnya?
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
+                            <path d="m6 9 6 6 6-6"></path>
+                        </svg>
+                    </summary>
+                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
+                        Kamar berukuran 3x3 m dengan kamar mandi dalam 1,5x1,5 m. Setiap kamar sudah dilengkapi tempat tidur 2-in-1 (bisa difungsikan sebagai sofa) dan lemari baju gantung.
+                    </div>
+                </details>
+
+                <details class="border-b last:border-b-0 px-3 group">
+                    <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
+                        Apakah ada biaya tambahan untuk air dan internet?
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
+                            <path d="m6 9 6 6 6-6"></path>
+                        </svg>
+                    </summary>
+                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
+                        Tidak ada. Fasilitas Wi-Fi diberikan secara gratis dan tidak ada iuran tambahan untuk pemakaian air.
+                    </div>
+                </details>
+
+                <details class="border-b last:border-b-0 px-3 group">
+                    <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
+                        Siapa saja yang boleh menginap atau menyewa di sini?
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
+                            <path d="m6 9 6 6 6-6"></path>
+                        </svg>
+                    </summary>
+                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
+                        Kos Rumah Bata merupakan kos eksklusif yang diperuntukkan khusus untuk putri/mahasiswi saja demi menjaga kenyamanan dan privasi bersama.
+                    </div>
+                </details>
             </div>
         </div>
     </div>

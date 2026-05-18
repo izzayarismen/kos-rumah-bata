@@ -6,7 +6,7 @@
         <div class="animate-fade-up">
             <span class="inline-flex items-center gap-2 rounded-full bg-primary-soft text-primary px-3.5 py-1.5 text-xs font-semibold">Tentang Kami</span>
             <h1 class="mt-5 text-4xl md:text-5xl font-bold leading-tight tracking-tight">Kos <span class="text-primary">Rumah Bata</span></h1>
-            <p class="mt-4 text-base md:text-lg text-muted-foreground max-w-lg">Hunian kos modern bernuansa hangat di tengah Yogyakarta. Dirancang untuk pelajar dan profesional muda yang mencari kenyamanan, keamanan, dan komunitas yang sehat.</p>
+            <p class="mt-4 text-base md:text-lg text-muted-foreground max-w-lg">Hunian kos modern bernuansa hangat di tengah Bogor. Dirancang untuk pelajar dan profesional muda yang mencari kenyamanan, keamanan, dan komunitas yang sehat.</p>
             <div class="mt-7 flex flex-wrap gap-3">
                 <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-full px-7" href="/kamar">
                     Lihat Kamar 
@@ -67,6 +67,72 @@
     </div>
 </section>
 
+{{-- Galeri --}}
+<style>
+    /* Gaya dasar untuk item galeri */
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Overlay gelap transparan yang muncul saat hover */
+    .gallery-item::after {
+        content: '';
+        position: absolute;
+        /* Menutupi seluruh area gambar secara sempurna */
+        inset: 0;
+        /* Menggunakan warna gelap solid merata (Hitam transparan 65%) agar foto dijamin menggelap */
+        background: rgba(0, 0, 0, 0.65);
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        z-index: 1;
+    }
+
+    /* Kontainer teks di dalam gambar */
+    .gallery-text-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 24px;
+        color: #ffffff;
+        z-index: 2;
+        /* Teks mulai dari posisi sedikit lebih rendah dan tidak terlihat */
+        transform: translateY(20px);
+        opacity: 0;
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        text-align: left;
+    }
+
+    /* Gaya judul kegiatan */
+    .gallery-text-title {
+        margin: 0 0 6px !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.01em !important;
+        line-height: 1.3 !important;
+        color: #ffffff !important;
+    }
+
+    /* Gaya deskripsi singkat */
+    .gallery-text-desc {
+        margin: 0 !important;
+        font-size: 13.5px !important;
+        line-height: 1.5 !important;
+        color: #f4ddd4 !important; /* Krem lembut kontras tinggi */
+    }
+
+    /* Pemicu efek hover (Sudah diperbaiki dari typo pembatas komentar) */
+    .gallery-item:hover::after {
+        opacity: 1;
+    }
+
+    .gallery-item:hover .gallery-text-content {
+        transform: translateY(0); /* Teks bergerak naik ke posisi asli */
+        opacity: 1;
+    }
+</style>
+
 <section class="container-app py-10 pb-16">
     <div class="flex items-end justify-between mb-8 gap-4 flex-wrap">
         <div>
@@ -77,67 +143,67 @@
     </div>
     
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]">
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]">
             <img src="2.jpg" alt="Kamar standard" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-6 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-xl md:text-2xl tracking-wide" style="font-family: Georgia, serif;">Kamar Standard</p>
-                <p class="text-white text-xs md:text-sm mt-3 leading-relaxed max-w-[200px]">Desain minimalis dan fungsional untuk kenyamanan belajar.</p>
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Kamar Standard</h4>
+                <p class="gallery-text-desc">Desain minimalis dan fungsional untuk kenyamanan belajar.</p>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 aspect-square">
             <img src="2.jpg" alt="Kamar deluxe AC" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Kamar Deluxe AC</p>
-                <p class="text-white text-xs mt-2 leading-relaxed">Fasilitas pendingin ruangan dan kamar mandi dalam premium.</p>
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Kamar Deluxe AC</h4>
+                <p class="gallery-text-desc">Fasilitas pendingin ruangan dan kamar mandi dalam premium.</p>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 aspect-square">
             <img src="3.jpg" alt="Dapur bersama" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Dapur Bersama</p>
-                <p class="text-white text-xs mt-2 leading-relaxed">Bersih, luas, dan dilengkapi peralatan masak lengkap.</p>
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Dapur Bersama</h4>
+                <p class="gallery-text-desc">Bersih, luas, dan dilengkapi peralatan masak lengkap.</p>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 aspect-square">
             <img src="6.jpg" alt="Taman kos" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Area Terbuka</p>
-                <p class="text-white text-xs mt-2 leading-relaxed">Area terbuka hijau untuk melepas penat di sore hari.</p>
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Area Terbuka</h4>
+                <p class="gallery-text-desc">Area terbuka hijau untuk melepas penat di sore hari.</p>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 aspect-square">
             <img src="5.jpg" alt="Area parkir" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Area Parkir</p>
-                <p class="text-white text-xs mt-2 leading-relaxed">Sistem parkir kendaraan roda dua yang luas dan aman.</p>
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Area Parkir</h4>
+                <p class="gallery-text-desc">Sistem parkir kendaraan roda dua yang luas dan aman.</p>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]">
-            <img src="1.jpg" alt="Kamar tipe lain" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-6 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-xl md:text-2xl tracking-wide" style="font-family: Georgia, serif;">Fasad Bangunan</p>
-                <p class="text-white text-xs md:text-sm mt-3 leading-relaxed max-w-[200px]">Sentuhan arsitektur bata ekspos yang ikonik dan estetik.</p>
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 row-span-2 aspect-[3/4]">
+            <img src="1.jpg" alt="Fasad bangunan" loading="lazy" class="h-full w-full object-cover">
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Fasad Bangunan</h4>
+                <p class="gallery-text-desc">Sentuhan arsitektur bata ekspos yang ikonik dan estetik.</p>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 aspect-square">
             <img src="5.jpg" alt="Kamar premium" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Kamar Premium</p>
-                <p class="text-white text-xs mt-2 leading-relaxed">Pencahayaan alami maksimal dengan jendela besar.</p>
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Kamar Premium</h4>
+                <p class="gallery-text-desc">Pencahayaan alami maksimal dengan jendela besar.</p>
             </div>
         </div>
 
-        <div class="group relative overflow-hidden rounded-2xl shadow-card border border-border/40 aspect-square">
+        <div class="gallery-item rounded-2xl shadow-card border border-border/40 aspect-square">
             <img src="1.jpg" alt="Aktivitas penghuni" loading="lazy" class="h-full w-full object-cover">
-            <div class="absolute inset-0 bg-primary flex flex-col items-center justify-center p-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                <p class="text-white font-bold text-lg md:text-xl tracking-wide" style="font-family: Georgia, serif;">Aktivitas Bersama</p>
-                <p class="text-white text-xs mt-2 leading-relaxed">Membangun kebersamaan hangat antar penghuni kos.</p>
+            <div class="gallery-text-content">
+                <h4 class="gallery-text-title">Kumpul Bersama Penghuni Kos</h4>
+                <p class="gallery-text-desc">Keseruan momentum syukuran menyambut tahun ajaran baru bersama seluruh mahasiswi Kos Rumah Bata.</p>
             </div>
         </div>
     </div>

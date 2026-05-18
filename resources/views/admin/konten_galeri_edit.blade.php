@@ -83,9 +83,9 @@
     }
 
     .gallery-field input,
+    .gallery-field textarea,
     .gallery-field select {
         width: 100%;
-        height: 48px;
         border: 1px solid #ead6ce;
         border-radius: 15px;
         padding: 0 14px;
@@ -94,6 +94,18 @@
         font-family: inherit;
         outline: none;
         background: #ffffff;
+        box-sizing: border-box;
+    }
+
+    .gallery-field input,
+    .gallery-field select {
+        height: 48px;
+    }
+
+    .gallery-field textarea {
+        padding: 12px 14px;
+        resize: vertical;
+        min-height: 90px;
     }
 
     .gallery-field input[type="file"] {
@@ -101,6 +113,7 @@
     }
 
     .gallery-field input:focus,
+    .gallery-field textarea:focus,
     .gallery-field select:focus {
         border-color: #d79b86;
         box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
@@ -123,6 +136,7 @@
         line-height: 1.6;
     }
 
+    /* --- CSS Preview Card & Hover Effect Simulating Landing Page --- */
     .gallery-preview-card {
         border: 1px solid #ead6ce;
         border-radius: 24px;
@@ -133,22 +147,77 @@
     }
 
     .gallery-preview-image {
-        height: 260px;
+        height: 280px;
         background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80');
         background-size: cover;
         background-position: center;
         background-color: #fbf5f1;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Overlay gelap yang muncul saat di-hover */
+    .gallery-preview-image::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(33, 23, 19, 0.9) 10%, rgba(33, 23, 19, 0.3) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1;
+    }
+
+    /* Container untuk text hover */
+    .gallery-hover-content {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        color: #ffffff;
+        z-index: 2;
+        transform: translateY(20px);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .gallery-hover-title {
+        margin: 0 0 6px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    .gallery-hover-desc {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #f4ddd4;
+    }
+
+    /* Trigger efek hover pada card preview */
+    .gallery-preview-card:hover .gallery-preview-image::before {
+        opacity: 1;
+    }
+
+    .gallery-preview-card:hover .gallery-hover-content {
+        transform: translateY(0);
+        opacity: 1;
     }
 
     .gallery-preview-body {
         padding: 16px;
+        border-top: 1px solid #f0e3dd;
+        background: #fffdfb;
     }
 
     .gallery-preview-title {
         margin: 0 0 12px;
-        color: #211713;
-        font-size: 16px;
-        font-weight: 700;
+        color: #86766f;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
 
     .gallery-meta {
@@ -252,7 +321,7 @@
 
         <div class="gallery-edit-head">
             <h2>Form Edit Galeri</h2>
-            <p>Ubah foto, status, dan urutan galeri yang akan tampil di landing page.</p>
+            <p>Ubah foto, informasi teks, status, dan urutan galeri yang akan tampil di landing page.</p>
         </div>
 
         <div class="gallery-edit-grid">
@@ -261,15 +330,24 @@
                 @csrf
 
                 <div class="gallery-form-box">
-                    <h3>Data Foto</h3>
+                    <h3>Data Foto & Konten</h3>
 
                     <div class="gallery-field">
                         <label>Ganti Foto</label>
                         <input type="file" name="image" accept="image/*">
-
                         <div class="gallery-current-file">
                             File saat ini: galeri_01.jpg
                         </div>
+                    </div>
+
+                    <div class="gallery-field">
+                        <label>Judul Kegiatan</label>
+                        <input type="text" name="title" value="" placeholder="Contoh: Makan Malam Bersama">
+                    </div>
+
+                    <div class="gallery-field">
+                        <label>Deskripsi Singkat</label>
+                        <textarea name="description" placeholder="Tuliskan deskripsi singkat"></textarea>
                     </div>
 
                     <div class="gallery-form-grid">
@@ -288,8 +366,7 @@
                     </div>
 
                     <div class="gallery-note">
-                        Foto ini akan tampil di bagian galeri landing page. Nanti saat backend sudah disambungkan,
-                        data foto, status, dan urutan akan tersimpan ke database.
+                        Foto, judul, dan deskripsi ini akan tersimpan ke database dan muncul secara interaktif ketika dilewati kursor (hover) oleh pengunjung web.
                     </div>
                 </div>
 
@@ -305,11 +382,15 @@
             </form>
 
             <div class="gallery-preview-card">
-                <div class="gallery-preview-image"></div>
+                <div class="gallery-preview-image">
+                    <div class="gallery-hover-content">
+                        <h4 class="gallery-hover-title">Kumpul Bersama Penghuni Kos</h4>
+                        <p class="gallery-hover-desc">Keseruan momentum syukuran menyambut tahun ajaran baru bersama seluruh mahasiswi Kos Rumah Bata.</p>
+                    </div>
+                </div>
 
                 <div class="gallery-preview-body">
-                    <h3 class="gallery-preview-title">Preview Foto</h3>
-
+                    <h3 class="gallery-preview-title">Arahkan Kursor untuk melihat Preview</h3>
                     <div class="gallery-meta">
                         <span class="gallery-badge">Foto 1</span>
                         <span class="gallery-badge">Aktif</span>
