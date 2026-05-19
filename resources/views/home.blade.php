@@ -135,7 +135,7 @@
                 <p class="text-xs text-muted-foreground mt-1">Luas 3 x 3 m</p>
                 <div class="mt-4 mb-5">
                 <p class="text-xs text-muted-foreground">Mulai dari</p>
-                <p class="text-xl font-bold text-primary">Rp 8.400.000<span class="text-xs font-normal text-muted-foreground"> / tahun</span></p>
+                <p class="text-xl font-bold text-primary">Rp 8.400.000<span class="text-xs font-normal text-muted-foreground"> / tahun</span></p>
                 </div>
                 <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-auto w-full group/btn" href="/kamar/kamar-a1">
                 Lihat Detail
@@ -169,7 +169,7 @@
                 <p class="text-xs text-warning mt-2">Tersedia kembali: Agustus 2025</p>
                 <div class="mt-4 mb-5">
                 <p class="text-xs text-muted-foreground">Mulai dari</p>
-                <p class="text-xl font-bold text-primary">Rp 8.400.000<span class="text-xs font-normal text-muted-foreground"> / tahun</span></p>
+                <p class="text-xl font-bold text-primary">Rp 8.400.000<span class="text-xs font-normal text-muted-foreground"> / tahun</span></p>
                 </div>
                 <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-auto w-full group/btn" href="/kamar/kamar-a2">
                 Lihat Detail
@@ -205,7 +205,7 @@
                 <p class="text-xs text-muted-foreground mt-1">Luas 3.5 x 4 m</p>
                 <div class="mt-4 mb-5">
                 <p class="text-xs text-muted-foreground">Mulai dari</p>
-                <p class="text-xl font-bold text-primary">Rp 13.800.000<span class="text-xs font-normal text-muted-foreground"> / tahun</span></p>
+                <p class="text-xl font-bold text-primary">Rp 13.800.000<span class="text-xs font-normal text-muted-foreground"> / tahun</span></p>
                 </div>
                 <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-auto w-full group/btn" href="/kamar/kamar-b1">
                 Lihat Detail
@@ -225,7 +225,7 @@
         <div class="grid grid-cols-2 gap-4">
             <img src="1.jpg" alt="Dapur bersama" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card"><img src="4.jpg" alt="Kamar deluxe" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card mt-8"><img src="6.jpg" alt="Area parkir" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card">
             <div class="rounded-2xl aspect-square bg-gradient-primary text-primary-foreground p-6 mt-8 flex flex-col justify-between shadow-card">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-7 w-7">
+                <svg xmlns="http://www.w3.org/2000/xl" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-7 w-7">
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
                 <path d="M20 3v4"></path>
                 <path d="M22 5h-4"></path>
@@ -341,115 +341,21 @@
                 </svg>
             </a>
         </div>
-        {{-- <div class="bg-card border border-border/60 rounded-2xl p-2 sm:p-4 shadow-card">
-            <div class="w-full" data-orientation="vertical">
-                <div data-state="open" data-orientation="vertical" class="border-b last:border-b-0 px-3">
-                <h3 data-orientation="vertical" data-state="open" class="flex">
-                    <button type="button" aria-controls="radix-:r1:" aria-expanded="true" data-state="open" data-orientation="vertical" id="radix-:r0:" class="flex flex-1 items-center justify-between py-4 transition-all [&[data-state=open]>svg]:rotate-180 text-left text-base font-semibold hover:no-underline" data-radix-collection-item="">
-                        Bagaimana cara menyewa kamar di Kos Rumah Bata?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </button>
-                </h3>
-                <div data-state="open" id="radix-:r1:" role="region" aria-labelledby="radix-:r0:" data-orientation="vertical" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style="--radix-accordion-content-height: var(--radix-collapsible-content-height); --radix-accordion-content-width: var(--radix-collapsible-content-width); transition-duration: 0s; animation-name: none; --radix-collapsible-content-height: 61.5px; --radix-collapsible-content-width: 614.4000244140625px;">
-                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">Pilih kamar di halaman Kamar, klik Lihat Detail, lalu tekan Ajukan Sewa. Lengkapi data diri & dokumen (KTP dan Surat Perjanjian), lanjutkan ke pembayaran, dan upload bukti transfer.</div>
-                </div>
-                </div>
-                <div data-state="closed" data-orientation="vertical" class="border-b last:border-b-0 px-3">
-                <h3 data-orientation="vertical" data-state="closed" class="flex">
-                    <button type="button" aria-controls="radix-:r3:" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-:r2:" class="flex flex-1 items-center justify-between py-4 transition-all [&[data-state=open]>svg]:rotate-180 text-left text-base font-semibold hover:no-underline" data-radix-collection-item="">
-                        Apakah bisa membayar dengan DP?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </button>
-                </h3>
-                <div data-state="closed" id="radix-:r3:" hidden="" role="region" aria-labelledby="radix-:r2:" data-orientation="vertical" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style="--radix-accordion-content-height: var(--radix-collapsible-content-height); --radix-accordion-content-width: var(--radix-collapsible-content-width);"></div>
-                </div>
-                <div data-state="closed" data-orientation="vertical" class="border-b last:border-b-0 px-3">
-                <h3 data-orientation="vertical" data-state="closed" class="flex">
-                    <button type="button" aria-controls="radix-:r5:" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-:r4:" class="flex flex-1 items-center justify-between py-4 transition-all [&[data-state=open]>svg]:rotate-180 text-left text-base font-semibold hover:no-underline" data-radix-collection-item="">
-                        Metode pembayaran apa saja yang tersedia?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </button>
-                </h3>
-                <div data-state="closed" id="radix-:r5:" hidden="" role="region" aria-labelledby="radix-:r4:" data-orientation="vertical" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style="--radix-accordion-content-height: var(--radix-collapsible-content-height); --radix-accordion-content-width: var(--radix-collapsible-content-width);"></div>
-                </div>
-                <div data-state="closed" data-orientation="vertical" class="border-b last:border-b-0 px-3">
-                <h3 data-orientation="vertical" data-state="closed" class="flex">
-                    <button type="button" aria-controls="radix-:r7:" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-:r6:" class="flex flex-1 items-center justify-between py-4 transition-all [&[data-state=open]>svg]:rotate-180 text-left text-base font-semibold hover:no-underline" data-radix-collection-item="">
-                        Apakah sewa bisa diperpanjang?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </button>
-                </h3>
-                <div data-state="closed" id="radix-:r7:" hidden="" role="region" aria-labelledby="radix-:r6:" data-orientation="vertical" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style="--radix-accordion-content-height: var(--radix-collapsible-content-height); --radix-accordion-content-width: var(--radix-collapsible-content-width);"></div>
-                </div>
-                <div data-state="closed" data-orientation="vertical" class="border-b last:border-b-0 px-3">
-                <h3 data-orientation="vertical" data-state="closed" class="flex">
-                    <button type="button" aria-controls="radix-:r9:" aria-expanded="false" data-state="closed" data-orientation="vertical" id="radix-:r8:" class="flex flex-1 items-center justify-between py-4 transition-all [&[data-state=open]>svg]:rotate-180 text-left text-base font-semibold hover:no-underline" data-radix-collection-item="">
-                        Berapa lama proses approval admin?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </button>
-                </h3>
-                <div data-state="closed" id="radix-:r9:" hidden="" role="region" aria-labelledby="radix-:r8:" data-orientation="vertical" class="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style="--radix-accordion-content-height: var(--radix-collapsible-content-height); --radix-accordion-content-width: var(--radix-collapsible-content-width);"></div>
-                </div>
-            </div> --}}
-            <div class="bg-card border border-border/60 rounded-2xl p-2 sm:p-4 shadow-card">
+        <div class="bg-card border border-border/60 rounded-2xl p-2 sm:p-4 shadow-card">
             <div class="w-full">
-                <details class="border-b last:border-b-0 px-3 group" open>
+                @foreach($faqs as $faq)
+                <details class="border-b last:border-b-0 px-3 group" {{ $loop->first ? 'open' : '' }}>
                     <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
-                        Bagaimana sistem pembayaran sewa di Kos Rumah Bata?
+                        {{ $faq->question }}
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
                             <path d="m6 9 6 6 6-6"></path>
                         </svg>
                     </summary>
                     <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
-                        Pembayaran dilakukan untuk satu tahun penuh, dengan perhitungan masa sewa masuk dan keluar per tanggal 1 Juni.
+                        {{ $faq->answer }}
                     </div>
                 </details>
-
-                <details class="border-b last:border-b-0 px-3 group">
-                    <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
-                        Berapa ukuran kamar dan apa saja isi fasilitas di dalamnya?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </summary>
-                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
-                        Kamar berukuran 3x3 m dengan kamar mandi dalam 1,5x1,5 m. Setiap kamar sudah dilengkapi tempat tidur 2-in-1 (bisa difungsikan sebagai sofa) dan lemari baju gantung.
-                    </div>
-                </details>
-
-                <details class="border-b last:border-b-0 px-3 group">
-                    <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
-                        Apakah ada biaya tambahan untuk air dan internet?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </summary>
-                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
-                        Tidak ada. Fasilitas Wi-Fi diberikan secara gratis dan tidak ada iuran tambahan untuk pemakaian air.
-                    </div>
-                </details>
-
-                <details class="border-b last:border-b-0 px-3 group">
-                    <summary class="flex flex-1 items-center justify-between py-4 text-left text-base font-semibold cursor-pointer list-none select-none">
-                        Siapa saja yang boleh menginap atau menyewa di sini?
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180">
-                            <path d="m6 9 6 6 6-6"></path>
-                        </svg>
-                    </summary>
-                    <div class="pb-4 pt-0 text-sm text-muted-foreground leading-relaxed">
-                        Kos Rumah Bata merupakan kos eksklusif yang diperuntukkan khusus untuk putri/mahasiswi saja demi menjaga kenyamanan dan privasi bersama.
-                    </div>
-                </details>
+                @endforeach
             </div>
         </div>
     </div>

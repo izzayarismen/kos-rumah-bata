@@ -834,7 +834,7 @@
                     </a>
 
                     <a href="/admin/konten/activity" class="{{ request()->is('admin/konten/activity*') ? 'active' : '' }}">
-                        Activity
+                        Aktivitas
                     </a>
 
                     <a href="/admin/konten/galeri" class="{{ request()->is('admin/konten/galeri*') ? 'active' : '' }}">

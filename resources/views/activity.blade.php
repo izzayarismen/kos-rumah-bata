@@ -5,7 +5,7 @@
 <section class="container-app py-8 md:py-10 flex-1">
     <div class="mx-auto max-w-2xl">
         <div class="mb-5">
-            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Beranda</h1>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Aktivitas</h1>
             <p class="text-sm text-muted-foreground mt-1">Update terbaru dari Kos Rumah Bata</p>
         </div>
         <div class="sticky top-16 z-20 -mx-4 px-4 bg-background/85 backdrop-blur border-b border-border/60">

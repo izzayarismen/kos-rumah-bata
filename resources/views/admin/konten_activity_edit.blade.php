@@ -8,13 +8,14 @@
 <style>
     .activity-edit-page {
         display: grid;
-        gap: 22px;
+        gap: 28px;
     }
 
     .activity-edit-panel {
         background: #ffffff;
-        border: 1px solid #ead6ce;
-        border-radius: 26px;
+        border: none;
+        box-shadow: 0 1px 3px rgba(33, 23, 19, 0.03), 0 4px 20px rgba(66, 38, 22, 0.04), inset 0 0 0 1px rgba(234, 214, 206, 0.4);
+        border-radius: 16px;
         padding: 28px;
     }
 
@@ -25,33 +26,33 @@
         gap: 18px;
         padding-bottom: 22px;
         margin-bottom: 24px;
-        border-bottom: 1px solid #f0e3dd;
+        border-bottom: 1px solid #f0e6e2;
     }
 
     .activity-edit-head h2 {
         margin: 0;
-        color: #211713;
-        font-size: 27px;
+        color: #2c221e;
+        font-size: 24px;
         font-weight: 700;
         letter-spacing: -0.02em;
     }
 
     .activity-edit-head p {
-        margin: 8px 0 0;
-        color: #86766f;
-        font-size: 15px;
+        margin: 6px 0 0;
+        color: #94857e;
+        font-size: 14px;
         line-height: 1.6;
         max-width: 640px;
     }
 
     .activity-status-chip {
-        min-height: 38px;
+        min-height: 32px;
         padding: 0 14px;
         border-radius: 999px;
-        background: #fbf5f1;
-        border: 1px solid #ead6ce;
-        color: #7a5d52;
-        font-size: 13px;
+        background: #e5f7e8;
+        border: 1px solid #c2ebd0;
+        color: #2e8b45;
+        font-size: 12.5px;
         font-weight: 600;
         display: inline-flex;
         align-items: center;
@@ -64,17 +65,11 @@
         gap: 20px;
     }
 
-    .activity-edit-grid {
-        display: grid;
-        grid-template-columns: 1fr 180px;
-        gap: 18px;
-    }
-
     .activity-field label {
         display: block;
         margin-bottom: 8px;
-        color: #211713;
-        font-size: 14px;
+        color: #2c221e;
+        font-size: 13.5px;
         font-weight: 600;
     }
 
@@ -82,79 +77,190 @@
     .activity-field select,
     .activity-field textarea {
         width: 100%;
-        border: 1px solid #ead6ce;
-        border-radius: 15px;
-        padding: 14px 16px;
+        border: 1px solid #f0e6e2;
+        border-radius: 12px;
+        padding: 12px 14px;
         font-size: 14px;
-        color: #211713;
+        color: #2c221e;
         font-family: inherit;
         outline: none;
         background: #ffffff;
-        transition: 0.2s ease;
+        transition: all 0.2s ease;
+    }
+
+    .activity-field input[type="file"] {
+        padding: 10px 12px;
+        font-size: 13px;
+        color: #94857e;
     }
 
     .activity-field textarea {
-        min-height: 150px;
+        min-height: 140px;
         resize: vertical;
-        line-height: 1.7;
+        line-height: 1.6;
     }
 
     .activity-field input:focus,
     .activity-field select:focus,
     .activity-field textarea:focus {
-        border-color: #d79b86;
-        box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
+        border-color: #c8664a;
+        box-shadow: 0 0 0 3px rgba(200, 102, 74, 0.05);
     }
 
+    /* Gaya Khusus untuk Checkbox Sematkan Berita */
+    .activity-checkbox-field {
+        position: relative;
+        display: block; /* Diubah dari flex/grid menjadi block */
+        padding: 14px 16px 14px 44px; /* Kasih space kiri sebesar 44px untuk tempat checkbox */
+        background: #ffffff;
+        border: 1px dashed #ead6ce;
+        border-radius: 12px;
+        cursor: pointer;
+        user-select: none;
+        min-height: 48px; /* Mengunci tinggi minimum */
+    }
+
+    .activity-checkbox-field input[type="checkbox"] {
+        position: absolute;
+        /* Kunci posisi di tengah-tengah container secara vertikal */
+        top: 50%;
+        left: 16px;
+        transform: translateY(-50%); 
+        
+        width: 18px !important;
+        height: 18px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        accent-color: #c8664a;
+        cursor: pointer;
+    }
+
+    .activity-checkbox-field p {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2c221e;
+        line-height: 1.5 !important;
+        text-align: left;
+    }
+
+    /* Penataan Grid Input Bawah */
+    .activity-edit-grid-three {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1fr;
+        gap: 16px;
+    }
+
+    .activity-current-media {
+        margin-top: 8px;
+        font-size: 12.5px;
+        color: #94857e;
+    }
+
+    .activity-current-media a {
+        color: #c8664a;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    /* Container Box Preview Halaman Belakang */
     .activity-preview {
-        border: 1px solid #ead6ce;
-        border-radius: 20px;
-        padding: 18px;
-        background: #fffdfb;
+        border: none;
+        box-shadow: inset 0 0 0 1px #f0e6e2;
+        border-radius: 16px;
+        padding: 20px;
+        background: #fdfcfb;
     }
 
     .activity-preview h3 {
         margin: 0 0 12px;
-        color: #211713;
-        font-size: 17px;
+        color: #2c221e;
+        font-size: 16px;
         font-weight: 700;
     }
 
     .activity-preview-box {
-        border: 1px solid #eee1da;
-        border-radius: 18px;
-        padding: 16px;
+        border: 1px solid #f0e6e2;
+        border-radius: 12px;
+        padding: 20px;
         background: #ffffff;
+        position: relative;
+    }
+
+    .activity-preview-header-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
     }
 
     .activity-preview-box strong {
-        display: block;
-        color: #211713;
-        font-size: 15px;
+        color: #2c221e;
+        font-size: 16px;
         font-weight: 700;
-        line-height: 1.5;
+        line-height: 1.4;
     }
 
     .activity-preview-box p {
-        margin: 9px 0 0;
-        color: #86766f;
+        margin: 8px 0 0;
+        color: #6e605a;
         font-size: 14px;
-        line-height: 1.7;
+        line-height: 1.6;
     }
 
+    .activity-preview-image {
+        margin-top: 14px;
+        max-width: 200px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #f0e6e2;
+    }
+
+    .activity-preview-image img {
+        width: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+    .activity-preview-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .activity-preview-badge {
+        padding: 4px 10px;
+        background: #fdfbfb;
+        border: 1px solid #f0e6e2;
+        border-radius: 999px;
+        font-size: 12px;
+        color: #7a5d52;
+        font-weight: 600;
+    }
+
+    .activity-preview-badge.category {
+        background: #fff1d6;
+        color: #b77700;
+        border-color: #ffe6b3;
+    }
+
+    /* Tombol Aksi */
     .activity-actions {
         display: flex;
         justify-content: flex-end;
-        gap: 10px;
+        gap: 12px;
         flex-wrap: wrap;
-        margin-top: 4px;
+        margin-top: 8px;
     }
 
     .activity-btn {
         min-height: 44px;
         min-width: 120px;
-        border-radius: 14px;
-        padding: 0 18px;
+        border-radius: 12px;
+        padding: 0 20px;
         border: none;
         font-family: inherit;
         font-size: 14px;
@@ -164,7 +270,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: 0.2s ease;
+        transition: background 0.2s ease;
     }
 
     .activity-btn-primary {
@@ -177,7 +283,7 @@
     }
 
     .activity-btn-secondary {
-        background: #f4ddd4;
+        background: #fbf1ec;
         color: #c8664a;
     }
 
@@ -185,25 +291,25 @@
         background: #ebcec2;
     }
 
-    @media (max-width: 760px) {
-        .activity-edit-panel {
-            padding: 22px;
-        }
-
-        .activity-edit-head {
-            flex-direction: column;
-        }
-
-        .activity-edit-grid {
+    @media (max-width: 900px) {
+        .activity-edit-grid-three {
             grid-template-columns: 1fr;
         }
     }
 
-    @media (max-width: 520px) {
-        .activity-edit-head h2 {
-            font-size: 24px;
+    @media (max-width: 760px) {
+        .activity-edit-panel {
+            padding: 20px;
         }
 
+        .activity-edit-head {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+    }
+
+    @media (max-width: 520px) {
         .activity-actions {
             display: grid;
             grid-template-columns: 1fr;
@@ -221,56 +327,106 @@
         <div class="activity-edit-head">
             <div>
                 <h2>Form Edit Activity</h2>
-                <p>Ubah judul, deskripsi, tanggal, dan status activity yang akan tampil di landing page pelanggan.</p>
+                <p>Ubah judul, deskripsi, kategori, serta status sematan pengumuman yang akan tampil di landing page pelanggan.</p>
             </div>
 
-            <span class="activity-status-chip">Activity Aktif</span>
+            <span class="activity-status-chip">Aktif</span>
         </div>
 
-        <form action="/admin/konten/activity/update" method="POST" class="activity-edit-form">
+        <form action="/admin/konten/activity/update" method="POST" enctype="multipart/form-data" class="activity-edit-form">
             @csrf
 
             <div class="activity-field">
                 <label>Judul Activity</label>
-                <input type="text" name="title" value="Info Kamar Tersedia">
+                <input type="text" name="title" value="Kamar A2 (Standard Non-AC) sudah tersedia bulan ini!">
             </div>
 
             <div class="activity-field">
                 <label>Deskripsi</label>
-                <textarea name="description">Kamar 01 dan Kamar 02 tersedia untuk calon penghuni baru setelah proses verifikasi admin.</textarea>
+                <textarea name="description">Cocok buat kamu yang cari kos nyaman dengan harga ramah kantong. Booking lebih awal yuk sebelum diambil orang</textarea>
             </div>
 
-            <div class="activity-edit-grid">
+            <div class="activity-edit-grid-three">
                 <div class="activity-field">
-                    <label>Status Tampil</label>
-                    <select name="status">
-                        <option value="aktif" selected>Aktif</option>
-                        <option value="nonaktif">Nonaktif</option>
+                    <label>Ganti Foto <span style="font-weight:400; color:#94857e;">(Opsional)</span></label>
+                    <input type="file" name="image" accept="image/*">
+                    <div class="activity-current-media">
+                        File lama: <a href="#" target="_blank">kamar_a2.jpg</a>
+                    </div>
+                </div>
+
+                <div class="activity-field">
+                    <label>Kategori</label>
+                    <select name="category">
+                        <option value="Info Kamar" selected>Info Kamar</option>
+                        <option value="Update Kos">Update Kos</option>
+                        <option value="Aktivitas">Aktivitas</option>
+                        <option value="Promo">Promo</option>
+                        <option value="Social">Social</option>
                     </select>
                 </div>
 
                 <div class="activity-field">
-                    <label>Tanggal</label>
-                    <input type="date" name="date" value="2026-05-09">
+                    <label>Tanggal Rilis</label>
+                    <input type="date" name="date" value="2026-05-19">
                 </div>
             </div>
 
+            <div class="activity-field">
+                <label>Pengaturan Sematan</label>
+                <label class="activity-checkbox-field">
+                    <input type="checkbox" name="is_pinned" value="1" checked>
+                    <span>Sematkan aktivitas ini di bagian paling atas feed beranda</span>
+                </label>
+            </div>
+
             <div class="activity-preview">
-                <h3>Preview Activity</h3>
+                <h3>Preview Tampilan Komponen</h3>
 
                 <div class="activity-preview-box">
-                    <strong>Info Kamar Tersedia</strong>
-                    <p>Kamar 01 dan Kamar 02 tersedia untuk calon penghuni baru setelah proses verifikasi admin.</p>
+                    <div class="activity-preview-header-line">
+                        <strong>Kamar A2 (Standard Non-AC) sudah tersedia bulan ini!</strong>
+                        
+                        <span id="previewPinBadge" style="font-size: 11px; font-weight: 600; color: #c8664a; display: inline-flex; align-items: center; gap: 4px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
+                            </svg>
+                            Disematkan
+                        </span>
+                    </div>
+                    
+                    <p>Cocok buat kamu yang cari kos nyaman dengan harga ramah kantong. Booking lebih awal yuk sebelum diambil orang</p>
+                    
+                    <div class="activity-preview-image">
+                        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=400&auto=format&fit=crop" alt="Preview Kamar">
+                    </div>
+
+                    <div class="activity-preview-meta">
+                        <span class="activity-preview-badge">8 jam lalu</span>
+                        <span class="activity-preview-badge category">Kategori: Info Kamar</span>
+                    </div>
                 </div>
             </div>
 
             <div class="activity-actions">
                 <a href="/admin/konten/activity" class="activity-btn activity-btn-secondary">Batal</a>
-                <button type="submit" class="activity-btn activity-btn-primary">Update Activity</button>
+                <button type="submit" class="activity-btn activity-btn-primary">Perbarui Aktivitas</button>
             </div>
         </form>
 
     </div>
 </div>
+
+<script>
+    // Script sederhana untuk menyalakan/menyembunyikan teks 'Disematkan' di preview secara live
+    const pinCheckbox = document.querySelector('input[name="is_pinned"]');
+    const previewPinBadge = document.getElementById('previewPinBadge');
+
+    if (pinCheckbox && previewPinBadge) {
+        pinCheckbox.addEventListener('change', function() {
+            previewPinBadge.style.display = this.checked ? 'inline-flex' : 'none';
+        });
+    }
+</script>
 
 @endsection
