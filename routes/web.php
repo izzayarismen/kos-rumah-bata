@@ -41,10 +41,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'getProfile']);
     Route::put('/profile', [ProfileController::class, 'updateProfile']);
 
-    Route::get('/profile/data-diri', function () {
-        return view('data-diri');
-    });
-
     Route::get('/profile/status-pembayaran', function () {
         return view('status-pembayaran');
     });
