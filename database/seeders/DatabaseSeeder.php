@@ -11,12 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Menyisipkan data akun default (jika ada)
-        // User::factory(10)->create();
-
-        // Panggil KamarSeeder di sini
         $this->call([
-            KamarSeeder::class,
+            KamarSeeder::class, // Seeder yang sudah ada sebelumnya
+            FaqSeeder::class,   // Tambahkan ini
         ]);
     }
 }

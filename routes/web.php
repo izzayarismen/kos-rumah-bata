@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminKamarController;
+use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\ProfileController;
@@ -78,6 +79,9 @@ Route::get('/admin', function () {
 Route::prefix('admin')->group(function () {
     // CRUD Kamar Admin
     Route::resource('/kamar', AdminKamarController::class);
+
+    // CRUD FAQ Admin
+    Route::resource('/konten/faq', AdminFaqController::class);
 });
 
 Route::get('/admin/penghuni', function () {
@@ -148,9 +152,9 @@ Route::get('/admin/pengajuan-sewa/detail', function () {
     return view('admin.pengajuan_sewa_detail');
 });
 
-Route::get('/admin/konten/faq', function () {
-    return view('admin.konten_faq');
-});
+// Route::get('/admin/konten/faq', function () {
+//     return view('admin.konten_faq');
+// });
 
 Route::get('/admin/konten/faq/edit', function () {
     return view('admin.konten_faq_edit');

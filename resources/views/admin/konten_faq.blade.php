@@ -331,6 +331,12 @@
 
 <div class="faq-page">
 
+    @if(session('success'))
+        <div style="background: #e6f4ea; border: 1px solid #b7e1cd; color: #137333; padding: 16px; border-radius: 15px; font-size: 14px; font-weight: 600;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="faq-panel">
 
         <div class="faq-head">
@@ -340,33 +346,33 @@
             </div>
         </div>
 
-        <form action="#" method="POST" class="faq-form">
+        <form action="/admin/konten/faq" method="POST" class="faq-form">
             @csrf
 
             <h3>Tambah FAQ Baru</h3>
 
             <div class="faq-field">
                 <label>Pertanyaan</label>
-                <input type="text" name="question" placeholder="Contoh: Apakah kos menerima mahasiswa?">
+                <input type="text" name="question" placeholder="Contoh: Apakah kos menerima mahasiswa?" required value="{{ old('question') }}">
             </div>
 
             <div class="faq-field">
                 <label>Jawaban</label>
-                <textarea name="answer" placeholder="Tulis jawaban yang akan tampil di landing page."></textarea>
+                <textarea name="answer" placeholder="Tulis jawaban yang akan tampil di landing page." required>{{ old('answer') }}</textarea>
             </div>
 
             <div class="faq-form-grid">
                 <div class="faq-field">
                     <label>Status Tampil</label>
-                    <select name="status">
-                        <option value="aktif">Aktif</option>
-                        <option value="nonaktif">Nonaktif</option>
+                    <select name="status" required>
+                        <option value="aktif" {{ old('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                        <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                     </select>
                 </div>
 
                 <div class="faq-field">
                     <label>Urutan</label>
-                    <input type="number" name="sort_order" placeholder="1">
+                    <input type="number" name="sort_order" placeholder="1" min="1" required value="{{ old('sort_order', 1) }}">
                 </div>
             </div>
 
@@ -381,82 +387,36 @@
 
         <div class="faq-toolbar">
             <input type="text" id="faqSearch" class="faq-search" placeholder="Cari pertanyaan FAQ...">
-            <div class="faq-count">4 FAQ ditampilkan</div>
+            <div class="faq-count">{{ $faqs->count() }} FAQ ditampilkan</div>
         </div>
 
         <div class="faq-list" id="faqList">
-
-            <div class="faq-item" data-name="apakah kos menerima mahasiswa">
+            @foreach($faqs as $faq)
+            <div class="faq-item" data-name="{{ strtolower($faq->question) }}">
                 <div class="faq-info">
-                    <h3>Apakah Kos Rumah Bata menerima mahasiswa?</h3>
-                    <p>Ya, Kos Rumah Bata menerima mahasiswa dan pekerja dengan data yang sudah diverifikasi oleh admin.</p>
+                    <h3>{{ $faq->question }}</h3>
+                    <p>{{ $faq->answer }}</p>
 
                     <div class="faq-meta">
-                        <span class="faq-badge">Urutan 1</span>
-                        <span class="faq-badge">Aktif</span>
+                        <span class="faq-badge">Urutan {{ $faq->sort_order }}</span>
+                        <span class="faq-badge">{{ ucfirst($faq->status) }}</span>
                     </div>
                 </div>
 
                 <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-                    <button type="button" class="faq-btn-small faq-delete">Hapus</button>
+                    <a href="/admin/konten/faq/{{ $faq->id }}/edit" class="faq-btn-small faq-edit">Edit</a>
+                    
+                    <form action="/admin/konten/faq/{{ $faq->id }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus FAQ ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="faq-btn-small faq-delete">Hapus</button>
+                    </form>
                 </div>
             </div>
-
-            <div class="faq-item" data-name="bagaimana cara mengajukan sewa kamar">
-                <div class="faq-info">
-                    <h3>Bagaimana cara mengajukan sewa kamar?</h3>
-                    <p>Calon penghuni dapat memilih kamar di website, mengisi formulir pengajuan, lalu menunggu verifikasi dari admin.</p>
-
-                    <div class="faq-meta">
-                        <span class="faq-badge">Urutan 2</span>
-                        <span class="faq-badge">Aktif</span>
-                    </div>
-                </div>
-
-                <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-                    <button type="button" class="faq-btn-small faq-delete">Hapus</button>
-                </div>
-            </div>
-
-            <div class="faq-item" data-name="apakah pembayaran bisa dp">
-                <div class="faq-info">
-                    <h3>Apakah pembayaran bisa dilakukan dengan DP?</h3>
-                    <p>Bisa. Calon penghuni dapat memilih pembayaran DP sesuai ketentuan, kemudian melunasi pembayaran sebelum batas waktu yang ditentukan.</p>
-
-                    <div class="faq-meta">
-                        <span class="faq-badge">Urutan 3</span>
-                        <span class="faq-badge">Aktif</span>
-                    </div>
-                </div>
-
-                <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-                    <button type="button" class="faq-btn-small faq-delete">Hapus</button>
-                </div>
-            </div>
-
-            <div class="faq-item" data-name="apakah tersedia kamar ac dan non ac">
-                <div class="faq-info">
-                    <h3>Apakah tersedia kamar AC dan Non AC?</h3>
-                    <p>Ya, tersedia kamar AC dan Non AC. Kamar genap menggunakan tipe AC, sedangkan kamar ganjil menggunakan tipe Non AC.</p>
-
-                    <div class="faq-meta">
-                        <span class="faq-badge">Urutan 4</span>
-                        <span class="faq-badge">Aktif</span>
-                    </div>
-                </div>
-
-                <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-                    <button type="button" class="faq-btn-small faq-delete">Hapus</button>
-                </div>
-            </div>
-
+            @endforeach
         </div>
 
-        <div class="faq-empty" id="faqEmpty">
+        <div class="faq-empty {{ $faqs->isEmpty() ? 'show' : '' }}" id="faqEmpty">
             <strong>FAQ tidak ditemukan</strong>
             <span>Coba gunakan kata kunci pencarian yang lain.</span>
         </div>

@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="relative animate-fade-up" style="animation-delay: 120ms;">
-            <div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-elevated"><img src="1.jpg" alt="Bangunan Kos Rumah Bata" class="h-full w-full object-cover" width="1280" height="896"></div>
+            <div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-elevated"><img src="about.png" alt="Bangunan Kos Rumah Bata" class="h-full w-full object-cover" width="1280" height="896"></div>
         </div>
     </div>
     <div class="absolute inset-0 -z-10 bg-gradient-warm"></div>

@@ -340,174 +340,50 @@
 
         <div class="faq-head">
             <div>
-                <h2>Kelola FAQ</h2>
-                <p>Atur pertanyaan dan jawaban yang akan tampil di landing page agar calon penghuni lebih mudah memahami informasi kos.</p>
+                <h2>Edit FAQ</h2>
+                <p>Ubah pertanyaan dan jawaban yang akan tampil di landing page pelanggan.</p>
             </div>
         </div>
 
-        <form action="#" method="POST" class="faq-form">
+        <form action="/admin/konten/faq/{{ $faq->id }}" method="POST" class="faq-form">
             @csrf
+            @method('PUT')
 
-            <h3>Tambah FAQ Baru</h3>
+            <h3>Ubah Data FAQ</h3>
 
             <div class="faq-field">
                 <label>Pertanyaan</label>
-                <input type="text" name="question" placeholder="Contoh: Apakah kos menerima mahasiswa?">
+                <input type="text" name="question" value="{{ old('question', $faq->question) }}" placeholder="Contoh: Apakah kos menerima mahasiswa?" required>
             </div>
 
             <div class="faq-field">
                 <label>Jawaban</label>
-                <textarea name="answer" placeholder="Tulis jawaban yang akan tampil di landing page."></textarea>
+                <textarea name="answer" placeholder="Tulis jawaban yang akan tampil di landing page." required>{{ old('answer', $faq->answer) }}</textarea>
             </div>
 
             <div class="faq-form-grid">
                 <div class="faq-field">
                     <label>Status Tampil</label>
-                    <select name="status">
-                        <option value="aktif">Aktif</option>
-                        <option value="nonaktif">Nonaktif</option>
+                    <select name="status" required>
+                        <option value="aktif" {{ old('status', $faq->status) == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                        <option value="nonaktif" {{ old('status', $faq->status) == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                     </select>
                 </div>
 
                 <div class="faq-field">
                     <label>Urutan</label>
-                    <input type="number" name="sort_order" placeholder="1">
+                    <input type="number" name="sort_order" value="{{ old('sort_order', $faq->sort_order) }}" placeholder="1" min="1" required>
                 </div>
             </div>
 
-            <div class="faq-form-actions">
-                <button type="submit" class="faq-add-btn">Tambah FAQ</button>
+            <div class="faq-form-actions" style="gap: 10px;">
+                <a href="/admin/konten/faq" class="faq-btn-small faq-delete" style="text-decoration: none;">Batal</a>
+                <button type="submit" class="faq-add-btn">Simpan Perubahan</button>
             </div>
         </form>
 
     </div>
 
-    <div class="faq-panel">
-
-        <div class="faq-toolbar">
-            <input type="text" id="faqSearch" class="faq-search" placeholder="Cari pertanyaan FAQ...">
-            <div class="faq-count">4 FAQ ditampilkan</div>
-        </div>
-
-        <div class="faq-list" id="faqList">
-
-            <div class="faq-item" data-name="apakah kos menerima mahasiswa">
-                <div class="faq-info">
-                    <h3>Apakah Kos Rumah Bata menerima mahasiswa?</h3>
-                    <p>Ya, Kos Rumah Bata menerima mahasiswa dan pekerja dengan data yang sudah diverifikasi oleh admin.</p>
-
-                    <div class="faq-meta">
-                        <span class="faq-badge">Urutan 1</span>
-                        <span class="faq-badge">Aktif</span>
-                    </div>
-                </div>
-
-                <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-
-                    <form action="/admin/konten/faq/delete" method="POST" onsubmit="return confirm('Yakin mau hapus FAQ ini?')">
-                        @csrf
-                        <button type="submit" class="faq-btn-small faq-delete">Hapus</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="faq-item" data-name="bagaimana cara mengajukan sewa kamar">
-                <div class="faq-info">
-                    <h3>Bagaimana cara mengajukan sewa kamar?</h3>
-                    <p>Calon penghuni dapat memilih kamar di website, mengisi formulir pengajuan, lalu menunggu verifikasi dari admin.</p>
-
-                    <div class="faq-meta">
-                        <span class="faq-badge">Urutan 2</span>
-                        <span class="faq-badge">Aktif</span>
-                    </div>
-                </div>
-
-                <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-
-                    <form action="/admin/konten/faq/delete" method="POST" onsubmit="return confirm('Yakin mau hapus FAQ ini?')">
-                        @csrf
-                        <button type="submit" class="faq-btn-small faq-delete">Hapus</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="faq-item" data-name="apakah pembayaran bisa dp">
-                <div class="faq-info">
-                    <h3>Apakah pembayaran bisa dilakukan dengan DP?</h3>
-                    <p>Bisa. Calon penghuni dapat memilih pembayaran DP sesuai ketentuan, kemudian melunasi pembayaran sebelum batas waktu yang ditentukan.</p>
-
-                    <div class="faq-meta">
-                        <span class="faq-badge">Urutan 3</span>
-                        <span class="faq-badge">Aktif</span>
-                    </div>
-                </div>
-
-                <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-
-                    <form action="/admin/konten/faq/delete" method="POST" onsubmit="return confirm('Yakin mau hapus FAQ ini?')">
-                        @csrf
-                        <button type="submit" class="faq-btn-small faq-delete">Hapus</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="faq-item" data-name="apakah tersedia kamar ac dan non ac">
-                <div class="faq-info">
-                    <h3>Apakah tersedia kamar AC dan Non AC?</h3>
-                    <p>Ya, tersedia kamar AC dan Non AC. Kamar genap menggunakan tipe AC, sedangkan kamar ganjil menggunakan tipe Non AC.</p>
-
-                    <div class="faq-meta">
-                        <span class="faq-badge">Urutan 4</span>
-                        <span class="faq-badge">Aktif</span>
-                    </div>
-                </div>
-
-                <div class="faq-actions">
-                    <a href="/admin/konten/faq/edit" class="faq-btn-small faq-edit">Edit</a>
-
-                    <form action="/admin/konten/faq/delete" method="POST" onsubmit="return confirm('Yakin mau hapus FAQ ini?')">
-                        @csrf
-                        <button type="submit" class="faq-btn-small faq-delete">Hapus</button>
-                    </form>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="faq-empty" id="faqEmpty">
-            <strong>FAQ tidak ditemukan</strong>
-            <span>Coba gunakan kata kunci pencarian yang lain.</span>
-        </div>
-
-    </div>
-
 </div>
-
-<script>
-    const faqSearch = document.getElementById('faqSearch');
-    const faqItems = document.querySelectorAll('.faq-item');
-    const faqEmpty = document.getElementById('faqEmpty');
-
-    faqSearch.addEventListener('input', function () {
-        const keyword = this.value.toLowerCase().trim();
-        let visibleCount = 0;
-
-        faqItems.forEach(item => {
-            const name = item.dataset.name;
-
-            if (name.includes(keyword)) {
-                item.style.display = '';
-                visibleCount++;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-
-        faqEmpty.classList.toggle('show', visibleCount === 0);
-    });
-</script>
 
 @endsection
