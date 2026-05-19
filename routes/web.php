@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\AdminKamarController;
 use App\Http\Controllers\Admin\AdminFaqController;
+use App\Http\Controllers\Admin\AdminActivityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KamarController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -20,9 +22,7 @@ Route::get('/tentang-kami', function () {
     return view('about');
 });
 
-Route::get('/aktivitas', function () {
-    return view('activity');
-});
+Route::get('/aktivitas', [ActivityController::class, 'index']);
 
 Route::get('/kamar/{id}/ajukan-sewa', function () {
     return view('ajukan-sewa');
@@ -77,6 +77,9 @@ Route::prefix('admin')->group(function () {
 
     // CRUD FAQ Admin
     Route::resource('/konten/faq', AdminFaqController::class);
+
+    // CRUD Activity Admin
+    Route::resource('/konten/activity', AdminActivityController::class);
 });
 
 Route::get('/admin/penghuni', function () {
@@ -145,22 +148,6 @@ Route::get('/admin/pengajuan-sewa', function () {
 
 Route::get('/admin/pengajuan-sewa/detail', function () {
     return view('admin.pengajuan_sewa_detail');
-});
-
-// Route::get('/admin/konten/faq', function () {
-//     return view('admin.konten_faq');
-// });
-
-Route::get('/admin/konten/faq/edit', function () {
-    return view('admin.konten_faq_edit');
-});
-
-Route::get('/admin/konten/activity', function () {
-    return view('admin.konten_activity');
-});
-
-Route::get('/admin/konten/activity/edit', function () {
-    return view('admin.konten_activity_edit');
 });
 
 Route::get('/admin/konten/galeri', function () {

@@ -12,9 +12,12 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('image')->nullable(); // Menyimpan nama/path file foto aktivitas
-            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
-            $table->integer('sort_order')->default(1);
+            $table->string('image')->nullable();
+            $table->string('category')->default('Aktivitas'); // Tambah kolom Kategori
+            $table->date('date'); // Tambah kolom Tanggal Rilis
+            $table->boolean('is_pinned')->default(false); // Tambah kolom Sematkan (0 atau 1)
+            $table->enum('status', ['aktif', 'nonaktif'])->default('aktif'); // Digunakan di badge list
+            $table->integer('sort_order')->default(1); 
             $table->timestamps();
         });
     }

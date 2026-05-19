@@ -13,7 +13,15 @@ class Activity extends Model
         'title',
         'description',
         'image',
+        'category',
+        'date',
+        'is_pinned',
         'status',
         'sort_order'
+    ];
+
+    protected $casts = [
+        'is_pinned' => 'boolean',
+        'date' => 'date'
     ];
 }

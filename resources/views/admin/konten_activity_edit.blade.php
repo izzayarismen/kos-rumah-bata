@@ -330,53 +330,56 @@
                 <p>Ubah judul, deskripsi, kategori, serta status sematan pengumuman yang akan tampil di landing page pelanggan.</p>
             </div>
 
-            <span class="activity-status-chip">Aktif</span>
+            <span class="activity-status-chip">{{ ucfirst($activity->status) }}</span>
         </div>
 
-        <form action="/admin/konten/activity/update" method="POST" enctype="multipart/form-data" class="activity-edit-form">
+        <form action="/admin/konten/activity/{{ $activity->id }}" method="POST" enctype="multipart/form-data" class="activity-edit-form">
             @csrf
+            @method('PUT')
 
             <div class="activity-field">
                 <label>Judul Activity</label>
-                <input type="text" name="title" value="Kamar A2 (Standard Non-AC) sudah tersedia bulan ini!">
+                <input type="text" name="title" value="{{ old('title', $activity->title) }}" required>
             </div>
 
             <div class="activity-field">
                 <label>Deskripsi</label>
-                <textarea name="description">Cocok buat kamu yang cari kos nyaman dengan harga ramah kantong. Booking lebih awal yuk sebelum diambil orang</textarea>
+                <textarea name="description" required>{{ old('description', $activity->description) }}</textarea>
             </div>
 
             <div class="activity-edit-grid-three">
                 <div class="activity-field">
                     <label>Ganti Foto <span style="font-weight:400; color:#94857e;">(Opsional)</span></label>
                     <input type="file" name="image" accept="image/*">
+                    @if($activity->image)
                     <div class="activity-current-media">
-                        File lama: <a href="#" target="_blank">kamar_a2.jpg</a>
+                        File lama: <a href="{{ asset('images/activities/' . $activity->image) }}" target="_blank">{{ $activity->image }}</a>
                     </div>
+                    @endif
                 </div>
 
                 <div class="activity-field">
                     <label>Kategori</label>
-                    <select name="category">
-                        <option value="Info Kamar" selected>Info Kamar</option>
-                        <option value="Update Kos">Update Kos</option>
-                        <option value="Aktivitas">Aktivitas</option>
-                        <option value="Promo">Promo</option>
-                        <option value="Social">Social</option>
+                    <select name="category" required>
+                        <option value="Info Kamar" {{ old('category', $activity->category) == 'Info Kamar' ? 'selected' : '' }}>Info Kamar</option>
+                        <option value="Update Kos" {{ old('category', $activity->category) == 'Update Kos' ? 'selected' : '' }}>Update Kos</option>
+                        <option value="Aktivitas" {{ old('category', $activity->category) == 'Aktivitas' ? 'selected' : '' }}>Aktivitas</option>
+                        <option value="Promo" {{ old('category', $activity->category) == 'Promo' ? 'selected' : '' }}>Promo</option>
+                        <option value="Social" {{ old('category', $activity->category) == 'Social' ? 'selected' : '' }}>Social</option>
                     </select>
                 </div>
 
                 <div class="activity-field">
                     <label>Tanggal Rilis</label>
-                    <input type="date" name="date" value="2026-05-19">
+                    <input type="date" name="date" value="{{ old('date', \Carbon\Carbon::parse($activity->date)->format('Y-m-d')) }}" required>
                 </div>
             </div>
 
             <div class="activity-field">
                 <label>Pengaturan Sematan</label>
                 <label class="activity-checkbox-field">
-                    <input type="checkbox" name="is_pinned" value="1" checked>
-                    <span>Sematkan aktivitas ini di bagian paling atas feed beranda</span>
+                    <input type="checkbox" name="is_pinned" value="1" {{ old('is_pinned', $activity->is_pinned) ? 'checked' : '' }}>
+                    <p>Sematkan aktivitas ini di bagian paling atas feed beranda</p>
                 </label>
             </div>
 
@@ -385,9 +388,9 @@
 
                 <div class="activity-preview-box">
                     <div class="activity-preview-header-line">
-                        <strong>Kamar A2 (Standard Non-AC) sudah tersedia bulan ini!</strong>
+                        <strong>{{ $activity->title }}</strong>
                         
-                        <span id="previewPinBadge" style="font-size: 11px; font-weight: 600; color: #c8664a; display: inline-flex; align-items: center; gap: 4px;">
+                        <span id="previewPinBadge" style="font-size: 11px; font-weight: 600; color: #c8664a; display: {{ $activity->is_pinned ? 'inline-flex' : 'none' }}; align-items: center; gap: 4px;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
                             </svg>
@@ -395,15 +398,17 @@
                         </span>
                     </div>
                     
-                    <p>Cocok buat kamu yang cari kos nyaman dengan harga ramah kantong. Booking lebih awal yuk sebelum diambil orang</p>
+                    <p>{{ $activity->description }}</p>
                     
+                    @if($activity->image)
                     <div class="activity-preview-image">
-                        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=400&auto=format&fit=crop" alt="Preview Kamar">
+                        <img src="{{ asset('images/activities/' . $activity->image) }}" alt="Preview {{ $activity->title }}">
                     </div>
+                    @endif
 
                     <div class="activity-preview-meta">
-                        <span class="activity-preview-badge">8 jam lalu</span>
-                        <span class="activity-preview-badge category">Kategori: Info Kamar</span>
+                        <span class="activity-preview-badge">{{ \Carbon\Carbon::parse($activity->date)->diffForHumans() }}</span>
+                        <span class="activity-preview-badge category">Kategori: {{ $activity->category }}</span>
                     </div>
                 </div>
             </div>

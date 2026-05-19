@@ -168,7 +168,7 @@
         justify-content: center;
         white-space: nowrap;
         transition: background 0.2s ease;
-
+    }
 
     .activity-add-btn:hover {
         background: #b75a41;
@@ -414,6 +414,12 @@
 
 <div class="activity-page">
 
+    @if(session('success'))
+        <div style="background: #e6f4ea; border: 1px solid #b7e1cd; color: #137333; padding: 16px; border-radius: 12px; font-size: 14px; font-weight: 600;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="activity-panel">
         <div class="activity-head">
             <div>
@@ -422,48 +428,50 @@
             </div>
         </div>
 
-        <form action="#" method="POST" enctype="multipart/form-data" class="activity-form">
+        <form action="/admin/konten/activity" method="POST" enctype="multipart/form-data" class="activity-form">
             @csrf
 
             <h3>Tambah Aktivitas Baru</h3>
 
             <div class="activity-field">
                 <label>Judul Aktivitas</label>
-                <input type="text" name="title" placeholder="Contoh: Promo khusus penghuni baru bulan ini">
+                <input type="text" name="title" placeholder="Contoh: Promo khusus penghuni baru bulan ini" required value="{{ old('title') }}">
             </div>
 
             <div class="activity-field">
                 <label>Deskripsi</label>
-                <textarea name="description" placeholder="Tulis deskripsi ringkas atau teks pengumuman yang akan dibaca oleh pelanggan..."></textarea>
+                <textarea name="description" placeholder="Tulis deskripsi ringkas atau teks pengumuman yang akan dibaca oleh pelanggan..." required>{{ old('description') }}</textarea>
             </div>
 
-            <div class="activity-form-grid-three">
-                <div class="activity-field">
-                    <label>Foto Pendukung <span style="font-weight:400; color:#94857e;">(Opsional)</span></label>
-                    <input type="file" name="image" accept="image/*">
-                </div>
+            <div class="activity-grid-wrapper">
+                <div class="activity-form-grid-three">
+                    <div class="activity-field">
+                        <label>Foto Pendukung <span style="font-weight:400; color:#94857e;">(Opsional)</span></label>
+                        <input type="file" name="image" accept="image/*">
+                    </div>
 
-                <div class="activity-field">
-                    <label>Kategori</label>
-                    <select name="category">
-                        <option value="Info Kamar">Info Kamar</option>
-                        <option value="Update Kos">Update Kos</option>
-                        <option value="Aktivitas" selected>Aktivitas</option>
-                        <option value="Promo">Promo</option>
-                        <option value="Social">Social</option>
-                    </select>
-                </div>
+                    <div class="activity-field">
+                        <label>Kategori</label>
+                        <select name="category" required>
+                            <option value="Info Kamar" {{ old('category') == 'Info Kamar' ? 'selected' : '' }}>Info Kamar</option>
+                            <option value="Update Kos" {{ old('category') == 'Update Kos' ? 'selected' : '' }}>Update Kos</option>
+                            <option value="Aktivitas" {{ old('category') == 'Aktivitas' || !old('category') ? 'selected' : '' }}>Aktivitas</option>
+                            <option value="Promo" {{ old('category') == 'Promo' ? 'selected' : '' }}>Promo</option>
+                            <option value="Social" {{ old('category') == 'Social' ? 'selected' : '' }}>Social</option>
+                        </select>
+                    </div>
 
-                <div class="activity-field">
-                    <label>Tanggal Rilis</label>
-                    <input type="date" name="date">
+                    <div class="activity-field">
+                        <label>Tanggal Rilis</label>
+                        <input type="date" name="date" required value="{{ old('date', date('Y-m-d')) }}">
+                    </div>
                 </div>
             </div>
 
             <div class="activity-field">
                 <label>Pengaturan Tambahan</label>
                 <label class="activity-checkbox-field">
-                    <input type="checkbox" name="is_pinned" value="1">
+                    <input type="checkbox" name="is_pinned" value="1" {{ old('is_pinned') ? 'checked' : '' }}>
                     <p>Sematkan aktivitas baru ini di bagian paling atas feed beranda</p>
                 </label>
             </div>
@@ -477,59 +485,58 @@
     <div class="activity-panel">
         <div class="activity-toolbar">
             <input type="text" id="activitySearch" class="activity-search" placeholder="Cari info aktivitas...">
-            <div class="activity-count">2 aktivitas ditampilkan</div>
+            <div class="activity-count">{{ $activities->count() }} aktivitas ditampilkan</div>
         </div>
 
         <div class="activity-list" id="activityList">
 
-            <div class="activity-item" data-name="promo khusus penghuni baru bulan ini">
-                <div class="activity-icon">%</div>
-
-                <div class="activity-info">
-                    <h3>Promo khusus penghuni baru bulan ini</h3>
-                    <p>Diskon 10% untuk pembayaran 3 bulan di muka. Berlaku sampai akhir bulan, DM admin untuk klaim ya!</p>
-
-                    <div class="activity-meta">
-                        <span class="activity-badge">2 jam lalu</span>
-                        <span class="activity-badge badge-category">Kategori: Promo</span>
-                        <span class="activity-badge badge-pinned">Disematkan</span>
-                        <span class="activity-badge">Aktif</span>
-                    </div>
+            @foreach($activities as $activity)
+            <div class="activity-item" data-name="{{ strtolower($activity->title) }}">
+                
+                <div class="activity-icon">
+                    @if($activity->category == 'Promo') % 
+                    @elseif($activity->category == 'Info Kamar') RM 
+                    @else AV 
+                    @endif
                 </div>
 
-                <div class="activity-actions">
-                    <a href="/admin/konten/activity/edit" class="activity-btn-small activity-edit">Edit</a>
-                    <button type="button" class="activity-btn-small activity-delete" onclick="confirmDeleteActivity()">Hapus</button>
-                </div>
-            </div>
-
-            <div class="activity-item" data-name="kamar a2 standard non ac sudah tersedia">
-                <div class="activity-icon">A2</div>
-
                 <div class="activity-info">
-                    <h3>Kamar A2 (Standard Non-AC) sudah tersedia bulan ini!</h3>
-                    <p>Cocok buat kamu yang cari kos nyaman dengan harga ramah kantong. Booking lebih awal yuk sebelum diambil orang</p>
+                    <h3>{{ $activity->title }}</h3>
+                    <p>{{ $activity->description }}</p>
 
+                    @if($activity->image)
                     <div class="activity-img-preview">
-                        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=300&auto=format&fit=crop" alt="Preview Kamar">
+                        <img src="{{ asset('images/activities/' . $activity->image) }}" alt="Preview {{ $activity->title }}">
                     </div>
+                    @endif
 
                     <div class="activity-meta">
-                        <span class="activity-badge">8 jam lalu</span>
-                        <span class="activity-badge badge-category">Kategori: Info Kamar</span>
-                        <span class="activity-badge">Aktif</span>
+                        <span class="activity-badge">{{ \Carbon\Carbon::parse($activity->date)->diffForHumans() }}</span>
+                        <span class="activity-badge badge-category">Kategori: {{ $activity->category }}</span>
+                        
+                        @if($activity->is_pinned)
+                        <span class="activity-badge badge-pinned">Disematkan</span>
+                        @endif
+                        
+                        <span class="activity-badge">{{ ucfirst($activity->status) }}</span>
                     </div>
                 </div>
 
                 <div class="activity-actions">
-                    <a href="/admin/konten/activity/edit" class="activity-btn-small activity-edit">Edit</a>
-                    <button type="button" class="activity-btn-small activity-delete" onclick="confirmDeleteActivity()">Hapus</button>
+                    <a href="/admin/konten/activity/{{ $activity->id }}/edit" class="activity-btn-small activity-edit">Edit</a>
+                    
+                    <form action="/admin/konten/activity/{{ $activity->id }}" method="POST" style="display: inline;" onsubmit="return confirm('Yakin mau hapus activity ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="activity-btn-small activity-delete">Hapus</button>
+                    </form>
                 </div>
             </div>
+            @endforeach
 
         </div>
 
-        <div class="activity-empty" id="activityEmpty">
+        <div class="activity-empty {{ $activities->isEmpty() ? 'show' : '' }}" id="activityEmpty">
             <strong>Activity tidak ditemukan</strong>
             <span>Coba gunakan kata kunci pencarian yang lain.</span>
         </div>
@@ -559,14 +566,6 @@
 
         activityEmpty.classList.toggle('show', visibleCount === 0);
     });
-
-    function confirmDeleteActivity() {
-        const confirmDelete = confirm('Yakin mau hapus activity ini?');
-
-        if (confirmDelete) {
-            alert('Activity berhasil dihapus. Bagian database segera diproses oleh backend.');
-        }
-    }
 </script>
 
 @endsection

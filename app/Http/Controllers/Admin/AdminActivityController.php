@@ -12,7 +12,11 @@ class AdminActivityController extends Controller
     // Menampilkan halaman daftar aktivitas di sisi Admin
     public function index()
     {
-        $activities = Activity::orderBy('sort_order', 'asc')->get();
+        // Mengurutkan berdasarkan yang disematkan (is_pinned) terlebih dahulu, baru berdasarkan tanggal rilis terbaru
+        $activities = Activity::orderBy('is_pinned', 'desc')
+                              ->orderBy('date', 'desc')
+                              ->get();
+                              
         return view('admin.konten_activity', compact('activities'));
     }
 
@@ -23,11 +27,18 @@ class AdminActivityController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:aktif,nonaktif',
-            'sort_order' => 'required|integer',
+            'category' => 'required|string|in:Info Kamar,Update Kos,Aktivitas,Promo,Social',
+            'date' => 'required|date',
+            'is_pinned' => 'nullable|in:1',
         ]);
 
         $data = $request->all();
+
+        // Mengatur status default (karena tidak ada input status di form tambah milikmu)
+        $data['status'] = 'aktif';
+
+        // Jika checkbox sematkan dicentang, nilainya 1. Jika tidak dicentang, kita paksa isi 0.
+        $data['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
 
         // Proses upload gambar jika ada
         if ($request->hasFile('image')) {
@@ -55,12 +66,16 @@ class AdminActivityController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:aktif,nonaktif',
-            'sort_order' => 'required|integer',
+            'category' => 'required|string|in:Info Kamar,Update Kos,Aktivitas,Promo,Social',
+            'date' => 'required|date',
+            'is_pinned' => 'nullable|in:1',
         ]);
 
         $activity = Activity::findOrFail($id);
         $data = $request->all();
+
+        // Jika checkbox sematkan dicentang nilainya 1, jika kosong diubah ke 0
+        $data['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
 
         // Proses update gambar baru jika diunggah
         if ($request->hasFile('image')) {
