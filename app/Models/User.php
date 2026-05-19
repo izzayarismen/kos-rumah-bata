@@ -2,15 +2,12 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
@@ -22,6 +19,11 @@ class User extends Authenticatable
         'nama',
         'email',
         'no_hp',
+        'jenis_kelamin',
+        'alamat',
+        'kontak_darurat',
+        'ktp_dokumen',
+        'surat_komitmen',
         'password',
     ];
 

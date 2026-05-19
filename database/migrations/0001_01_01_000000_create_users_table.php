@@ -16,8 +16,13 @@ return new class extends Migration
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('no_hp');
-            $table->string('password');
+            $table->string('jenis_kelamin')->default('Perempuan');
+            $table->text('alamat')->nullable();
+            $table->string('kontak_darurat')->nullable();
+            $table->string('ktp_dokumen')->nullable();
+            $table->string('surat_komitmen')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
