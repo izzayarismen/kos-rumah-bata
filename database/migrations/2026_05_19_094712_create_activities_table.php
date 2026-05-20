@@ -18,6 +18,8 @@ return new class extends Migration
             $table->boolean('is_pinned')->default(false); // Tambah kolom Sematkan (0 atau 1)
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif'); // Digunakan di badge list
             $table->integer('sort_order')->default(1); 
+            $table->string('link_url')->nullable();
+            $table->string('link_label')->nullable();
             $table->timestamps();
         });
     }

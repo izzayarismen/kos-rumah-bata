@@ -5,14 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class AdminActivityController extends Controller
 {
     // Menampilkan halaman daftar aktivitas di sisi Admin
     public function index()
     {
-        // Mengurutkan berdasarkan yang disematkan (is_pinned) terlebih dahulu, baru berdasarkan tanggal rilis terbaru
         $activities = Activity::orderBy('is_pinned', 'desc')
                               ->orderBy('date', 'desc')
                               ->get();
@@ -27,20 +25,32 @@ class AdminActivityController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'link_url' => 'nullable|url|max:255',
+            'link_label' => 'nullable|string|max:100',
             'category' => 'required|string|in:Info Kamar,Update Kos,Aktivitas,Promo,Social',
             'date' => 'required|date',
             'is_pinned' => 'nullable|in:1',
         ]);
 
         $data = $request->all();
-
-        // Mengatur status default (karena tidak ada input status di form tambah milikmu)
         $data['status'] = 'aktif';
+        $alertMessage = 'Aktivitas berhasil ditambahkan!';
 
-        // Jika checkbox sematkan dicentang, nilainya 1. Jika tidak dicentang, kita paksa isi 0.
-        $data['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
+        // Logika batasan maksimal 1 sematan (Pinned)
+        if ($request->has('is_pinned')) {
+            $existingPinned = Activity::where('is_pinned', 1)->exists();
 
-        // Proses upload gambar jika ada
+            if ($existingPinned) {
+                // Lepas sematan yang lama
+                Activity::where('is_pinned', 1)->update(['is_pinned' => 0]);
+                $alertMessage = 'Aktivitas berhasil disematkan! Sematan pada aktivitas sebelumnya telah otomatis dilepas.';
+            }
+            $data['is_pinned'] = 1;
+        } else {
+            $data['is_pinned'] = 0;
+        }
+
+        // Proses upload gambar
         if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images/activities'), $imageName);
@@ -49,10 +59,10 @@ class AdminActivityController extends Controller
 
         Activity::create($data);
 
-        return redirect()->back()->with('success', 'Aktivitas berhasil ditambahkan!');
+        return redirect()->back()->with('success', $alertMessage);
     }
 
-    // Menampilkan halaman form edit aktivitas
+    // Menampilkan halaman form edit
     public function edit($id)
     {
         $activity = Activity::findOrFail($id);
@@ -66,6 +76,8 @@ class AdminActivityController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'link_url' => 'nullable|url|max:255',
+            'link_label' => 'nullable|string|max:100',
             'category' => 'required|string|in:Info Kamar,Update Kos,Aktivitas,Promo,Social',
             'date' => 'required|date',
             'is_pinned' => 'nullable|in:1',
@@ -73,13 +85,27 @@ class AdminActivityController extends Controller
 
         $activity = Activity::findOrFail($id);
         $data = $request->all();
+        $alertMessage = 'Aktivitas berhasil diperbarui!';
 
-        // Jika checkbox sematkan dicentang nilainya 1, jika kosong diubah ke 0
-        $data['is_pinned'] = $request->has('is_pinned') ? 1 : 0;
+        // Logika batasan maksimal 1 sematan saat update data
+        if ($request->has('is_pinned')) {
+            $existingPinned = Activity::where('is_pinned', 1)
+                                      ->where('id', '!=', $id)
+                                      ->exists();
 
-        // Proses update gambar baru jika diunggah
+            if ($existingPinned) {
+                Activity::where('is_pinned', 1)
+                        ->where('id', '!=', $id)
+                        ->update(['is_pinned' => 0]);
+                $alertMessage = 'Aktivitas berhasil diperbarui dan disematkan! Sematan pada aktivitas sebelumnya telah otomatis dilepas.';
+            }
+            $data['is_pinned'] = 1;
+        } else {
+            $data['is_pinned'] = 0;
+        }
+
+        // Ganti gambar baru jika ada
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada berkasnya
             if ($activity->image && file_exists(public_path('images/activities/' . $activity->image))) {
                 unlink(public_path('images/activities/' . $activity->image));
             }
@@ -91,7 +117,7 @@ class AdminActivityController extends Controller
 
         $activity->update($data);
 
-        return redirect('/admin/konten/activity')->with('success', 'Aktivitas berhasil diperbarui!');
+        return redirect('/admin/konten/activity')->with('success', $alertMessage);
     }
 
     // Menghapus data aktivitas
@@ -99,7 +125,6 @@ class AdminActivityController extends Controller
     {
         $activity = Activity::findOrFail($id);
 
-        // Hapus gambar dari local folder jika ada
         if ($activity->image && file_exists(public_path('images/activities/' . $activity->image))) {
             unlink(public_path('images/activities/' . $activity->image));
         }

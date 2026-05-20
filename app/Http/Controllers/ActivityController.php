@@ -9,7 +9,9 @@ class ActivityController extends Controller
 {
     public function index()
     {
-        // Mengambil aktivitas yang aktif, diurutkan dari yang di-pin dan tanggal rilis terbaru
+        // Cukup gunakan SATU query cerdas dengan dua urutan (orderBy)
+        // Urutan 1: Utamakan yang disematkan (is_pinned = 1 akan berada di atas)
+        // Urutan 2: Urutkan berdasarkan tanggal rilis terbaru (date desc)
         $activities = Activity::where('status', 'aktif')
                               ->orderBy('is_pinned', 'desc')
                               ->orderBy('date', 'desc')

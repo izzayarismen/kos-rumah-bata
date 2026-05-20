@@ -9,7 +9,7 @@
             <p class="mt-4 text-base md:text-lg text-muted-foreground max-w-lg">Hunian kos modern bernuansa hangat di tengah Bogor. Dirancang untuk pelajar dan profesional muda yang mencari kenyamanan, keamanan, dan komunitas yang sehat.</p>
             <div class="mt-7 flex flex-wrap gap-3">
                 <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-full px-7" href="/kamar">
-                    Lihat Kamar 
+                    Lihat Kamar
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-1 h-4 w-4">
                         <path d="M5 12h14"></path>
                         <path d="m12 5 7 7-7 7"></path>
@@ -19,11 +19,14 @@
             </div>
         </div>
         <div class="relative animate-fade-up" style="animation-delay: 120ms;">
-            <div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-elevated"><img src="about.png" alt="Bangunan Kos Rumah Bata" class="h-full w-full object-cover" width="1280" height="896"></div>
+            <div class="aspect-[4/3] rounded-3xl overflow-hidden shadow-elevated">
+                <img src="about.png" alt="Bangunan Kos Rumah Bata" class="h-full w-full object-cover" width="1280" height="896">
+            </div>
         </div>
     </div>
     <div class="absolute inset-0 -z-10 bg-gradient-warm"></div>
 </section>
+
 <section class="container-app py-14">
     <div class="max-w-3xl">
         <p class="text-sm font-semibold text-primary uppercase tracking-wide">Tentang Kami</p>
@@ -40,6 +43,7 @@
             <h3 class="mt-4 font-semibold text-lg">Konsep</h3>
             <p class="mt-1.5 text-sm text-muted-foreground">Hunian hangat ala rumah dengan sentuhan modern. Privasi dan kebersamaan seimbang.</p>
         </div>
+
         <div class="bg-card rounded-2xl p-6 border border-border/60 shadow-soft">
             <div class="h-11 w-11 rounded-xl bg-primary-soft text-primary grid place-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-target h-5 w-5">
@@ -51,6 +55,7 @@
             <h3 class="mt-4 font-semibold text-lg">Visi</h3>
             <p class="mt-1.5 text-sm text-muted-foreground">Menjadi kos digital paling terpercaya di Yogyakarta dengan pengalaman penghuni terbaik.</p>
         </div>
+
         <div class="bg-card rounded-2xl p-6 border border-border/60 shadow-soft">
             <div class="h-11 w-11 rounded-xl bg-primary-soft text-primary grid place-items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-5 w-5">
@@ -122,7 +127,7 @@
         color: #f4ddd4 !important; /* Krem lembut kontras tinggi */
     }
 
-    /* Pemicu efek hover (Sudah diperbaiki dari typo pembatas komentar) */
+    /* Pemicu efek hover */
     .gallery-item:hover::after {
         opacity: 1;
     }

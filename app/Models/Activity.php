@@ -13,6 +13,8 @@ class Activity extends Model
         'title',
         'description',
         'image',
+        'link_url',   // Kolom Baru
+        'link_label', // Kolom Baru
         'category',
         'date',
         'is_pinned',

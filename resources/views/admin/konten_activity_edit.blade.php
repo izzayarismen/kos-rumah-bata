@@ -107,22 +107,20 @@
         box-shadow: 0 0 0 3px rgba(200, 102, 74, 0.05);
     }
 
-    /* Gaya Khusus untuk Checkbox Sematkan Berita */
     .activity-checkbox-field {
         position: relative;
-        display: block; /* Diubah dari flex/grid menjadi block */
-        padding: 14px 16px 14px 44px; /* Kasih space kiri sebesar 44px untuk tempat checkbox */
+        display: block;
+        padding: 14px 16px 14px 44px;
         background: #ffffff;
         border: 1px dashed #ead6ce;
         border-radius: 12px;
         cursor: pointer;
         user-select: none;
-        min-height: 48px; /* Mengunci tinggi minimum */
+        min-height: 48px;
     }
 
     .activity-checkbox-field input[type="checkbox"] {
         position: absolute;
-        /* Kunci posisi di tengah-tengah container secara vertikal */
         top: 50%;
         left: 16px;
         transform: translateY(-50%); 
@@ -145,10 +143,16 @@
         text-align: left;
     }
 
-    /* Penataan Grid Input Bawah */
     .activity-edit-grid-three {
         display: grid;
         grid-template-columns: 1.2fr 1fr 1fr;
+        gap: 16px;
+    }
+
+    /* Grid layout pendukung untuk pasangan input Link URL dan Label */
+    .activity-edit-grid-two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 16px;
     }
 
@@ -164,7 +168,6 @@
         font-weight: 600;
     }
 
-    /* Container Box Preview Halaman Belakang */
     .activity-preview {
         border: none;
         box-shadow: inset 0 0 0 1px #f0e6e2;
@@ -210,6 +213,18 @@
         line-height: 1.6;
     }
 
+    .activity-preview-link {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #6e605a;
+    }
+
+    .activity-preview-link a {
+        color: #c8664a;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
     .activity-preview-image {
         margin-top: 14px;
         max-width: 200px;
@@ -247,7 +262,6 @@
         border-color: #ffe6b3;
     }
 
-    /* Tombol Aksi */
     .activity-actions {
         display: flex;
         justify-content: flex-end;
@@ -292,7 +306,8 @@
     }
 
     @media (max-width: 900px) {
-        .activity-edit-grid-three {
+        .activity-edit-grid-three,
+        .activity-edit-grid-two {
             grid-template-columns: 1fr;
         }
     }
@@ -345,6 +360,17 @@
             <div class="activity-field">
                 <label>Deskripsi</label>
                 <textarea name="description" required>{{ old('description', $activity->description) }}</textarea>
+            </div>
+
+            <div class="activity-edit-grid-two">
+                <div class="activity-field">
+                    <label>Tautan / Link URL <span style="font-weight:400; color:#94857e;">(Opsional)</span></label>
+                    <input type="url" name="link_url" placeholder="Contoh: https://instagram.com/p/..." value="{{ old('link_url', $activity->link_url) }}">
+                </div>
+                <div class="activity-field">
+                    <label>Label Link Tombol <span style="font-weight:400; color:#94857e;">(Opsional)</span></label>
+                    <input type="text" name="link_label" placeholder="Contoh: Lihat Detail / Follow Instagram" value="{{ old('link_label', $activity->link_label) }}">
+                </div>
             </div>
 
             <div class="activity-edit-grid-three">
@@ -400,6 +426,12 @@
                     
                     <p>{{ $activity->description }}</p>
                     
+                    @if($activity->link_url)
+                    <div class="activity-preview-link">
+                        Tautan tombol: <a href="{{ $activity->link_url }}" target="_blank">{{ $activity->link_label ?? 'Buka Link' }}</a>
+                    </div>
+                    @endif
+                    
                     @if($activity->image)
                     <div class="activity-preview-image">
                         <img src="{{ asset('images/activities/' . $activity->image) }}" alt="Preview {{ $activity->title }}">
@@ -423,7 +455,6 @@
 </div>
 
 <script>
-    // Script sederhana untuk menyalakan/menyembunyikan teks 'Disematkan' di preview secara live
     const pinCheckbox = document.querySelector('input[name="is_pinned"]');
     const previewPinBadge = document.getElementById('previewPinBadge');
 

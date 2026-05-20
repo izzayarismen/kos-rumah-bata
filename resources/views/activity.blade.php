@@ -55,7 +55,7 @@
                             
                             <div class="mt-1 flex items-center gap-1.5">
                                 @if($activity->category == 'Promo')
-                                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-warning/15 text-warning-foreground">
+                                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border" style="background-color: #fef3c7; color: #92400e; border-color: #fde68a;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-3 w-3">
                                         <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
                                         <path d="M20 3v4"></path>
@@ -66,7 +66,7 @@
                                     {{ $activity->category }}
                                 </span>
                                 @elseif($activity->category == 'Info Kamar')
-                                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-primary-soft text-primary">
+                                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border" style="background-color: #dbeafe; color: #1e40af; border-color: #bfdbfe;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bed-double h-3 w-3">
                                         <path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"></path>
                                         <path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"></path>
@@ -76,7 +76,7 @@
                                     {{ $activity->category }}
                                 </span>
                                 @elseif($activity->category == 'Aktivitas')
-                                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-accent/15 text-accent-foreground">
+                                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border" style="background-color: #d1fae5; color: #065f46; border-color: #a7f3d0;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-3 w-3">
                                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                                         <circle cx="9" cy="7" r="4"></circle>
@@ -86,7 +86,7 @@
                                     {{ $activity->category }}
                                 </span>
                                 @elseif($activity->category == 'Update Kos')
-                                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-foreground">
+                                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border" style="background-color: #ffe4e6; color: #9f1239; border-color: #fecdd3;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone h-3 w-3">
                                         <path d="m3 11 18-5v12L3 14v-3z"></path>
                                         <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
@@ -94,7 +94,7 @@
                                     {{ $activity->category }}
                                 </span>
                                 @elseif($activity->category == 'Social')
-                                <span class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-foreground">
+                                <span class="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full border" style="background-color: #f3e8ff; color: #6b21a8; border-color: #e9d5ff;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram h-3 w-3">
                                         <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
                                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -104,8 +104,10 @@
                                 </span>
                                 @endif
                             </div>
+
+                            <h2 class="mt-2 text-base font-bold tracking-tight text-foreground">{{ $activity->title }}</h2>
                             
-                            <p class="mt-2 text-sm leading-relaxed whitespace-pre-line text-foreground">{{ $activity->description }}</p>
+                            <p class="mt-1 text-sm leading-relaxed whitespace-pre-line text-foreground">{{ $activity->description }}</p>
                             
                             @if($activity->image)
                             <div class="mt-3 overflow-hidden rounded-2xl border border-border/60">
@@ -113,13 +115,15 @@
                             </div>
                             @endif
 
-                            @if($activity->category == 'Info Kamar')
+                            @if($activity->link_url)
                             <div class="mt-3">
-                                <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 rounded-full" href="/kamar">Lihat kamar</a>
+                                <a href="{{ $activity->link_url }}" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-xs font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground h-7 px-3 rounded-full shadow-sm">
+                                    {{ $activity->link_label ?? ($activity->category == 'Info Kamar' ? 'Lihat kamar' : ($activity->category == 'Social' ? 'Follow Instagram' : 'Buka Tautan')) }}
+                                </a>
                             </div>
-                            @elseif($activity->category == 'Social')
+                            @elseif($activity->category == 'Info Kamar')
                             <div class="mt-3">
-                                <a href="https://instagram.com" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 rounded-full">Follow Instagram</a>
+                                <a href="/kamar" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-xs font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-primary text-primary bg-transparent hover:bg-primary hover:text-primary-foreground h-7 px-3 rounded-full shadow-sm">Lihat kamar</a>
                             </div>
                             @endif
                         </div>
