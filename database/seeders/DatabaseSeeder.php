@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             KamarSeeder::class, // Seeder yang sudah ada sebelumnya
             FaqSeeder::class,   // Tambahkan ini
             ActivitySeeder::class,
+            GaleriSeeder::class,
+
         ]);
     }
 }

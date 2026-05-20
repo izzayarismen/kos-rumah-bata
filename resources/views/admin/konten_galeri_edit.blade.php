@@ -136,7 +136,7 @@
         line-height: 1.6;
     }
 
-    /* --- CSS Preview Card & Hover Effect Simulating Landing Page --- */
+    /* --- CSS Preview Card --- */
     .gallery-preview-card {
         border: 1px solid #ead6ce;
         border-radius: 24px;
@@ -148,7 +148,6 @@
 
     .gallery-preview-image {
         height: 280px;
-        background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80');
         background-size: cover;
         background-position: center;
         background-color: #fbf5f1;
@@ -156,7 +155,6 @@
         overflow: hidden;
     }
 
-    /* Overlay gelap yang muncul saat di-hover */
     .gallery-preview-image::before {
         content: '';
         position: absolute;
@@ -167,7 +165,6 @@
         z-index: 1;
     }
 
-    /* Container untuk text hover */
     .gallery-hover-content {
         position: absolute;
         bottom: 0;
@@ -195,7 +192,6 @@
         color: #f4ddd4;
     }
 
-    /* Trigger efek hover pada card preview */
     .gallery-preview-card:hover .gallery-preview-image::before {
         opacity: 1;
     }
@@ -286,7 +282,6 @@
         .gallery-edit-grid {
             grid-template-columns: 1fr;
         }
-
         .gallery-preview-card {
             position: static;
         }
@@ -296,20 +291,16 @@
         .gallery-edit-panel {
             padding: 22px;
         }
-
         .gallery-edit-head h2 {
             font-size: 24px;
         }
-
         .gallery-form-grid {
             grid-template-columns: 1fr;
         }
-
         .gallery-actions {
             display: grid;
             grid-template-columns: 1fr;
         }
-
         .gallery-btn {
             width: 100%;
         }
@@ -326,42 +317,43 @@
 
         <div class="gallery-edit-grid">
 
-            <form action="/admin/konten/galeri/update" method="POST" enctype="multipart/form-data" class="gallery-edit-form">
+            <form action="{{ route('galeri.update', $galeri->id) }}" method="POST" enctype="multipart/form-data" class="gallery-edit-form">
                 @csrf
+                @method('PUT')
 
                 <div class="gallery-form-box">
                     <h3>Data Foto & Konten</h3>
 
                     <div class="gallery-field">
                         <label>Ganti Foto</label>
-                        <input type="file" name="image" accept="image/*">
+                        <input type="file" id="imageInput" name="image" accept="image/*">
                         <div class="gallery-current-file">
-                            File saat ini: galeri_01.jpg
+                            File saat ini: {{ basename($galeri->image) }}
                         </div>
                     </div>
 
                     <div class="gallery-field">
                         <label>Judul Kegiatan</label>
-                        <input type="text" name="title" value="" placeholder="Contoh: Makan Malam Bersama">
+                        <input type="text" id="titleInput" name="title" value="{{ old('title', $galeri->title) }}" placeholder="Contoh: Makan Malam Bersama" required>
                     </div>
 
                     <div class="gallery-field">
                         <label>Deskripsi Singkat</label>
-                        <textarea name="description" placeholder="Tuliskan deskripsi singkat"></textarea>
+                        <textarea id="descInput" name="description" placeholder="Tuliskan deskripsi singkat" required>{{ old('description', $galeri->description) }}</textarea>
                     </div>
 
                     <div class="gallery-form-grid">
                         <div class="gallery-field">
                             <label>Status</label>
-                            <select name="status">
-                                <option value="aktif" selected>Aktif</option>
-                                <option value="nonaktif">Nonaktif</option>
+                            <select id="statusInput" name="status">
+                                <option value="aktif" {{ $galeri->status == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                <option value="nonaktif" {{ $galeri->status == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
                             </select>
                         </div>
 
                         <div class="gallery-field">
                             <label>Urutan</label>
-                            <input type="number" name="sort_order" value="1">
+                            <input type="number" id="sortInput" name="sort_order" value="{{ old('sort_order', $galeri->sort_order) }}" min="1" required>
                         </div>
                     </div>
 
@@ -371,7 +363,7 @@
                 </div>
 
                 <div class="gallery-actions">
-                    <a href="/admin/konten/galeri" class="gallery-btn gallery-btn-secondary">
+                    <a href="{{ route('galeri.index') }}" class="gallery-btn gallery-btn-secondary">
                         Batal
                     </a>
 
@@ -382,18 +374,18 @@
             </form>
 
             <div class="gallery-preview-card">
-                <div class="gallery-preview-image">
+                <div class="gallery-preview-image" id="cardImagePreview" style="background-image: url('{{ asset('storage/' . $galeri->image) }}');">
                     <div class="gallery-hover-content">
-                        <h4 class="gallery-hover-title">Kumpul Bersama Penghuni Kos</h4>
-                        <p class="gallery-hover-desc">Keseruan momentum syukuran menyambut tahun ajaran baru bersama seluruh mahasiswi Kos Rumah Bata.</p>
+                        <h4 class="gallery-hover-title" id="previewTitle">{{ $galeri->title }}</h4>
+                        <p class="gallery-hover-desc" id="previewDesc">{{ $galeri->description }}</p>
                     </div>
                 </div>
 
                 <div class="gallery-preview-body">
                     <h3 class="gallery-preview-title">Arahkan Kursor untuk melihat Preview</h3>
                     <div class="gallery-meta">
-                        <span class="gallery-badge">Foto 1</span>
-                        <span class="gallery-badge">Aktif</span>
+                        <span class="gallery-badge" id="previewSort">Urutan: {{ $galeri->sort_order }}</span>
+                        <span class="gallery-badge" id="previewStatus" style="text-transform: capitalize;">{{ $galeri->status }}</span>
                     </div>
                 </div>
             </div>
@@ -402,5 +394,46 @@
 
     </div>
 </div>
+
+<script>
+    const titleInput = document.getElementById('titleInput');
+    const descInput = document.getElementById('descInput');
+    const sortInput = document.getElementById('sortInput');
+    const statusInput = document.getElementById('statusInput');
+    const imageInput = document.getElementById('imageInput');
+
+    const previewTitle = document.getElementById('previewTitle');
+    const previewDesc = document.getElementById('previewDesc');
+    const previewSort = document.getElementById('previewSort');
+    const previewStatus = document.getElementById('previewStatus');
+    const cardImagePreview = document.getElementById('cardImagePreview');
+
+    titleInput.addEventListener('input', function() {
+        previewTitle.textContent = this.value || 'Judul Kegiatan';
+    });
+
+    descInput.addEventListener('input', function() {
+        previewDesc.textContent = this.value || 'Deskripsi singkat kegiatan.';
+    });
+
+    sortInput.addEventListener('input', function() {
+        previewSort.textContent = 'Urutan: ' + (this.value || '1');
+    });
+
+    statusInput.addEventListener('change', function() {
+        previewStatus.textContent = this.value;
+    });
+
+    imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                cardImagePreview.style.backgroundImage = `url('${e.target.result}')`;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 
 @endsection

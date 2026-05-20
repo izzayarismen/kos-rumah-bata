@@ -3,9 +3,9 @@
 use App\Http\Controllers\Admin\AdminKamarController;
 use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminActivityController;
+use App\Http\Controllers\Admin\AdminGaleriController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KamarController;
-use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -18,11 +18,9 @@ Route::get('/kamar', [KamarController::class, 'index']);
 // Route untuk melihat detail kamar spesifik di sisi pelanggan
 Route::get('/kamar/{id}', [KamarController::class, 'show']);
 
-Route::get('/tentang-kami', function () {
-    return view('about');
-});
 
-Route::get('/aktivitas', [ActivityController::class, 'index']);
+Route::get('/aktivitas', [HomeController::class, 'activity']);
+Route::get('/tentang-kami', [HomeController::class, 'galeri']);
 
 Route::get('/kamar/{id}/ajukan-sewa', function () {
     return view('ajukan-sewa');
@@ -80,6 +78,9 @@ Route::prefix('admin')->group(function () {
 
     // CRUD Activity Admin
     Route::resource('/konten/activity', AdminActivityController::class);
+
+    // CRUD Galeri Admin
+    Route::resource('/konten/galeri', \App\Http\Controllers\Admin\AdminGaleriController::class);
 });
 
 Route::get('/admin/penghuni', function () {
@@ -150,10 +151,3 @@ Route::get('/admin/pengajuan-sewa/detail', function () {
     return view('admin.pengajuan_sewa_detail');
 });
 
-Route::get('/admin/konten/galeri', function () {
-    return view('admin.konten_galeri');
-});
-
-Route::get('/admin/konten/galeri/edit', function () {
-    return view('admin.konten_galeri_edit');
-});

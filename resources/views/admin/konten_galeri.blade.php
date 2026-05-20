@@ -55,7 +55,14 @@
 
     .gallery-form-row {
         display: grid;
-        grid-template-columns: 1fr 180px 150px 170px;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .gallery-form-footer {
+        display: grid;
+        grid-template-columns: 1fr 150px 170px;
         gap: 14px;
         align-items: end;
     }
@@ -170,8 +177,35 @@
         background-color: #fbf5f1;
     }
 
+    .gallery-info {
+        padding: 16px 16px 8px;
+        border-bottom: 1px dashed #f5edea;
+    }
+
+    .gallery-title-text {
+        margin: 0 0 4px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #211713;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .gallery-desc-text {
+        margin: 0;
+        font-size: 13px;
+        color: #86766f;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+        height: 36px;
+    }
+
     .gallery-body {
-        padding: 16px;
+        padding: 14px 16px 16px;
     }
 
     .gallery-meta {
@@ -256,15 +290,28 @@
         margin-bottom: 8px;
     }
 
+    .alert-success {
+        padding: 16px;
+        background-color: #e6f4ea;
+        border: 1px solid #34a853;
+        color: #137333;
+        border-radius: 18px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
     @media (max-width: 1150px) {
         .gallery-form-row {
-            grid-template-columns: 1fr 180px;
+            grid-template-columns: 1fr;
+            gap: 14px;
         }
-
+        .gallery-form-footer {
+            grid-template-columns: 1fr 150px;
+        }
         .gallery-add-btn {
             grid-column: 1 / -1;
         }
-
         .gallery-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -274,13 +321,11 @@
         .gallery-panel {
             padding: 22px;
         }
-
-        .gallery-form-row,
+        .gallery-form-footer,
         .gallery-toolbar,
         .gallery-grid {
             grid-template-columns: 1fr;
         }
-
         .gallery-add-btn {
             grid-column: auto;
             width: 100%;
@@ -290,21 +335,39 @@
 
 <div class="gallery-page">
 
+    @if(session('success'))
+        <div class="alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="gallery-panel">
         <div class="gallery-head">
             <h2>Kelola Galeri</h2>
-            <p>Upload dan atur foto yang akan tampil di landing page pelanggan.</p>
+            <p>Upload dan atur foto beserta info overlay yang akan tampil di halaman tentang kami pelanggan.</p>
         </div>
 
-        <form action="#" method="POST" enctype="multipart/form-data" class="gallery-form">
+        <form action="{{ route('galeri.store') }}" method="POST" enctype="multipart/form-data" class="gallery-form">
             @csrf
 
             <h3>Tambah Foto Galeri</h3>
 
             <div class="gallery-form-row">
                 <div class="gallery-field">
+                    <label>Judul Kegiatan / Foto</label>
+                    <input type="text" name="title" placeholder="Contoh: Kamar Deluxe AC" required>
+                </div>
+
+                <div class="gallery-field">
+                    <label>Deskripsi Singkat (Muncul saat di-hover)</label>
+                    <input type="text" name="description" placeholder="Contoh: Fasilitas pendingin ruangan..." required>
+                </div>
+            </div>
+
+            <div class="gallery-form-footer">
+                <div class="gallery-field">
                     <label>Upload Foto</label>
-                    <input type="file" name="image" accept="image/*">
+                    <input type="file" name="image" accept="image/*" required>
                 </div>
 
                 <div class="gallery-field">
@@ -316,8 +379,8 @@
                 </div>
 
                 <div class="gallery-field">
-                    <label>Urutan</label>
-                    <input type="number" name="sort_order" placeholder="1">
+                    <label>Urutan Tampil</label>
+                    <input type="number" name="sort_order" placeholder="1" value="1" min="1">
                 </div>
 
                 <button type="submit" class="gallery-add-btn">Tambah Foto</button>
@@ -327,111 +390,74 @@
 
     <div class="gallery-panel">
         <div class="gallery-toolbar">
-            <input type="text" id="gallerySearch" class="gallery-search" placeholder="Cari foto berdasarkan status atau urutan...">
-            <div class="gallery-count">4 foto ditampilkan</div>
+            <input type="text" id="gallerySearch" class="gallery-search" placeholder="Cari foto berdasarkan judul, status, atau urutan...">
+            <div class="gallery-count">{{ $galeris->count() }} foto ditampilkan</div>
         </div>
 
         <div class="gallery-grid" id="galleryList">
 
-            <div class="gallery-card" data-name="foto 1 aktif">
-                <div class="gallery-image" style="background-image: url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80');"></div>
+            @forelse($galeris as $index => $item)
+                <div class="gallery-card" data-search="{{ strtolower($item->title) }} {{ strtolower($item->status) }} urutan-{{ $item->sort_order }}">
+                    
+                    <div class="gallery-image" style="background-image: url('{{ asset('storage/' . $item->image) }}');"></div>
 
-                <div class="gallery-body">
-                    <div class="gallery-meta">
-                        <span class="gallery-badge">Foto 1</span>
-                        <span class="gallery-badge">Aktif</span>
+                    <div class="gallery-info">
+                        <h4 class="gallery-title-text">{{ $item->title }}</h4>
+                        <p class="gallery-desc-text">{{ $item->description }}</p>
                     </div>
 
-                    <div class="gallery-actions">
-                        <a href="/admin/konten/galeri/edit" class="gallery-btn-small gallery-edit">Edit</a>
+                    <div class="gallery-body">
+                        <div class="gallery-meta">
+                            <span class="gallery-badge">Urutan: {{ $item->sort_order }}</span>
+                            <span class="gallery-badge" style="text-transform: capitalize;">{{ $item->status }}</span>
+                        </div>
 
-                        <button type="button" class="gallery-btn-small gallery-delete" onclick="confirmDeleteGallery()">
-                            Hapus
-                        </button>
-                    </div>
-                </div>
-            </div>
+                        <div class="gallery-actions">
+                            <a href="{{ route('galeri.edit', $item->id) }}" class="gallery-btn-small gallery-edit">Edit</a>
 
-            <div class="gallery-card" data-name="foto 2 aktif">
-                <div class="gallery-image" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80');"></div>
-
-                <div class="gallery-body">
-                    <div class="gallery-meta">
-                        <span class="gallery-badge">Foto 2</span>
-                        <span class="gallery-badge">Aktif</span>
-                    </div>
-
-                    <div class="gallery-actions">
-                        <a href="/admin/konten/galeri/edit" class="gallery-btn-small gallery-edit">Edit</a>
-
-                        <button type="button" class="gallery-btn-small gallery-delete" onclick="confirmDeleteGallery()">
-                            Hapus
-                        </button>
+                            <form action="{{ route('galeri.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus foto galeri ini?')" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="gallery-btn-small gallery-delete" style="width: 100%; border: none;">
+                                    Hapus
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="gallery-card" data-name="foto 3 aktif">
-                <div class="gallery-image" style="background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80');"></div>
-
-                <div class="gallery-body">
-                    <div class="gallery-meta">
-                        <span class="gallery-badge">Foto 3</span>
-                        <span class="gallery-badge">Aktif</span>
-                    </div>
-
-                    <div class="gallery-actions">
-                        <a href="/admin/konten/galeri/edit" class="gallery-btn-small gallery-edit">Edit</a>
-
-                        <button type="button" class="gallery-btn-small gallery-delete" onclick="confirmDeleteGallery()">
-                            Hapus
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="gallery-card" data-name="foto 4 nonaktif">
-                <div class="gallery-image" style="background-image: url('https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=900&q=80');"></div>
-
-                <div class="gallery-body">
-                    <div class="gallery-meta">
-                        <span class="gallery-badge">Foto 4</span>
-                        <span class="gallery-badge">Nonaktif</span>
-                    </div>
-
-                    <div class="gallery-actions">
-                        <a href="/admin/konten/galeri/edit" class="gallery-btn-small gallery-edit">Edit</a>
-
-                        <button type="button" class="gallery-btn-small gallery-delete" onclick="confirmDeleteGallery()">
-                            Hapus
-                        </button>
-                    </div>
-                </div>
-            </div>
+            @empty
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        document.getElementById('galleryEmpty').classList.add('show');
+                    });
+                </script>
+            @endforelse
 
         </div>
 
         <div class="gallery-empty" id="galleryEmpty">
             <strong>Foto tidak ditemukan</strong>
-            <span>Coba gunakan kata kunci pencarian yang lain.</span>
+            <span>Belum ada foto galeri yang diunggah atau kata kunci tidak sesuai.</span>
         </div>
     </div>
 
 </div>
 
 <script>
+    // Fitur Pencarian / Filter Realtime Sisi Client
     const gallerySearch = document.getElementById('gallerySearch');
     const galleryItems = document.querySelectorAll('.gallery-card');
     const galleryEmpty = document.getElementById('galleryEmpty');
+    const galleryCountDisplay = document.querySelector('.gallery-count');
 
     gallerySearch.addEventListener('input', function () {
         const keyword = this.value.toLowerCase().trim();
         let visibleCount = 0;
 
         galleryItems.forEach(item => {
-            const name = item.dataset.name;
+            const searchTarget = item.dataset.search;
 
-            if (name.includes(keyword)) {
+            if (searchTarget.includes(keyword)) {
                 item.style.display = '';
                 visibleCount++;
             } else {
@@ -439,16 +465,10 @@
             }
         });
 
+        // Tampilkan teks info pencarian kosong jika tidak ada yang cocok
         galleryEmpty.classList.toggle('show', visibleCount === 0);
+        galleryCountDisplay.textContent = `${visibleCount} foto ditampilkan`;
     });
-
-    function confirmDeleteGallery() {
-        const confirmDelete = confirm('Yakin mau hapus foto galeri ini?');
-
-        if (confirmDelete) {
-            alert('Foto galeri berhasil dihapus. Nanti bagian ini disambungkan ke backend.');
-        }
-    }
 </script>
 
 @endsection
