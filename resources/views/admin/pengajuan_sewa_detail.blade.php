@@ -410,14 +410,9 @@
                 </div>
 
                 <div class="info-grid">
-                    <div class="info-box">
+                    <div class="info-box full">
                         <span>Nama Lengkap</span>
                         <strong>Raditya Cummalaka</strong>
-                    </div>
-
-                    <div class="info-box">
-                        <span>Tipe Penghuni</span>
-                        <strong>Mahasiswa</strong>
                     </div>
 
                     <div class="info-box">

@@ -10,23 +10,22 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// User
 Route::get('/', [HomeController::class, 'index']);
-
-// Route untuk melihat semua kamar di sisi pelanggan
-Route::get('/kamar', [KamarController::class, 'index']);
-
-// Route untuk melihat detail kamar spesifik di sisi pelanggan
-Route::get('/kamar/{id}', [KamarController::class, 'show']);
-
-
 Route::get('/aktivitas', [HomeController::class, 'activity']);
 Route::get('/tentang-kami', [HomeController::class, 'galeri']);
 
-Route::get('/kamar/{id}/ajukan-sewa', function () {
-    return view('ajukan-sewa');
+// Flow Sewa
+Route::prefix('kamar')->group(function () {
+    Route::get('/', [KamarController::class, 'index']);
+    Route::get('/{id}', [KamarController::class, 'show']);
+    Route::get('/{id}/ajukan-sewa', function () {
+        return view('ajukan-sewa');
+    });
 });
 
-Route::get('/kamar/detail/pembayaran', function () {
+// Payment
+Route::get('/pembayaran', function () {
     return view('pembayaran');
 });
 Route::get('/pelunasan', function () {
@@ -34,22 +33,21 @@ Route::get('/pelunasan', function () {
 });
 
 Route::middleware('auth')->group(function () {
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'getProfile']);
-    Route::put('/profile', [ProfileController::class, 'updateProfile']);
 
-    Route::get('/profile/status-pembayaran', function () {
-        return view('status-pembayaran');
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'getProfile']);
+        Route::put('/', [ProfileController::class, 'updateProfile']);
+        Route::put('/password', [ProfileController::class, 'updatePassword']);
+
+        Route::get('/status-pembayaran', function () {
+            return view('status-pembayaran');
+        });
+
+        Route::get('/laporan-fasilitas', function () {
+            return view('laporan-fasilitas');
+        });
     });
 
-    Route::get('/profile/laporan-fasilitas', function () {
-        return view('laporan-fasilitas');
-    });
-
-    // Update Password
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
-
-    // Logout
     Route::get('/logout', [AuthController::class, 'getLogout']);
 });
 
@@ -61,7 +59,6 @@ Route::middleware('guest')->group(function () {
     // Login
     Route::get('/login', [AuthController::class, 'getLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'postLogin']);
-
 });
 
 // admin

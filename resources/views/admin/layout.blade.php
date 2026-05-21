@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Kos Rumah Bata</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <style>
         * {
@@ -30,7 +30,7 @@
 
         body {
             margin: 0;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
         }
@@ -797,7 +797,7 @@
         <p class="menu-title">Menu Admin</p>
 
         <nav class="menu">
-            <a href="/admin" class="{{ request()->is('/') ? 'active' : '' }}">
+            <a href="/admin" class="{{ request()->is('admin') ? 'active' : '' }}">
                 Dashboard
             </a>
 
@@ -925,7 +925,7 @@
 
                     <div class="profile-dropdown" id="profileDropdown">
                         <a href="/admin/profile">Profile</a>
-                        <a href="/admin/logout">Logout</a>
+                        <a href="/logout">Logout</a>
                     </div>
                 </div>
 
