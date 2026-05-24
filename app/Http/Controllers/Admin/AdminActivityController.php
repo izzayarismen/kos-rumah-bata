@@ -14,7 +14,7 @@ class AdminActivityController extends Controller
         $activities = Activity::orderBy('is_pinned', 'desc')
                               ->orderBy('date', 'desc')
                               ->get();
-                              
+
         return view('admin.konten_activity', compact('activities'));
     }
 
@@ -24,7 +24,7 @@ class AdminActivityController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'link_url' => 'nullable|url|max:255',
             'link_label' => 'nullable|string|max:100',
             'category' => 'required|string|in:Info Kamar,Update Kos,Aktivitas,Promo,Social',
@@ -75,7 +75,7 @@ class AdminActivityController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'link_url' => 'nullable|url|max:255',
             'link_label' => 'nullable|string|max:100',
             'category' => 'required|string|in:Info Kamar,Update Kos,Aktivitas,Promo,Social',

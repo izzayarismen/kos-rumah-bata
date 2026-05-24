@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,   // Tambahkan ini
             ActivitySeeder::class,
             GaleriSeeder::class,
-
         ]);
     }
 }

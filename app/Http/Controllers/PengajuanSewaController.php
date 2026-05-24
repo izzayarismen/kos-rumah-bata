@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Kamar;
+use App\Models\PengajuanSewa;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
+class PengajuanSewaController extends Controller
+{
+    public function create($id)
+    {
+        $kamar = Kamar::where('id', $id)->where('status', 'tersedia')->firstOrFail();
+        $userLogedIn = Auth::user();
+        $sekarang = Carbon::now();
+        $targetJuniTahunIni = Carbon::create($sekarang->year, 6, 1, 0, 0, 0);
+
+        if ($sekarang->greaterThan($targetJuniTahunIni)) {
+            $tanggalMulaiOtomatis = $targetJuniTahunIni->addYear()->format('Y-m-d');
+        } else {
+            $tanggalMulaiOtomatis = $targetJuniTahunIni->format('Y-m-d');
+        }
+
+        return view('ajukan-sewa', compact('kamar', 'tanggalMulaiOtomatis', 'userLogedIn'));
+    }
+
+    public function store(Request $request, $id)
+    {
+        $request->validate([
+            'nama'            => 'required|string|max:255',
+            'no_hp'           => 'required|string|max:20',
+            'kontak_darurat'  => 'required|string|max:20',
+            'alamat'          => 'required|string',
+            'ktp_dokumen'     => 'required_without:user_ktp|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'surat_komitmen'  => 'required_without:user_komitmen|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        $kamar = Kamar::where('id', $id)->where('status', 'tersedia')->firstOrFail();
+
+        $towerLower = strtolower($kamar->tower);
+        $kodeTower = 'GJL';
+
+        if (str_contains($towerLower, 'genap') || str_contains($towerLower, 'gnp')) {
+            $kodeTower = 'GNP';
+        } elseif (str_contains($towerLower, 'ganjil') || str_contains($towerLower, 'gjl')) {
+            $kodeTower = 'GJL';
+        }
+
+        do {
+            $randomNumber = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+            $orderId = "KRB-{$kodeTower}-{$randomNumber}";
+            $exists = PengajuanSewa::where('order_id', $orderId)->exists();
+        } while ($exists);
+
+        $sekarang = Carbon::now();
+        $targetJuniTahunIni = Carbon::create($sekarang->year, 6, 1, 0, 0, 0);
+
+        if ($sekarang->greaterThan($targetJuniTahunIni)) {
+            $tanggalMulai = $targetJuniTahunIni->addYear()->format('Y-m-d');
+        } else {
+            $tanggalMulai = $targetJuniTahunIni->format('Y-m-d');
+        }
+
+        $user = Auth::user();
+
+        $ktpPath = $user->ktp_dokumen;
+        if ($request->hasFile('ktp_dokumen')) {
+            $ktpPath = $request->file('ktp_dokumen')->store('dokumen_ktp', 'public');
+        }
+
+        $suratPath = $user->surat_komitmen;
+        if ($request->hasFile('surat_komitmen')) {
+            $suratPath = $request->file('surat_komitmen')->store('surat_komitmen', 'public');
+        }
+
+        $user->update([
+            'ktp_dokumen'    => $ktpPath,
+            'surat_komitmen' => $suratPath,
+            'kontak_darurat' => $request->kontak_darurat,
+            'alamat'         => $request->alamat,
+        ]);
+
+        PengajuanSewa::create([
+            'order_id'        => $orderId,
+            'user_id'         => $user->id,
+            'kamar_id'        => $kamar->id,
+            'nama'            => $request->nama,
+            'ktp_dokumen'     => $ktpPath,
+            'no_hp'           => $request->no_hp,
+            'kontak_darurat'  => $request->kontak_darurat,
+            'alamat'          => $request->alamat,
+            'surat_komitmen'  => $suratPath,
+            'tanggal_mulai'   => $tanggalMulai,
+            'durasi_sewa'     => 12,
+            'status'          => 'pending',
+        ]);
+
+        return redirect('/pembayaran/' . $orderId)->with('success', 'Pengajuan sewa Anda berhasil dikirim dengan Order ID: ' . $orderId);
+    }
+
+    public function show($order_id)
+    {
+        $pengajuan = PengajuanSewa::where('order_id', $order_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        return view('pembayaran', compact('pengajuan'));
+    }
+
+    public function payment(Request $request, $order_id)
+    {
+        $request->validate([
+            'tipe_pembayaran' => 'required|in:lunas,dp',
+            'bukti_transfer'  => 'required|image|mimes:jpg,jpeg,png'
+        ], [
+            'tipe_pembayaran.required' => 'Silahkan pilih tipe pembayaran (Lunas / DP).',
+            'bukti_transfer.required'  => 'Silahkan unggah bukti transfer terlebih dahulu.',
+            'bukti_transfer.image'     => 'Bukti transfer harus berupa gambar.',
+        ]);
+
+        $pengajuan = PengajuanSewa::where('order_id', $order_id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        if ($request->hasFile('bukti_transfer')) {
+            $buktiPath = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
+
+            $pengajuan->update([
+                'sudah_bayar'     => true,
+                'tipe_pembayaran' => $request->tipe_pembayaran,
+                'bukti_transfer'  => $buktiPath,
+            ]);
+
+            $pengajuan->kamar->update([
+                'status' => 'penuh'
+            ]);
+        }
+
+        return redirect()->back()->with('success_payment', 'Bukti pembayaran berhasil diunggah.');
+    }
+}

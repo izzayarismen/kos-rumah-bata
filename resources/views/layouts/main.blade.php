@@ -49,7 +49,7 @@
                             </a>
 
                             <a href="/kamar"
-                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('kamar*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
+                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('kamar*') || request()->is('pembayaran*') || request()->is('pelunasan*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
                             Kamar
                             </a>
 

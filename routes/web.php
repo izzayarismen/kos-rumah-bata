@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminGaleriController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PengajuanSewaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,15 +20,8 @@ Route::get('/tentang-kami', [HomeController::class, 'galeri']);
 Route::prefix('kamar')->group(function () {
     Route::get('/', [KamarController::class, 'index']);
     Route::get('/{id}', [KamarController::class, 'show']);
-    Route::get('/{id}/ajukan-sewa', function () {
-        return view('ajukan-sewa');
-    });
 });
 
-// Payment
-Route::get('/pembayaran', function () {
-    return view('pembayaran');
-});
 Route::get('/pelunasan', function () {
     return view('pelunasan');
 });
@@ -47,6 +41,12 @@ Route::middleware('auth')->group(function () {
             return view('laporan-fasilitas');
         });
     });
+
+    Route::get('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'create']);
+    Route::post('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'store']);
+
+    Route::get('/pembayaran/{order_id}', [PengajuanSewaController::class, 'show']);
+    Route::post('/pembayaran/{order_id}', [PengajuanSewaController::class, 'payment']);
 
     Route::get('/logout', [AuthController::class, 'getLogout']);
 });
@@ -77,7 +77,7 @@ Route::prefix('admin')->group(function () {
     Route::resource('/konten/activity', AdminActivityController::class);
 
     // CRUD Galeri Admin
-    Route::resource('/konten/galeri', \App\Http\Controllers\Admin\AdminGaleriController::class);
+    Route::resource('/konten/galeri', AdminGaleriController::class);
 });
 
 Route::get('/admin/penghuni', function () {

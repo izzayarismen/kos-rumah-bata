@@ -24,8 +24,8 @@ class ProfileController extends Controller
             'jenis_kelamin' => 'required|in:Perempuan,Laki-laki',
             'alamat' => 'required|string',
             'kontak_darurat' => 'required|numeric',
-            'ktp_dokumen' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'surat_komitmen' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'ktp_dokumen' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
+            'surat_komitmen' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);
 
         $user = User::findOrFail(Auth::id());
@@ -45,7 +45,7 @@ class ProfileController extends Controller
                 Storage::delete('public/documents/' . $user->ktp_dokumen);
             }
             $ktpName = 'ktp_' . time() . '.' . $request->file('ktp_dokumen')->getClientOriginalExtension();
-            $request->file('ktp_dokumen')->storeAs('public/documents', $ktpName);
+            $request->file('ktp_dokumen')->store('dokumen_ktp', 'public');
             $data['ktp_dokumen'] = $ktpName;
         }
 
@@ -55,7 +55,7 @@ class ProfileController extends Controller
                 Storage::delete('public/documents/' . $user->surat_komitmen);
             }
             $suratName = 'surat_' . time() . '.' . $request->file('surat_komitmen')->getClientOriginalExtension();
-            $request->file('surat_komitmen')->storeAs('public/documents', $suratName);
+            $request->file('surat_komitmen')->store('surat_komitmen', 'public');
             $data['surat_komitmen'] = $suratName;
         }
 

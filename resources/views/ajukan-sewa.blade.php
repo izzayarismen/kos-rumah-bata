@@ -2,7 +2,7 @@
 
 @section("content")
 <div class="container-app pt-6">
-    <a href="/kamar/{id}" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
+    <a href="/kamar/{{ $kamar->id }}" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
             <path d="m12 19-7-7 7-7"></path>
             <path d="M19 12H5"></path>
@@ -11,20 +11,68 @@
     </a>
 </div>
 <section class="container-app py-6 grid lg:grid-cols-3 gap-6">
-    <form class="lg:col-span-2 bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-5">
+    {{-- Form Utama disesuaikan untuk proses upload data --}}
+    <form action="/kamar/{{ $kamar->id }}/ajukan-sewa" method="POST" enctype="multipart/form-data" class="lg:col-span-2 bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-5">
+        @csrf
+        <input type="hidden" name="user_ktp" value="{{ $userLogedIn->ktp_dokumen }}">
+        <input type="hidden" name="user_komitmen" value="{{ $userLogedIn->surat_komitmen }}">
         <div>
             <h1 class="text-2xl font-bold">Form Pengajuan Sewa</h1>
             <p class="text-sm text-muted-foreground mt-1">Lengkapi data diri &amp; dokumen untuk mengajukan sewa.</p>
         </div>
 
+        @if(session('success'))
+            <div class="mb-5 flex items-start gap-4 p-4 rounded-2xl shadow-sm backdrop-blur-sm"
+                style="background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: rgb(5, 150, 105);" role="alert">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl animate-pulse"
+                    style="background-color: rgba(16, 185, 129, 0.2); color: rgb(5, 150, 105);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                </span>
+                <div class="flex-1 pt-1">
+                    <h3 class="font-bold text-sm leading-none mb-1 text-emerald-800">Berhasil!</h3>
+                    <p class="text-xs font-medium opacity-90 text-emerald-700">{{ session('success') }}</p>
+                </div>
+            </div>
+        @endif
+
+        @if(session('error') || $errors->any())
+            <div class="mb-5 flex items-start gap-4 p-4 rounded-2xl shadow-sm backdrop-blur-sm"
+                style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: rgb(220, 38, 38);" role="alert">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
+                    style="background-color: rgba(239, 68, 68, 0.2); color: rgb(220, 38, 38);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" x2="12" y1="8" y2="12"/>
+                        <line x1="12" x2="12.01" y1="16" y2="16"/>
+                    </svg>
+                </span>
+                <div class="flex-1 pt-1">
+                    <h3 class="font-bold text-sm leading-none mb-1 text-red-800">Terjadi Kesalahan</h3>
+                    @if(session('error'))
+                        <p class="text-xs font-medium opacity-90 text-red-700">{{ session('error') }}</p>
+                    @else
+                        <ul class="list-disc pl-4 text-xs font-medium opacity-90 text-red-700 space-y-0.5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         <div class="space-y-1.5">
             <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="fullName">Nama Lengkap <span class="text-destructive">*</span></label>
-            <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="fullName" required="" value="">
+            {{-- Autofill nama dari user yang sedang login --}}
+            <input type="text" name="nama" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="fullName" required value="{{ old('nama', $userLogedIn->name ?? $userLogedIn->nama ?? '') }}">
         </div>
 
         <div>
             <p class="text-sm font-semibold mb-1.5">Upload KTP <span class="text-destructive">*</span></p>
-            <button type="button" class="w-full rounded-xl border-2 border-dashed p-4 text-left transition-colors border-border hover:border-primary hover:bg-primary-soft/30">
+            <button type="button" id="btn-ktp" class="w-full rounded-xl border-2 border-dashed p-4 text-left transition-colors border-border hover:border-primary hover:bg-primary-soft/30">
                 <div class="flex items-center gap-3">
                     <span class="h-10 w-10 grid place-items-center rounded-lg bg-secondary text-muted-foreground">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload h-5 w-5">
@@ -34,20 +82,54 @@
                         </svg>
                     </span>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">Klik untuk pilih file</p>
+                        <p class="text-sm font-medium truncate" id="label-ktp">
+                            @if(!empty($userLogedIn->ktp_dokumen))
+                                {{ basename($userLogedIn->ktp_dokumen) }} (Tersedia)
+                            @else
+                                Klik untuk pilih file
+                            @endif
+                        </p>
                         <p class="text-xs text-muted-foreground">Foto KTP yang jelas. Format: JPG/PNG/PDF.</p>
                     </div>
                 </div>
             </button>
-            <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+            <input type="file" id="input-ktp" name="ktp_dokumen" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+
+            {{-- Tempat Preview KTP --}}
+            <div id="preview-container-ktp" class="mt-3 @if(empty($userLogedIn->ktp_dokumen)) hidden @endif border rounded-xl p-2 bg-muted/30">
+                <p class="text-xs font-medium text-muted-foreground mb-1">Preview KTP:</p>
+                <div id="preview-content-ktp" class="max-h-60 overflow-hidden flex items-center justify-start rounded-lg">
+                    @if(!empty($userLogedIn->ktp_dokumen))
+                        @if(Str::endsWith(strtolower($userLogedIn->ktp_dokumen), ['.pdf']))
+                            <embed src="{{ asset('storage/' . $userLogedIn->ktp_dokumen) }}" type="application/pdf" class="w-full h-64 rounded-md border">
+                        @elseif(Str::endsWith(strtolower($userLogedIn->ktp_dokumen), ['.jpg', '.jpeg', '.png']))
+                            <img src="{{ asset('storage/' . $userLogedIn->ktp_dokumen) }}" class="max-w-full max-h-48 object-contain rounded-md border">
+                        @else
+                            <p class="text-sm text-foreground italic py-2">Berkas KTP sudah tersimpan.</p>
+                        @endif
+                    @endif
+                </div>
+            </div>
         </div>
 
         <div class="grid sm:grid-cols-2 gap-4">
-            <div class="space-y-1.5"><label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="phone">No HP <span class="text-destructive">*</span></label><input type="tel" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="phone" required="" value=""></div>
-            <div class="space-y-1.5"><label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="emergencyPhone">No HP Orang Tua / Emergency <span class="text-destructive">*</span></label><input type="tel" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="emergencyPhone" required="" value=""></div>
+            <div class="space-y-1.5">
+                <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="phone">No HP <span class="text-destructive">*</span></label>
+                {{-- Autofill nomor HP dari user yang sedang login --}}
+                <input type="tel" name="no_hp" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="phone" required value="{{ old('no_hp', $userLogedIn->no_hp ?? $userLogedIn->phone ?? '') }}">
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="emergencyPhone">No HP Orang Tua / Emergency <span class="text-destructive">*</span></label>
+                {{-- Autofill kontak darurat dari user jika sebelumnya sudah ada --}}
+                <input type="tel" name="kontak_darurat" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="emergencyPhone" required value="{{ old('kontak_darurat', $userLogedIn->kontak_darurat ?? '') }}">
+            </div>
         </div>
 
-        <div class="space-y-1.5"><label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="address">Alamat Asal <span class="text-destructive">*</span></label><textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="address" rows="3" required=""></textarea></div>
+        <div class="space-y-1.5">
+            <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="address">Alamat Asal <span class="text-destructive">*</span></label>
+            {{-- Autofill alamat asal dari user yang sedang login --}}
+            <textarea name="alamat" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="address" rows="3" required>{{ old('alamat', $userLogedIn->alamat ?? '') }}</textarea>
+        </div>
 
         <div class="space-y-3">
             <div>
@@ -81,7 +163,7 @@
                 </a>
             </div>
 
-            <button type="button" class="w-full rounded-xl border-2 border-dashed p-4 text-left transition-colors border-border hover:border-primary hover:bg-primary-soft/30">
+            <button type="button" id="btn-komitmen" class="w-full rounded-xl border-2 border-dashed p-4 text-left transition-colors border-border hover:border-primary hover:bg-primary-soft/30">
                 <div class="flex items-center gap-3">
                     <span class="h-10 w-10 grid place-items-center rounded-lg bg-secondary text-muted-foreground">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload h-5 w-5">
@@ -91,12 +173,34 @@
                         </svg>
                     </span>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">Klik untuk pilih file surat komitmen</p>
+                        <p class="text-sm font-medium truncate" id="label-komitmen">
+                            @if(!empty($userLogedIn->surat_komitmen))
+                                {{ basename($userLogedIn->surat_komitmen) }} (Tersedia)
+                            @else
+                                Klik untuk pilih file surat komitmen
+                            @endif
+                        </p>
                         <p class="text-xs text-muted-foreground">Format yang didukung: PDF/JPG/PNG.</p>
                     </div>
                 </div>
             </button>
-            <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+            <input type="file" id="input-komitmen" name="surat_komitmen" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+
+            {{-- Tempat Preview Surat Komitmen --}}
+            <div id="preview-container-komitmen" class="mt-3 @if(empty($userLogedIn->surat_komitmen)) hidden @endif border rounded-xl p-2 bg-muted/30">
+                <p class="text-xs font-medium text-muted-foreground mb-1">Preview Surat Komitmen:</p>
+                <div id="preview-content-komitmen" class="max-h-60 overflow-hidden flex items-center justify-start rounded-lg">
+                    @if(!empty($userLogedIn->surat_komitmen))
+                        @if(Str::endsWith(strtolower($userLogedIn->surat_komitmen), ['.pdf']))
+                            <embed src="{{ asset('storage/' . $userLogedIn->surat_komitmen) }}" type="application/pdf" class="w-full h-64 rounded-md border">
+                        @elseif(Str::endsWith(strtolower($userLogedIn->surat_komitmen), ['.jpg', '.jpeg', '.png']))
+                            <img src="{{ asset('storage/' . $userLogedIn->surat_komitmen) }}" class="max-w-full max-h-48 object-contain rounded-md border">
+                        @else
+                            <p class="text-sm text-foreground italic py-2">Berkas Surat Komitmen sudah tersimpan.</p>
+                        @endif
+                    @endif
+                </div>
+            </div>
         </div>
 
         <div class="flex items-center gap-2 text-xs text-muted-foreground">
@@ -107,24 +211,102 @@
             Data Anda aman dan hanya digunakan untuk proses sewa.
         </div>
 
-        <a href="/kamar/detail/pembayaran" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full" type="submit">Lanjut ke Pembayaran</a>
+        {{-- Mengubah tag <a> menjadi <button type="submit"> untuk memicu pengiriman data form --}}
+        <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full">
+            Kirim Pengajuan Sewa
+        </button>
     </form>
 
+    {{-- Data Dinamis untuk Ringkasan Kamar --}}
     <aside class="bg-card border border-border/60 rounded-2xl p-5 shadow-soft self-start lg:sticky lg:top-20 space-y-4">
         <p class="text-sm font-semibold">Ringkasan Kamar</p>
-        <div class="rounded-xl overflow-hidden aspect-[4/3] bg-muted"><img src="{{ asset('3.jpg') }}" alt="Kamar A1 — Standard" class="h-full w-full object-cover"></div>
+        <div class="rounded-xl overflow-hidden aspect-[4/3] bg-muted">
+            <img src="{{ $kamar->foto_utama ? asset('storage/' . $kamar->foto_utama) : asset('3.jpg') }}" alt="Kamar {{ $kamar->nomor_kamar }}" class="h-full w-full object-cover">
+        </div>
         <div>
-            <h2 class="font-bold leading-tight">Kamar A1 — Standard</h2>
+            <h2 class="font-bold leading-tight">Kamar {{ $kamar->nomor_kamar }} — {{ $kamar->tower }}</h2>
             <div class="flex items-center gap-2 mt-2">
-                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">Non AC</div>
-                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">3 x 3 m</div>
+                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                    {{ strtoupper($kamar->tipe_kamar) }}
+                </div>
+                <div class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                    {{ $kamar->luas }}
+                </div>
             </div>
         </div>
         <div class="pt-3 border-t border-border">
             <p class="text-xs text-muted-foreground">Harga sewa</p>
-            <p class="text-2xl font-bold text-primary">Rp&nbsp;8.400.000<span class="text-sm font-normal text-muted-foreground"> / tahun</span></p>
+            <p class="text-2xl font-bold text-primary">Rp&nbsp;{{ number_format($kamar->harga, 0, ',', '.') }}<span class="text-sm font-normal text-muted-foreground"> / tahun</span></p>
         </div>
-        <p class="text-xs text-muted-foreground">Status awal pengajuan: <span class="font-medium text-foreground">Pending</span></p>
+        <div class="pt-2 text-xs text-muted-foreground space-y-1">
+            <p>Tanggal Mulai: <span class="font-medium text-foreground">{{ \Carbon\Carbon::parse($tanggalMulaiOtomatis)->translatedFormat('d F Y') }}</span></p>
+            <p>Durasi Sewa: <span class="font-medium text-foreground">12 Bulan (1 Tahun)</span></p>
+            <p>Status awal pengajuan: <span class="font-medium text-foreground">Pending</span></p>
+        </div>
     </aside>
 </section>
+
+{{-- JavaScript Vanilla untuk integrasi file trigger & live preview gambar/PDF --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        setupFilePreview('btn-ktp', 'input-ktp', 'label-ktp', 'preview-container-ktp', 'preview-content-ktp', 'Klik untuk pilih file KTP');
+        setupFilePreview('btn-komitmen', 'input-komitmen', 'label-komitmen', 'preview-container-komitmen', 'preview-content-komitmen', 'Klik untuk pilih file surat komitmen');
+
+        function setupFilePreview(btnId, inputId, labelId, containerId, contentId, defaultLabel) {
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            const label = document.getElementById(labelId);
+            const container = document.getElementById(containerId);
+            const content = document.getElementById(contentId);
+
+            // Buka explorer file saat tombol palsu diklik
+            btn.addEventListener('click', function () {
+                input.click();
+            });
+
+            // Jalankan preview saat file dipilih
+            input.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    label.textContent = file.name;
+                    container.classList.remove('hidden');
+                    content.innerHTML = ''; // Kosongkan preview lama
+
+                    const reader = new FileReader();
+
+                    if (file.type.startsWith('image/')) {
+                        // Jika jenis berkas adalah Gambar
+                        reader.onload = function (e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.className = 'max-w-full max-h-48 object-contain rounded-md border';
+                            content.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    } else if (file.type === 'application/pdf') {
+                        // Jika jenis berkas adalah PDF
+                        reader.onload = function (e) {
+                            const embed = document.createElement('embed');
+                            embed.src = e.target.result;
+                            embed.type = 'application/pdf';
+                            embed.className = 'w-full h-64 rounded-md border';
+                            content.appendChild(embed);
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        // Jika tipe file lain (.docx, dll) tampilkan teks info saja
+                        content.innerHTML = `<p class="text-sm text-foreground italic py-2">Berkas terpilih: ${file.name} (${(file.size/1024).toFixed(1)} KB)</p>`;
+                    }
+                } else {
+                    // Jika batal memilih file, kembalikan ke data bawaan database (bila ada) atau sembunyikan kembali
+                    if(content.children.length === 0 || content.textContent.trim() === "") {
+                        label.textContent = defaultLabel;
+                        container.classList.add('hidden');
+                        content.innerHTML = '';
+                    }
+                }
+            });
+        }
+    });
+</script>
 @endsection
