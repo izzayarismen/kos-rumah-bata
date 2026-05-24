@@ -18,20 +18,12 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('kamar_id')->constrained('kamars')->onDelete('cascade');
 
-            $table->string('nama');
-            $table->string('ktp_dokumen')->nullable();
-            $table->string('no_hp', 20);
-            $table->string('kontak_darurat', 20);
-            $table->text('alamat');
-            $table->string('surat_komitmen')->nullable();
-
             $table->date('tanggal_mulai');
             $table->integer('durasi_sewa');
             $table->text('catatan')->nullable();
-
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
 
-            // 2 Field Baru Tambahan
+            $table->boolean('sudah_verif')->default(false);
             $table->boolean('sudah_bayar')->default(false);
             $table->string('bukti_transfer')->nullable();
             $table->enum('tipe_pembayaran', ['lunas', 'dp'])->nullable();

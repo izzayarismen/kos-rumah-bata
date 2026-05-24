@@ -2,12 +2,6 @@
 
 @section("content")
 
-@if (session('error'))
-    <script>
-        alert("{{ session('error') }}");
-    </script>
-@endif
-
 <main class="flex-1 grid place-items-center py-12">
     <div class="w-full max-w-md mx-auto px-4">
         <div class="text-center mb-6">
@@ -23,6 +17,48 @@
         <form action="/register" method="POST" class="bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-4">
             @csrf
             <div class="space-y-1.5">
+                @if(session('success'))
+                    <div class="mb-5 flex items-start gap-4 p-4 rounded-2xl shadow-sm backdrop-blur-sm"
+                        style="background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: rgb(5, 150, 105);" role="alert">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl animate-pulse"
+                            style="background-color: rgba(16, 185, 129, 0.2); color: rgb(5, 150, 105);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="m9 12 2 2 4-4"/>
+                            </svg>
+                        </span>
+                        <div class="flex-1 pt-1">
+                            <h3 class="font-bold text-sm leading-none mb-1 text-emerald-800">Berhasil!</h3>
+                            <p class="text-xs font-medium opacity-90 text-emerald-700">{{ session('success') }}</p>
+                        </div>
+                    </div>
+                @endif
+
+                @if(session('error') || $errors->any())
+                    <div class="mb-5 flex items-start gap-4 p-4 rounded-2xl shadow-sm backdrop-blur-sm"
+                        style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: rgb(220, 38, 38);" role="alert">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
+                            style="background-color: rgba(239, 68, 68, 0.2); color: rgb(220, 38, 38);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" x2="12" y1="8" y2="12"/>
+                                <line x1="12" x2="12.01" y1="16" y2="16"/>
+                            </svg>
+                        </span>
+                        <div class="flex-1 pt-1">
+                            <h3 class="font-bold text-sm leading-none mb-1 text-red-800">Terjadi Kesalahan</h3>
+                            @if(session('error'))
+                                <p class="text-xs font-medium opacity-90 text-red-700">{{ session('error') }}</p>
+                            @else
+                                <ul class="list-disc pl-4 text-xs font-medium opacity-90 text-red-700 space-y-0.5">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </div>
+                    </div>
+                @endif
                 <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">Nama Lengkap</label>
                 <div class="relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground">

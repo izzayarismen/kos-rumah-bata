@@ -47,6 +47,13 @@
         grid-column: 1 / -1;
     }
 
+    .form-sepertiga {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr)); /* Diubah menjadi 3 kolom agar rapi untuk foto tambahan 1-3 */
+        gap: 14px;
+        padding: 14px 0 14px 0;
+    }
+
     .form-group {
         margin: 0;
     }
@@ -289,13 +296,16 @@
                     </select>
                 </div>
 
+            </div>
+            <div class="form-sepertiga">
+
                 <div class="form-group">
                     <label>Tower</label>
                     <select name="tower">
                         <option value="Ganjil" {{ old('tower', $kamar->tower) == 'Ganjil' ? 'selected' : '' }}>Tower Ganjil</option>
                         <option value="Genap" {{ old('tower', $kamar->tower) == 'Genap' ? 'selected' : '' }}>Tower Genap</option>
                     </select>
-                    <span class="form-hint">Tower ganjil untuk kamar Non AC.</span>
+                    <span class="form-hint">Tower ganjil untuk kamar Non AC. Tower genap untuk kamar AC</span>
                 </div>
 
                 <div class="form-group">
@@ -304,7 +314,6 @@
                         <option value="non-ac" {{ old('tipe_kamar', $kamar->tipe_kamar) == 'non-ac' ? 'selected' : '' }}>Non AC</option>
                         <option value="ac" {{ old('tipe_kamar', $kamar->tipe_kamar) == 'ac' ? 'selected' : '' }}>AC</option>
                     </select>
-                    <span class="form-hint">Tower genap untuk kamar AC.</span>
                 </div>
 
                 <div class="form-group">
@@ -312,9 +321,22 @@
                     <input type="text" name="luas" value="{{ old('luas', $kamar->luas) }}" required>
                 </div>
 
+            </div>
+            <div class="form-grid">
+
                 <div class="form-group">
-                    <label>Harga Sewa / Tahun</label>
+                    <label>Harga Sewa</label>
                     <input type="number" name="harga" value="{{ old('harga', (int)$kamar->harga) }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Dalam Hitungan</label>
+                    <select name="status">
+                        <option value="penuh" {{ old('status', $kamar->status) == 'penuh' ? 'selected' : '' }}>tahun</option>
+                        <option value="tersedia" {{ old('status', $kamar->status) == 'tersedia' ? 'selected' : '' }}>1 bulan</option>
+                        <option value="" {{ old('status', $kamar->status) == 'penuh' ? 'selected' : '' }}>2 bulan</option>
+                        <option value="" {{ old('status', $kamar->status) == 'penuh' ? 'selected' : '' }}>6 bulan</option>
+                    </select>
                 </div>
 
                 <div class="form-full">

@@ -221,7 +221,7 @@
     <aside class="bg-card border border-border/60 rounded-2xl p-5 shadow-soft self-start lg:sticky lg:top-20 space-y-4">
         <p class="text-sm font-semibold">Ringkasan Kamar</p>
         <div class="rounded-xl overflow-hidden aspect-[4/3] bg-muted">
-            <img src="{{ $kamar->foto_utama ? asset('storage/' . $kamar->foto_utama) : asset('3.jpg') }}" alt="Kamar {{ $kamar->nomor_kamar }}" class="h-full w-full object-cover">
+            <img src="{{ $kamar->foto_utama ? asset($kamar->foto_utama) : asset('3.jpg') }}" alt="Kamar {{ $kamar->nomor_kamar }}" class="h-full w-full object-cover">
         </div>
         <div>
             <h2 class="font-bold leading-tight">Kamar {{ $kamar->nomor_kamar }} — {{ $kamar->tower }}</h2>

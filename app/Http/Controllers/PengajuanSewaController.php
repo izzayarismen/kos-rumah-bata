@@ -39,6 +39,18 @@ class PengajuanSewaController extends Controller
         ]);
 
         $kamar = Kamar::where('id', $id)->where('status', 'tersedia')->firstOrFail();
+        $user = Auth::user();
+
+        $pengajuanLama = PengajuanSewa::where('user_id', $user->id)
+                                        ->where('kamar_id', $kamar->id)
+                                        ->where('status', 'pending')
+                                        ->first();
+
+        if ($pengajuanLama) {
+            return redirect('/pembayaran/' . $pengajuanLama->order_id)
+                ->with('success', 'Anda sudah memiliki pengajuan aktif untuk kamar ini. Silakan lanjutkan pembayaran dengan Order ID: ' . $pengajuanLama->order_id);
+        }
+        // ------------------------------------------------
 
         $towerLower = strtolower($kamar->tower);
         $kodeTower = 'GJL';
@@ -63,8 +75,6 @@ class PengajuanSewaController extends Controller
         } else {
             $tanggalMulai = $targetJuniTahunIni->format('Y-m-d');
         }
-
-        $user = Auth::user();
 
         // --- PROSES DOKUMEN KTP ---
         $ktpPath = $user->ktp_dokumen;
@@ -113,12 +123,6 @@ class PengajuanSewaController extends Controller
             'order_id'        => $orderId,
             'user_id'         => $user->id,
             'kamar_id'        => $kamar->id,
-            'nama'            => $request->nama,
-            'ktp_dokumen'     => $ktpPath,
-            'no_hp'           => $request->no_hp,
-            'kontak_darurat'  => $request->kontak_darurat,
-            'alamat'          => $request->alamat,
-            'surat_komitmen'  => $suratPath,
             'tanggal_mulai'   => $tanggalMulai,
             'durasi_sewa'     => 12,
             'status'          => 'pending',

@@ -84,10 +84,10 @@ class AdminKamarController extends Controller
             'fasilitas'       => 'required|array',
             'deskripsi'       => 'required|string',
             'status'          => 'required|in:tersedia,penuh',
-            'foto_utama'      => 'required|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_1' => 'required|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_2' => 'required|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_3' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'foto_utama'      => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_1' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_2' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_3' => 'nullable|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         $data = $request->all();
