@@ -6,6 +6,7 @@ use App\Models\Faq;
 use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\Galeri;
+use App\Models\Kamar;
 
 class HomeController extends Controller
 {
@@ -13,8 +14,9 @@ class HomeController extends Controller
     {
         // Hanya mengambil FAQ yang berstatus aktif untuk ditampilkan ke pelanggan
         $faqs = Faq::where('status', 'aktif')->orderBy('sort_order', 'asc')->get();
-        
-        return view('home', compact('faqs'));
+        $kamars = Kamar::where('status', 'tersedia')->latest()->take(3)->get();
+
+        return view('home', compact('faqs', 'kamars'));
     }
 
     public function galeri()

@@ -39,12 +39,12 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="relative animate-fade-up" style="animation-delay: 120ms;">
             <div class="relative aspect-4/5 rounded-3xl overflow-hidden shadow-elevated">
                 <img src="hero.png" alt="Tampilan depan Kos Rumah Bata" class="h-full w-full object-cover" width="1600" height="1000">
             </div>
-            
+
             <div class="hidden md:flex absolute -right-6 top-10 bg-surface rounded-2xl px-4 py-3 shadow-elevated border border-border/60 items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin h-4 w-4 text-primary">
                     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
