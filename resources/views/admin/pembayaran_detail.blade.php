@@ -30,7 +30,7 @@
         margin: 0;
         color: #211713;
         font-size: 27px;
-      700;
+        font-weight: 700;
         letter-spacing: -0.02em;
     }
 
@@ -352,7 +352,13 @@
         color: #ffffff;
     }
 
-    .decision-approve:hover {
+    .decision-approve:disabled {
+        background: #dfb2a6;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
+    .decision-approve:hover:not(:disabled) {
         background: #b75a41;
     }
 
@@ -445,6 +451,7 @@
 
     .verify-head h2 {
         margin: 0;
+ inversion: none;
         font-size: 27px;
         font-weight: 700;
         color: #211713;
@@ -477,6 +484,7 @@
     }
 
     .verify-back:hover {
+ purchase: none;
         background: #f4ddd4;
     }
 
@@ -537,10 +545,28 @@
         margin-top: 10px;
         padding: 6px 10px;
         border-radius: 999px;
-        background: #fff1cf;
-        color: #b47400;
+        background: #fffdfb;
         font-size: 12px;
         font-weight: 600;
+        border: 1px solid #ead6ce;
+    }
+
+    .status-pill[data-pill-status="pending"] {
+        background: #fff9e6;
+        color: #b37400;
+        border-color: #ffe699;
+    }
+
+    .status-pill[data-pill-status="disetujui"] {
+        background: #e6f7ed;
+        color: #1e7e34;
+        border-color: #c3e6cb;
+    }
+
+    .status-pill[data-pill-status="ditolak"] {
+        background: #fdf2f2;
+        color: #dc3545;
+        border-color: #f5c6cb;
     }
 
     .info-grid {
@@ -650,7 +676,7 @@
         border-radius: 18px;
         padding: 15px;
         display: grid;
-        grid-template-columns: 20px 1fr;
+       grid-template-columns: 20px 1fr;
         gap: 12px;
         align-items: start;
         cursor: pointer;
@@ -863,13 +889,27 @@
             <a href="/admin/pembayaran" class="payment-detail-back">Kembali</a>
         </div>
 
-        @if(session('success'))
+                @if(session('success'))
             <div style="background: #e8f8f5; color: #27ae60; padding: 14px 20px; border-radius: 16px; margin-bottom: 20px; font-size: 14px; font-weight: 600; border: 1px solid #27ae60;">
                 {{ session('success') }}
             </div>
         @endif
 
-        <form action="/admin/pembayaran/{{ $orderId }}/verifikasi" method="POST" class="verify-grid">
+        @if(session('error') || $errors->any())
+            <div style="background: #fdf2f2; color: #dc3545; padding: 14px 20px; border-radius: 16px; margin-bottom: 20px; font-size: 14px; font-weight: 600; border: 1px solid #f5c6cb;">
+                @if(session('error'))
+                    {{ session('error') }}
+                @else
+                    <ul style="margin: 0; padding-left: 18px;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        @endif
+
+                <form action="/admin/pembayaran/{{ $orderId }}/verifikasi" method="POST" class="verify-grid">
             @csrf
             @method('PUT')
 
@@ -880,7 +920,7 @@
                     <div>
                         <h3>{{ $namaUser }}</h3>
                         <p>Mengajukan sewa Kamar {{ $namaKamar }} · {{ $towerKamar }}</p>
-                        <span class="status-pill">{{ $statusLabel }}</span>
+                        <span class="status-pill" data-pill-status="{{ $statusPendaftaran }}">{{ $statusLabel }}</span>
                     </div>
                 </div>
 
@@ -922,7 +962,7 @@
                         <div class="doc-preview" style="padding: 0; overflow: hidden; border-style: solid;">
                             @if($pengajuan->user && $pengajuan->user->ktp_dokumen && (str_contains($pengajuan->user->ktp_dokumen, '.jpg') || str_contains($pengajuan->user->ktp_dokumen, '.jpeg') || str_contains($pengajuan->user->ktp_dokumen, '.png')))
                                 <img src="{{ asset($pengajuan->user->ktp_dokumen) }}" alt="KTP" style="width: 100%; height: 100%; object-fit: cover;">
-                            @else
+                           @else
                                 <div style="padding: 14px;">File Dokumen KTP (PDF/DOC)</div>
                             @endif
                         </div>
@@ -933,8 +973,8 @@
                         <h4>Surat Komitmen</h4>
                         <div class="doc-preview">
                             <span style="color: #c8664a; font-size: 28px; display:block; margin-bottom:4px;">📄</span>
-                            Surat Komitmen Penghuni
-                        </div>
+                           Surat Komitmen Penghuni
+                       </div>
                         <a href="{{ asset($pengajuan->user->surat_komitmen ?? '#') }}" target="_blank" class="doc-link">Lihat Surat</a>
                     </div>
                 </div>
@@ -962,7 +1002,7 @@
 
                     <div class="payment-info-row">
                         <span>Tanggal Upload</span>
-                        <strong>{{ $tanggalUpload }}</strong>
+                      <strong>{{ $tanggalUpload }}</strong>
                     </div>
 
                     <div class="payment-info-row">
@@ -1003,7 +1043,7 @@
 
                 <div class="verify-checklist">
                     <label class="check-item">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Data diri sudah sesuai.</strong>
                             <span>Nama, nomor HP, dan alamat calon penghuni sudah dicek.</span>
@@ -1011,7 +1051,7 @@
                     </label>
 
                     <label class="check-item">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Kontak orang tua valid.</strong>
                             <span>Nomor orang tua dapat dihubungi jika diperlukan.</span>
@@ -1019,7 +1059,7 @@
                     </label>
 
                     <label class="check-item">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Dokumen terlihat jelas.</strong>
                             <span>Foto KTP dan surat komitmen dapat dibaca.</span>
@@ -1027,7 +1067,7 @@
                     </label>
 
                     <label class="check-item">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Kamar masih tersedia.</strong>
                             <span>Kamar yang diajukan belum ditempati penghuni lain.</span>
@@ -1038,7 +1078,7 @@
                 <div class="decision-checklist">
 
                     <label class="decision-check">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Nominal pembayaran sesuai.</strong>
                             <span>Jumlah transfer sama dengan data pembayaran yang dikirim penghuni.</span>
@@ -1046,7 +1086,7 @@
                     </label>
 
                     <label class="decision-check">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Bukti transfer terlihat jelas.</strong>
                             <span>Nama pengirim, nominal, dan tanggal transfer dapat dibaca.</span>
@@ -1054,7 +1094,7 @@
                     </label>
 
                     <label class="decision-check">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Tujuan rekening sesuai.</strong>
                             <span>Pembayaran masuk ke rekening Kos Rumah Bata.</span>
@@ -1062,7 +1102,7 @@
                     </label>
 
                     <label class="decision-check">
-                        <input type="checkbox" required>
+                        <input type="checkbox" class="verify-checkbox">
                         <div>
                             <strong>Data penghuni cocok.</strong>
                             <span>Nama dan kamar sesuai dengan data penghuni di sistem.</span>
@@ -1076,12 +1116,12 @@
                     <textarea name="catatan_admin" placeholder="Tulis catatan jika ada data yang perlu diperbaiki atau alasan penolakan."></textarea>
                 </div>
 
-                <div class="verify-actions">
-                                        <button type="submit" name="action" value="setuju" class="decision-btn decision-approve">
+                <div class="decision-actions">
+                    <button type="submit" id="btnApprove" name="action" value="setuju" class="decision-btn decision-approve" disabled>
                         Setujui Pengajuan
                     </button>
 
-                                        <button type="submit" name="action" value="tolak" class="decision-btn decision-reupload" onclick="disableRequiredFields()">
+                    <button type="submit" name="action" value="tolak" class="decision-btn decision-reupload">
                         Tolak Pengajuan
                     </button>
                 </div>
@@ -1098,17 +1138,27 @@
 </div>
 
 <script>
-    /**
-     * Fungsi pembantu agar saat admin menekan tombol "Tolak Pengajuan",
-     * atribut HTML5 'required' pada elemen checklist dilewati/dimatikan
-     * sehingga admin dapat langsung mengirimkan catatan revisi upload ulang.
-     */
-    function disableRequiredFields() {
-        const requiredInputs = document.querySelectorAll('input[required]');
-        requiredInputs.forEach(input => {
-            input.removeAttribute('required');
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.verify-checkbox');
+        const btnApprove = document.getElementById('btnApprove');
+
+        function checkFormValidity() {
+            // Menghitung berapa banyak checkbox yang sedang dicentang oleh admin
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+
+            // Jika seluruh 8 poin checklist sudah terpenuhi, aktifkan tombol setujui
+            if (checkedCount === 8) {
+                btnApprove.removeAttribute('disabled');
+            } else {
+                btnApprove.setAttribute('disabled', 'true');
+            }
+        }
+
+        // Daftarkan event listener perubahan untuk setiap elemen checklist pendukung
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', checkFormValidity);
         });
-    }
+    });
 </script>
 
 @endsection

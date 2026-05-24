@@ -80,8 +80,10 @@ Route::prefix('admin')->group(function () {
     // CRUD Galeri Admin
     Route::resource('/konten/galeri', AdminGaleriController::class);
 
+    // Pembayaran
     Route::get('/pembayaran', [AdminPembayaranController::class, 'index']);
     Route::get('/pembayaran/{order_id}', [AdminPembayaranController::class, 'show']);
+    Route::put('/pembayaran/{order_id}/verifikasi', [AdminPembayaranController::class, 'verifikasi']);
 });
 
 Route::get('/admin/penghuni', function () {
