@@ -213,8 +213,8 @@
     }
 
     .maintenance-filter-btn.active {
-        background: #211713;
-        border-color: #211713;
+        background: #c8664a;
+        border-color: #c8664a;
         color: #ffffff;
     }
 
