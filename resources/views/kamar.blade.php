@@ -48,7 +48,7 @@
 
                     <div class="relative aspect-[4/3] overflow-hidden bg-muted w-full">
                         @if($kamar->foto_utama)
-                            <img src="{{ asset('storage/' . $kamar->foto_utama) }}" alt="Kamar {{ $kamar->nomor_kamar }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ asset($kamar->foto_utama) }}" alt="Kamar {{ $kamar->nomor_kamar }}" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             @if($kamar->nomor_kamar == '02')
                                 <img src="{{ asset('2.jpg') }}" alt="Kamar 02" loading="lazy" class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">

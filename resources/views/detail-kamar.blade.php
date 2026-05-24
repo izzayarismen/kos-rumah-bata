@@ -15,7 +15,7 @@
     <div class="lg:col-span-3">
         <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-card">
             @if($kamar->foto_utama)
-                <img id="mainGalleryImage" src="{{ asset('storage/' . $kamar->foto_utama) }}" alt="Kamar {{ $kamar->nomor_kamar }}" class="h-full w-full object-cover transition-all duration-300" width="1200" height="900">
+                <img id="mainGalleryImage" src="{{ asset($kamar->foto_utama) }}" alt="Kamar {{ $kamar->nomor_kamar }}" class="h-full w-full object-cover transition-all duration-300" width="1200" height="900">
             @else
                 @if($kamar->nomor_kamar == '02')
                     <img id="mainGalleryImage" src="{{ asset('2.jpg') }}" alt="Kamar 02" class="h-full w-full object-cover transition-all duration-300" width="1200" height="900">
@@ -36,7 +36,7 @@
         <div class="mt-3 grid grid-cols-4 gap-3">
             <button type="button" class="thumb-btn aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-primary shadow-soft">
                 @if($kamar->foto_utama)
-                    <img src="{{ asset('storage/' . $kamar->foto_utama) }}" alt="" class="h-full w-full object-cover" loading="lazy">
+                    <img src="{{ asset($kamar->foto_utama) }}" alt="" class="h-full w-full object-cover" loading="lazy">
                 @else
                     <img src="{{ asset($kamar->nomor_kamar == '02' ? '2.jpg' : ($kamar->nomor_kamar == '03' ? '3.jpg' : ($kamar->nomor_kamar == '04' ? '4.jpg' : ($kamar->nomor_kamar == '05' ? '5.jpg' : ($kamar->nomor_kamar == '06' ? '6.jpg' : '1.jpg'))))) }}" alt="" class="h-full w-full object-cover" loading="lazy">
                 @endif
@@ -44,19 +44,19 @@
 
             @if($kamar->foto_tambahan_1)
             <button type="button" class="thumb-btn aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-transparent opacity-70 hover:opacity-100">
-                <img src="{{ asset('storage/' . $kamar->foto_tambahan_1) }}" alt="" class="h-full w-full object-cover" loading="lazy">
+                <img src="{{ asset($kamar->foto_tambahan_1) }}" alt="" class="h-full w-full object-cover" loading="lazy">
             </button>
             @endif
 
             @if($kamar->foto_tambahan_2)
             <button type="button" class="thumb-btn aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-transparent opacity-70 hover:opacity-100">
-                <img src="{{ asset('storage/' . $kamar->foto_tambahan_2) }}" alt="" class="h-full w-full object-cover" loading="lazy">
+                <img src="{{ asset($kamar->foto_tambahan_2) }}" alt="" class="h-full w-full object-cover" loading="lazy">
             </button>
             @endif
 
             @if($kamar->foto_tambahan_3)
             <button type="button" class="thumb-btn aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all border-transparent opacity-70 hover:opacity-100">
-                <img src="{{ asset('storage/' . $kamar->foto_tambahan_3) }}" alt="" class="h-full w-full object-cover" loading="lazy">
+                <img src="{{ asset($kamar->foto_tambahan_3) }}" alt="" class="h-full w-full object-cover" loading="lazy">
             </button>
             @endif
         </div>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Kamar;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class AdminKamarController extends Controller
 {
@@ -20,7 +20,7 @@ class AdminKamarController extends Controller
         return view('admin.kamar_create');
     }
 
-    // PROSES SIMPAN KAMAR BARU
+    // PROSES SIMPAN KAMAR BARU (Menyesuaikan kolom migration asli + gaya lokal public)
     public function store(Request $request)
     {
         $request->validate([
@@ -30,26 +30,32 @@ class AdminKamarController extends Controller
             'harga'           => 'required|numeric',
             'luas'            => 'required|string|max:30',
             'fasilitas'       => 'required|array',
-            'deskripsi'       => 'nullable|string',
+            'deskripsi'       => 'required|string',
             'status'          => 'required|in:tersedia,penuh',
-            'foto_utama'      => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_1' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_2' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_3' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_utama'      => 'required|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_1' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_2' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_3' => 'required|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         $data = $request->all();
 
-        // Upload Foto Utama
+        // 1. Upload Foto Utama ke folder public/images/kamar
         if ($request->hasFile('foto_utama')) {
-            $data['foto_utama'] = $request->file('foto_utama')->store('kamar', 'public');
+            $file = $request->file('foto_utama');
+            $filename = time() . '-utama.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/kamar'), $filename);
+            $data['foto_utama'] = '/images/kamar/' . $filename;
         }
 
-        // Upload Foto Tambahan (1, 2, 3)
+        // 2. Upload Foto Tambahan (1, 2, 3) ke folder public/images/kamar
         for ($i = 1; $i <= 3; $i++) {
             $inputName = 'foto_tambahan_' . $i;
             if ($request->hasFile($inputName)) {
-                $data[$inputName] = $request->file($inputName)->store('kamar', 'public');
+                $file = $request->file($inputName);
+                $filename = time() . '-tambahan-' . $i . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('images/kamar'), $filename);
+                $data[$inputName] = '/images/kamar/' . $filename;
             }
         }
 
@@ -64,7 +70,7 @@ class AdminKamarController extends Controller
         return view('admin.kamar_edit', compact('kamar'));
     }
 
-    // PROSES UPDATE DATA KAMAR
+    // PROSES UPDATE DATA KAMAR (Menyesuaikan kolom migration asli + gaya lokal public)
     public function update(Request $request, $id)
     {
         $kamar = Kamar::findOrFail($id);
@@ -76,33 +82,44 @@ class AdminKamarController extends Controller
             'harga'           => 'required|numeric',
             'luas'            => 'required|string|max:30',
             'fasilitas'       => 'required|array',
-            'deskripsi'       => 'nullable|string',
+            'deskripsi'       => 'required|string',
             'status'          => 'required|in:tersedia,penuh',
-            'foto_utama'      => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_1' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_2' => 'nullable|image|mimes:jpeg,png,jpg,webp',
-            'foto_tambahan_3' => 'nullable|image|mimes:jpeg,png,jpg,webp',
+            'foto_utama'      => 'required|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_1' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_2' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'foto_tambahan_3' => 'required|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         $data = $request->all();
 
-        // Update Foto Utama
+        // 1. Update Foto Utama (Hapus file fisik lama jika ada file baru yang masuk)
         if ($request->hasFile('foto_utama')) {
-            if ($kamar->foto_utama && Storage::disk('public')->exists($kamar->foto_utama)) {
-                Storage::disk('public')->delete($kamar->foto_utama);
+            if ($kamar->foto_utama) {
+                $oldPath = public_path($kamar->foto_utama);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
             }
-            $data['foto_utama'] = $request->file('foto_utama')->store('kamar', 'public');
+            $file = $request->file('foto_utama');
+            $filename = time() . '-utama.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/kamar'), $filename);
+            $data['foto_utama'] = '/images/kamar/' . $filename;
         }
 
-        // Update Foto Tambahan (1, 2, 3)
+        // 2. Update Foto Tambahan (1, 2, 3) (Hapus file fisik lama jika ada file baru yang masuk)
         for ($i = 1; $i <= 3; $i++) {
             $inputName = 'foto_tambahan_' . $i;
             if ($request->hasFile($inputName)) {
-                // Hapus foto tambahan lama jika ada file baru yang masuk
-                if ($kamar->$inputName && Storage::disk('public')->exists($kamar->$inputName)) {
-                    Storage::disk('public')->delete($kamar->$inputName);
+                if ($kamar->$inputName) {
+                    $oldPath = public_path($kamar->$inputName);
+                    if (File::exists($oldPath)) {
+                        File::delete($oldPath);
+                    }
                 }
-                $data[$inputName] = $request->file($inputName)->store('kamar', 'public');
+                $file = $request->file($inputName);
+                $filename = time() . '-tambahan-' . $i . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('images/kamar'), $filename);
+                $data[$inputName] = '/images/kamar/' . $filename;
             }
         }
 
@@ -111,21 +128,27 @@ class AdminKamarController extends Controller
         return redirect('/admin/kamar')->with('success', 'Data kamar berhasil diperbarui!');
     }
 
-    // PROSES HAPUS KAMAR TOTAL beserta seluruh fotonya
+    // PROSES HAPUS KAMAR TOTAL beserta seluruh file fisik fotonya
     public function destroy($id)
     {
         $kamar = Kamar::findOrFail($id);
 
-        // Hapus Foto Utama dari Storage
-        if ($kamar->foto_utama && Storage::disk('public')->exists($kamar->foto_utama)) {
-            Storage::disk('public')->delete($kamar->foto_utama);
+        // Hapus file fisik Foto Utama dari folder public/images/kamar
+        if ($kamar->foto_utama) {
+            $pathUtama = public_path($kamar->foto_utama);
+            if (File::exists($pathUtama)) {
+                File::delete($pathUtama);
+            }
         }
 
-        // Hapus Seluruh Foto Tambahan dari Storage
+        // Hapus file fisik Seluruh Foto Tambahan dari folder public/images/kamar
         for ($i = 1; $i <= 3; $i++) {
             $fieldName = 'foto_tambahan_' . $i;
-            if ($kamar->$fieldName && Storage::disk('public')->exists($kamar->$fieldName)) {
-                Storage::disk('public')->delete($kamar->$fieldName);
+            if ($kamar->$fieldName) {
+                $pathTambahan = public_path($kamar->$fieldName);
+                if (File::exists($pathTambahan)) {
+                    File::delete($pathTambahan);
+                }
             }
         }
 

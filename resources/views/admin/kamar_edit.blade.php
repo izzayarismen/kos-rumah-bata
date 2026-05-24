@@ -359,7 +359,7 @@
                         <label>Foto Utama Saat Ini</label>
 
                         @if($kamar->foto_utama)
-                            <img id="editImagePreview" src="{{ asset('storage/' . $kamar->foto_utama) }}" alt="Foto kamar">
+                            <img id="editImagePreview" src="{{ asset($kamar->foto_utama) }}" alt="Foto kamar">
                         @else
                             @if($kamar->nomor_kamar == '02')
                                 <img id="editImagePreview" src="{{ asset('2.jpg') }}" alt="Foto kamar 02">
@@ -388,7 +388,7 @@
                             <label>Ganti Foto Tambahan 1</label>
                             <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px solid #ead6ce; display: flex; align-items: center; justify-content: center;">
                                 @if($kamar->foto_tambahan_1)
-                                    <img id="preview_tambahan_1" src="{{ asset('storage/' . $kamar->foto_tambahan_1) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img id="preview_tambahan_1" src="{{ asset($kamar->foto_tambahan_1) }}" style="width: 100%; height: 100%; object-fit: cover;">
                                 @else
                                     <img id="preview_tambahan_1" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                     <span id="text_tambahan_1" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
@@ -401,7 +401,7 @@
                             <label>Ganti Foto Tambahan 2</label>
                             <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px solid #ead6ce; display: flex; align-items: center; justify-content: center;">
                                 @if($kamar->foto_tambahan_2)
-                                    <img id="preview_tambahan_2" src="{{ asset('storage/' . $kamar->foto_tambahan_2) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img id="preview_tambahan_2" src="{{ asset($kamar->foto_tambahan_2) }}" style="width: 100%; height: 100%; object-fit: cover;">
                                 @else
                                     <img id="preview_tambahan_2" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                     <span id="text_tambahan_2" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
@@ -414,7 +414,7 @@
                             <label>Ganti Foto Tambahan 3</label>
                             <div style="position: relative; height: 100px; margin-bottom: 8px; border-radius: 8px; overflow: hidden; background: #fdfaf7; border: 1px solid #ead6ce; display: flex; align-items: center; justify-content: center;">
                                 @if($kamar->foto_tambahan_3)
-                                    <img id="preview_tambahan_3" src="{{ asset('storage/' . $kamar->foto_tambahan_3) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img id="preview_tambahan_3" src="{{ asset($kamar->foto_tambahan_3) }}" style="width: 100%; height: 100%; object-fit: cover;">
                                 @else
                                     <img id="preview_tambahan_3" src="" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                     <span id="text_tambahan_3" style="font-size: 11px; color: #9a8d85;">Belum ada foto</span>
