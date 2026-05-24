@@ -106,7 +106,7 @@
 
     .payment-search:focus {
         border-color: #d79b86;
-    0 0 0 4px rgba(200, 102, 74, 0.08);
+        box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
     }
 
     .payment-filter {
@@ -212,6 +212,25 @@
         border: 1px solid #eee1da;
     }
 
+    /* Tambahan Style Spesifik Warna Badge Sesuai Status Atribut Data-Status */
+    .payment-item[data-status="waiting"] .payment-badge {
+        background: #fff9e6;
+        color: #b37400;
+        border-color: #ffe699;
+    }
+
+    .payment-item[data-status="verified"] .payment-badge {
+        background: #e6f7ed;
+        color: #1e7e34;
+        border-color: #c3e6cb;
+    }
+
+    .payment-item[data-status="reupload"] .payment-badge {
+        background: #fdf2f2;
+        color: #dc3545;
+        border-color: #f5c6cb;
+    }
+
     .payment-date {
         color: #9a8d85;
         font-size: 12px;
@@ -258,7 +277,7 @@
     .empty-payment strong {
         display: block;
         color: #211713;
-        font-size: 18px;
+       font-size: 18px;
         margin-bottom: 8px;
     }
 
@@ -372,6 +391,7 @@
             @foreach($pembayaran as $item)
                 @php
                     // Pemetaan status tabel ke data-status atribut JS Anda
+                    // waiting = Menunggu Verifikasi, verified = Terverifikasi, reupload = Upload Ulang
                     $statusAttr = 'waiting';
                     $badgeText = 'Menunggu Verifikasi';
                     $dateText = 'Dikirim ' . ($item->updated_at ? $item->updated_at->diffForHumans() : 'hari ini');
