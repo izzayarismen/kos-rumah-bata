@@ -381,7 +381,7 @@
                 <p>Data penghuni yang sudah diverifikasi dan sedang menempati kamar.</p>
             </div>
 
-            <div class="tenant-top-actions">
+            {{-- <div class="tenant-top-actions">
                 <a href="/admin/pengajuan-sewa" class="rent-request-btn">
                     Pengajuan Sewa
                     <span class="rent-request-count">2</span>
@@ -390,7 +390,7 @@
                 <a href="/admin/penghuni/create" class="tenant-add-btn">
                     Tambah Penghuni
                 </a>
-            </div>
+            </div> --}}
         </div>
 
         <div class="tenant-toolbar">

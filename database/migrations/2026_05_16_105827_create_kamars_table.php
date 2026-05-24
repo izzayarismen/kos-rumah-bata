@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('tower', 50);
             $table->enum('tipe_kamar', ['ac', 'non-ac']);
             $table->bigInteger('harga');
+            $table->string('dalam_hitungan', 50)->default('tahun');
             $table->string('luas', 30);
             $table->text('fasilitas');
             $table->text('deskripsi')->nullable();

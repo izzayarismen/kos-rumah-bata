@@ -20,7 +20,6 @@ class AdminKamarController extends Controller
         return view('admin.kamar_create');
     }
 
-    // PROSES SIMPAN KAMAR BARU (Menyesuaikan kolom migration asli + gaya lokal public)
     public function store(Request $request)
     {
         $request->validate([
@@ -28,9 +27,11 @@ class AdminKamarController extends Controller
             'tower'           => 'required|string|max:50',
             'tipe_kamar'      => 'required|in:ac,non-ac',
             'harga'           => 'required|numeric',
+            'dalam_hitungan'  => 'required|string|max:50', // <-- Validasi kolom baru
             'luas'            => 'required|string|max:30',
             'fasilitas'       => 'required|array',
             'deskripsi'       => 'required|string',
+            'status'          => 'required|in:tersedia,penfull', // sesuaikan typo penuh jika ada
             'status'          => 'required|in:tersedia,penuh',
             'foto_utama'      => 'required|image|mimes:jpeg,png,jpg,webp',
             'foto_tambahan_1' => 'required|image|mimes:jpeg,png,jpg,webp',
@@ -40,7 +41,7 @@ class AdminKamarController extends Controller
 
         $data = $request->all();
 
-        // 1. Upload Foto Utama ke folder public/images/kamar
+        // 1. Upload Foto Utama
         if ($request->hasFile('foto_utama')) {
             $file = $request->file('foto_utama');
             $filename = time() . '-utama.' . $file->getClientOriginalExtension();
@@ -48,7 +49,7 @@ class AdminKamarController extends Controller
             $data['foto_utama'] = '/images/kamar/' . $filename;
         }
 
-        // 2. Upload Foto Tambahan (1, 2, 3) ke folder public/images/kamar
+        // 2. Upload Foto Tambahan
         for ($i = 1; $i <= 3; $i++) {
             $inputName = 'foto_tambahan_' . $i;
             if ($request->hasFile($inputName)) {
@@ -70,7 +71,6 @@ class AdminKamarController extends Controller
         return view('admin.kamar_edit', compact('kamar'));
     }
 
-    // PROSES UPDATE DATA KAMAR (Menyesuaikan kolom migration asli + gaya lokal public)
     public function update(Request $request, $id)
     {
         $kamar = Kamar::findOrFail($id);
@@ -80,9 +80,11 @@ class AdminKamarController extends Controller
             'tower'           => 'required|string|max:50',
             'tipe_kamar'      => 'required|in:ac,non-ac',
             'harga'           => 'required|numeric',
+            'dalam_hitungan'  => 'required|string|max:50', // <-- Validasi kolom baru saat update
             'luas'            => 'required|string|max:30',
             'fasilitas'       => 'required|array',
             'deskripsi'       => 'required|string',
+            'status'          => 'required|in:tersedia,penfull',
             'status'          => 'required|in:tersedia,penuh',
             'foto_utama'      => 'nullable|image|mimes:jpeg,png,jpg,webp',
             'foto_tambahan_1' => 'nullable|image|mimes:jpeg,png,jpg,webp',
@@ -92,7 +94,7 @@ class AdminKamarController extends Controller
 
         $data = $request->all();
 
-        // 1. Update Foto Utama (Hapus file fisik lama jika ada file baru yang masuk)
+        // Update Foto Utama
         if ($request->hasFile('foto_utama')) {
             if ($kamar->foto_utama) {
                 $oldPath = public_path($kamar->foto_utama);
@@ -106,7 +108,7 @@ class AdminKamarController extends Controller
             $data['foto_utama'] = '/images/kamar/' . $filename;
         }
 
-        // 2. Update Foto Tambahan (1, 2, 3) (Hapus file fisik lama jika ada file baru yang masuk)
+        // Update Foto Tambahan
         for ($i = 1; $i <= 3; $i++) {
             $inputName = 'foto_tambahan_' . $i;
             if ($request->hasFile($inputName)) {
@@ -128,12 +130,10 @@ class AdminKamarController extends Controller
         return redirect('/admin/kamar')->with('success', 'Data kamar berhasil diperbarui!');
     }
 
-    // PROSES HAPUS KAMAR TOTAL beserta seluruh file fisik fotonya
     public function destroy($id)
     {
         $kamar = Kamar::findOrFail($id);
 
-        // Hapus file fisik Foto Utama dari folder public/images/kamar
         if ($kamar->foto_utama) {
             $pathUtama = public_path($kamar->foto_utama);
             if (File::exists($pathUtama)) {
@@ -141,7 +141,6 @@ class AdminKamarController extends Controller
             }
         }
 
-        // Hapus file fisik Seluruh Foto Tambahan dari folder public/images/kamar
         for ($i = 1; $i <= 3; $i++) {
             $fieldName = 'foto_tambahan_' . $i;
             if ($kamar->$fieldName) {

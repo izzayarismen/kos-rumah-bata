@@ -148,7 +148,7 @@
 
             <div class="mt-5 pt-5 border-t border-border">
                 <p class="text-xs text-muted-foreground">Harga sewa</p>
-                <p class="text-3xl font-bold text-primary mt-0.5">Rp&nbsp;{{ number_format($kamar->harga, 0, ',', '.') }}<span class="text-sm font-normal text-muted-foreground"> / tahun</span></p>
+                <p class="text-3xl font-bold text-primary mt-0.5">Rp&nbsp;{{ number_format($kamar->harga, 0, ',', '.') }}<span class="text-sm font-normal text-muted-foreground"> / {{ $kamar->dalam_hitungan ?? 'tahun' }}</span></p>
             </div>
 
             @if($kamar->status == 'tersedia')

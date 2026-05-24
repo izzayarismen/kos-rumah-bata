@@ -19,7 +19,6 @@ class PengajuanSewa extends Model
         'durasi_sewa',
         'catatan',
         'status',
-        'sudah_verif',
         'sudah_bayar',
         'bukti_transfer',
         'tipe_pembayaran',

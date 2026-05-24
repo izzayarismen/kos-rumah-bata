@@ -16,14 +16,15 @@ class Kamar extends Model
         'tower',
         'tipe_kamar',
         'harga',
+        'dalam_hitungan',
         'luas',
         'fasilitas',
         'deskripsi',
         'status',
-        'foto_utama',      // <-- Update
-        'foto_tambahan_1',  // <-- Tambah
-        'foto_tambahan_2',  // <-- Tambah
-        'foto_tambahan_3'   // <-- Tambah
+        'foto_utama',
+        'foto_tambahan_1',
+        'foto_tambahan_2',
+        'foto_tambahan_3'
     ];
 
     protected $casts = [

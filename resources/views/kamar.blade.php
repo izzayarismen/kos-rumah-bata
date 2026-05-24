@@ -106,7 +106,7 @@
 
                         <div class="mt-4 mb-5 w-full">
                             <p class="text-xs text-muted-foreground">Mulai dari</p>
-                            <p class="text-xl font-bold text-primary">Rp&nbsp;{{ number_format($kamar->harga, 0, ',', '.') }}<span class="text-xs font-normal text-muted-foreground"> / tahun</span></p>
+                            <p class="text-xl font-bold text-primary">Rp&nbsp;{{ number_format($kamar->harga, 0, ',', '.') }}<span class="text-xs font-normal text-muted-foreground"> / {{ $kamar->dalam_hitungan ?? 'tahun' }}</span></p>
                         </div>
                         <a class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-auto w-full group/btn" href="/kamar/{{ $kamar->id }}">
                             Lihat Detail

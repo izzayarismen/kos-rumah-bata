@@ -146,7 +146,7 @@
             <p class="text-muted-foreground mt-2 max-w-lg">Foto kamar, lingkungan, dan aktivitas penghuni.</p>
         </div>
     </div>
-    
+
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         @foreach($galeris as $index => $item)
             @php
@@ -154,7 +154,7 @@
                 $isTallCard = ($index == 0 || $index == 5);
             @endphp
 
-            <div class="gallery-item rounded-2xl shadow-card border border-border/40 {{ $isTallCard ? 'row-span-2 aspect-[3/4]' : 'aspect-square' }}">
+            <div class="gallery-item rounded-2xl shadow-card border border-border/40 {{ $isTallCard ? 'row-span-2 aspect-3/4' : 'aspect-square' }}">
                 <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" loading="lazy" class="h-full w-full object-cover">
                 <div class="gallery-text-content">
                     <h4 class="gallery-text-title">{{ $item->title }}</h4>

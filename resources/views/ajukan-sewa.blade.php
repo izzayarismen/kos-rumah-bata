@@ -11,7 +11,7 @@
     </a>
 </div>
 <section class="container-app py-6 grid lg:grid-cols-3 gap-6">
-    {{-- Form Utama disesuaikan untuk proses upload data --}}
+    {{-- Form Utama --}}
     <form action="/kamar/{{ $kamar->id }}/ajukan-sewa" method="POST" enctype="multipart/form-data" class="lg:col-span-2 bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-5">
         @csrf
         <input type="hidden" name="user_ktp" value="{{ $userLogedIn->ktp_dokumen }}">
@@ -64,10 +64,16 @@
             </div>
         @endif
 
-        <div class="space-y-1.5">
-            <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="fullName">Nama Lengkap <span class="text-destructive">*</span></label>
-            {{-- Autofill nama dari user yang sedang login --}}
-            <input type="text" name="nama" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="fullName" required value="{{ old('nama', $userLogedIn->name ?? $userLogedIn->nama ?? '') }}">
+        <div class="grid sm:grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+                <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="fullName">Nama Lengkap <span class="text-destructive">*</span></label>
+                <input type="text" name="nama" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="fullName" required value="{{ old('nama', $userLogedIn->name ?? $userLogedIn->nama ?? '') }}">
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="startDate">Tanggal Mulai Sewa <span class="text-destructive">*</span></label>
+                <input type="date" name="tanggal_mulai" id="startDate" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" required value="{{ old('tanggal_mulai') }}">
+            </div>
         </div>
 
         <div>
@@ -95,7 +101,6 @@
             </button>
             <input type="file" id="input-ktp" name="ktp_dokumen" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
 
-            {{-- Tempat Preview KTP --}}
             <div id="preview-container-ktp" class="mt-3 @if(empty($userLogedIn->ktp_dokumen)) hidden @endif border rounded-xl p-2 bg-muted/30">
                 <p class="text-xs font-medium text-muted-foreground mb-1">Preview KTP:</p>
                 <div id="preview-content-ktp" class="max-h-60 overflow-hidden flex items-center justify-start rounded-lg">
@@ -115,19 +120,16 @@
         <div class="grid sm:grid-cols-2 gap-4">
             <div class="space-y-1.5">
                 <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="phone">No HP <span class="text-destructive">*</span></label>
-                {{-- Autofill nomor HP dari user yang sedang login --}}
                 <input type="tel" name="no_hp" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="phone" required value="{{ old('no_hp', $userLogedIn->no_hp ?? $userLogedIn->phone ?? '') }}">
             </div>
             <div class="space-y-1.5">
                 <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="emergencyPhone">No HP Orang Tua / Emergency <span class="text-destructive">*</span></label>
-                {{-- Autofill kontak darurat dari user jika sebelumnya sudah ada --}}
                 <input type="tel" name="kontak_darurat" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" id="emergencyPhone" required value="{{ old('kontak_darurat', $userLogedIn->kontak_darurat ?? '') }}">
             </div>
         </div>
 
         <div class="space-y-1.5">
             <label class="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="address">Alamat Asal <span class="text-destructive">*</span></label>
-            {{-- Autofill alamat asal dari user yang sedang login --}}
             <textarea name="alamat" class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="address" rows="3" required>{{ old('alamat', $userLogedIn->alamat ?? '') }}</textarea>
         </div>
 
@@ -154,7 +156,7 @@
                     </div>
                 </div>
                 <a href="{{ asset('Surat-Komitmen.docx') }}" download class="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg text-xs font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 shadow-soft shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-3.5 w-3.5">
+                    <svg xmlns="http://www.w3.org/2000/xl" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-3.5 w-3.5">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" x2="12" y1="3" y2="15"></line>
@@ -186,7 +188,6 @@
             </button>
             <input type="file" id="input-komitmen" name="surat_komitmen" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
 
-            {{-- Tempat Preview Surat Komitmen --}}
             <div id="preview-container-komitmen" class="mt-3 @if(empty($userLogedIn->surat_komitmen)) hidden @endif border rounded-xl p-2 bg-muted/30">
                 <p class="text-xs font-medium text-muted-foreground mb-1">Preview Surat Komitmen:</p>
                 <div id="preview-content-komitmen" class="max-h-60 overflow-hidden flex items-center justify-start rounded-lg">
@@ -211,7 +212,6 @@
             Data Anda aman dan hanya digunakan untuk proses sewa.
         </div>
 
-        {{-- Mengubah tag <a> menjadi <button type="submit"> untuk memicu pengiriman data form --}}
         <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full">
             Kirim Pengajuan Sewa
         </button>
@@ -236,19 +236,76 @@
         </div>
         <div class="pt-3 border-t border-border">
             <p class="text-xs text-muted-foreground">Harga sewa</p>
-            <p class="text-2xl font-bold text-primary">Rp&nbsp;{{ number_format($kamar->harga, 0, ',', '.') }}<span class="text-sm font-normal text-muted-foreground"> / tahun</span></p>
+            <p class="text-2xl font-bold text-primary">Rp&nbsp;{{ number_format($kamar->harga, 0, ',', '.') }}<span class="text-sm font-normal text-muted-foreground"> / {{ $kamar->dalam_hitungan ?? 'tahun' }}</span></p>
         </div>
         <div class="pt-2 text-xs text-muted-foreground space-y-1">
-            <p>Tanggal Mulai: <span class="font-medium text-foreground">{{ \Carbon\Carbon::parse($tanggalMulaiOtomatis)->translatedFormat('d F Y') }}</span></p>
-            <p>Durasi Sewa: <span class="font-medium text-foreground">12 Bulan (1 Tahun)</span></p>
+            <p>Tanggal Mulai: <span id="summary-start-date" class="font-medium text-foreground">-</span></p>
+            <p>Durasi Sewa: <span id="summary-duration" class="font-medium text-foreground">{{ ucwords($kamar->dalam_hitungan ?? 'tahun') }} (s.d. {{ \Carbon\Carbon::parse($tanggalMulaiOtomatis)->translatedFormat('d F Y') }})</span></p>
             <p>Status awal pengajuan: <span class="font-medium text-foreground">Pending</span></p>
         </div>
     </aside>
 </section>
 
-{{-- JavaScript Vanilla untuk integrasi file trigger & live preview gambar/PDF --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Data dasar periode hitungan dan tanggal otomatis dari backend laravel
+        const hitunganKamar = "{{ $kamar->dalam_hitungan ?? 'tahun' }}";
+        const tanggalMulaiOtomatis = "{{ $tanggalMulaiOtomatis }}"; // Mengambil 'Y-m-d' (Format: 2026-06-01)
+
+        // Ambil element input dan summary teks
+        const startDateInput = document.getElementById('startDate');
+        const summaryStartDate = document.getElementById('summary-start-date');
+        const summaryDuration = document.getElementById('summary-duration');
+
+        // Logika menonaktifkan tanggal sebelum hari ini pada input #startDate
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1;
+        let dd = today.getDate();
+
+        if (mm < 10) mm = '0' + mm;
+        if (dd < 10) dd = '0' + dd;
+
+        const formattedToday = yyyy + '-' + mm + '-' + dd;
+        startDateInput.setAttribute('min', formattedToday);
+
+        // Fungsi pembantu format tanggal ke teks Indonesia (Contoh: 1 Juni 2026)
+        function formatIndonesianDate(dateString) {
+            if(!dateString) return "-";
+            const months = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+            const dateObj = new Date(dateString);
+            if(isNaN(dateObj)) return "-";
+
+            return dateObj.getDate() + ' ' + months[dateObj.getMonth()] + ' ' + dateObj.getFullYear();
+        }
+
+        // Jalankan event listener ketika user memilih tanggal mulai sewa
+        startDateInput.addEventListener('change', function() {
+            const selectedDateValue = this.value;
+            if(selectedDateValue) {
+                // 1. Update Teks Tanggal Mulai secara Live mengikuti pilihan user
+                summaryStartDate.textContent = formatIndonesianDate(selectedDateValue);
+
+                // 2. Update Teks Durasi dengan tanggal "s.d." yang FIX ke tanggalMulaiOtomatis (1 Juni)
+                let durasiText = hitunganKamar;
+                const tanggalFixJuni = formatIndonesianDate(tanggalMulaiOtomatis);
+
+                if (hitunganKamar.toLowerCase().includes('bulan')) {
+                    const angkaBulan = parseInt(hitunganKamar) || 1;
+                    // Teks s.d. akan selalu mengarah ke 1 Juni dari variabel tanggalMulaiOtomatis
+                    durasiText = `${angkaBulan} Bulan (s.d. ${tanggalFixJuni})`;
+                } else if (hitunganKamar.toLowerCase() === 'tahun' || hitunganKamar.toLowerCase() === 'tahunan') {
+                    durasiText = `1 Tahun (s.d. ${tanggalFixJuni})`;
+                }
+
+                summaryDuration.textContent = durasiText;
+            }
+        });
+
+        // Setup File Upload & Preview (Tetap seperti kode Anda sebelumnya)
         setupFilePreview('btn-ktp', 'input-ktp', 'label-ktp', 'preview-container-ktp', 'preview-content-ktp', 'Klik untuk pilih file KTP');
         setupFilePreview('btn-komitmen', 'input-komitmen', 'label-komitmen', 'preview-container-komitmen', 'preview-content-komitmen', 'Klik untuk pilih file surat komitmen');
 
@@ -259,23 +316,20 @@
             const container = document.getElementById(containerId);
             const content = document.getElementById(contentId);
 
-            // Buka explorer file saat tombol palsu diklik
             btn.addEventListener('click', function () {
                 input.click();
             });
 
-            // Jalankan preview saat file dipilih
             input.addEventListener('change', function () {
                 const file = this.files[0];
                 if (file) {
                     label.textContent = file.name;
                     container.classList.remove('hidden');
-                    content.innerHTML = ''; // Kosongkan preview lama
+                    content.innerHTML = '';
 
                     const reader = new FileReader();
 
                     if (file.type.startsWith('image/')) {
-                        // Jika jenis berkas adalah Gambar
                         reader.onload = function (e) {
                             const img = document.createElement('img');
                             img.src = e.target.result;
@@ -284,7 +338,6 @@
                         }
                         reader.readAsDataURL(file);
                     } else if (file.type === 'application/pdf') {
-                        // Jika jenis berkas adalah PDF
                         reader.onload = function (e) {
                             const embed = document.createElement('embed');
                             embed.src = e.target.result;
@@ -294,11 +347,9 @@
                         }
                         reader.readAsDataURL(file);
                     } else {
-                        // Jika tipe file lain (.docx, dll) tampilkan teks info saja
                         content.innerHTML = `<p class="text-sm text-foreground italic py-2">Berkas terpilih: ${file.name} (${(file.size/1024).toFixed(1)} KB)</p>`;
                     }
                 } else {
-                    // Jika batal memilih file, kembalikan ke data bawaan database (bila ada) atau sembunyikan kembali
                     if(content.children.length === 0 || content.textContent.trim() === "") {
                         label.textContent = defaultLabel;
                         container.classList.add('hidden');

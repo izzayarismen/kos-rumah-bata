@@ -33,6 +33,7 @@ class PengajuanSewaController extends Controller
             'nama'            => 'required|string|max:255',
             'no_hp'           => 'required|string|max:20',
             'kontak_darurat'  => 'required|string|max:20',
+            'tanggal_mulai'   => 'required|date|after_or_equal:today', // <-- Tambah validasi tanggal mulai sewa
             'alamat'          => 'required|string',
             'ktp_dokumen'     => 'required_without:user_ktp|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'surat_komitmen'  => 'required_without:user_komitmen|file|mimes:pdf,doc,docx|max:2048',
@@ -50,7 +51,6 @@ class PengajuanSewaController extends Controller
             return redirect('/pembayaran/' . $pengajuanLama->order_id)
                 ->with('success', 'Anda sudah memiliki pengajuan aktif untuk kamar ini. Silakan lanjutkan pembayaran dengan Order ID: ' . $pengajuanLama->order_id);
         }
-        // ------------------------------------------------
 
         $towerLower = strtolower($kamar->tower);
         $kodeTower = 'GJL';
@@ -67,19 +67,20 @@ class PengajuanSewaController extends Controller
             $exists = PengajuanSewa::where('order_id', $orderId)->exists();
         } while ($exists);
 
-        $sekarang = Carbon::now();
-        $targetJuniTahunIni = Carbon::create($sekarang->year, 6, 1, 0, 0, 0);
+        // --- PROSES TANGGAL & DURASI DINAMIS ---
+        $tanggalMulai = $request->tanggal_mulai; // Menggunakan tanggal yang dipilih user dari form
+        $hitunganKamar = strtolower($kamar->dalam_hitungan ?? 'tahun');
 
-        if ($sekarang->greaterThan($targetJuniTahunIni)) {
-            $tanggalMulai = $targetJuniTahunIni->addYear()->format('Y-m-d');
+        // Cek isi field dalam_hitungan untuk menentukan durasi dalam satuan bulan
+        if (str_contains($hitunganKamar, 'bulan')) {
+            $durasiSewa = (int) $hitunganKamar; // mengambil angka dari string, misal "2 bulan" -> 2
         } else {
-            $tanggalMulai = $targetJuniTahunIni->format('Y-m-d');
+            $durasiSewa = 12; // Default jika tahunan/tahun adalah 12 bulan
         }
 
         // --- PROSES DOKUMEN KTP ---
         $ktpPath = $user->ktp_dokumen;
         if ($request->hasFile('ktp_dokumen')) {
-            // Hapus berkas fisik lama KTP milik user jika ada
             if ($user->ktp_dokumen) {
                 $oldKtpPath = public_path($user->ktp_dokumen);
                 if (File::exists($oldKtpPath)) {
@@ -96,7 +97,6 @@ class PengajuanSewaController extends Controller
         // --- PROSES SURAT KOMITMEN ---
         $suratPath = $user->surat_komitmen;
         if ($request->hasFile('surat_komitmen')) {
-            // Hapus berkas fisik lama Surat Komitmen milik user jika ada
             if ($user->surat_komitmen) {
                 $oldSuratPath = public_path($user->surat_komitmen);
                 if (File::exists($oldSuratPath)) {
@@ -118,13 +118,13 @@ class PengajuanSewaController extends Controller
             'alamat'         => $request->alamat,
         ]);
 
-        // Simpan data pengajuan sewa baru
+        // Simpan data pengajuan sewa baru dengan tanggal & durasi dinamis
         PengajuanSewa::create([
             'order_id'        => $orderId,
             'user_id'         => $user->id,
             'kamar_id'        => $kamar->id,
             'tanggal_mulai'   => $tanggalMulai,
-            'durasi_sewa'     => 12,
+            'durasi_sewa'     => $durasiSewa,
             'status'          => 'pending',
         ]);
 
@@ -155,9 +155,7 @@ class PengajuanSewaController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        // --- PROSES BUKTI TRANSFER ---
         if ($request->hasFile('bukti_transfer')) {
-            // Hapus bukti transfer lama jika user melakukan re-upload
             if ($pengajuan->bukti_transfer) {
                 $oldBuktiPath = public_path($pengajuan->bukti_transfer);
                 if (File::exists($oldBuktiPath)) {
