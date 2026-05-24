@@ -503,7 +503,7 @@
 
                     <div class="room-price">
                         {{-- Mengubah parameter kedua menjadi 0 untuk menghilangkan .00 --}}
-                        <strong>Rp {{ number_format($kamar->harga, 0, ',', '.') }}/tahun</strong>
+                        <strong>Rp {{ number_format($kamar->harga, 0, ',', '.') }} / {{ $kamar->dalam_hitungan ?? 'tahun' }}</strong>
                     </div>
 
                     <div class="room-detail">

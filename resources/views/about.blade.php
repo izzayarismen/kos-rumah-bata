@@ -53,7 +53,7 @@
                 </svg>
             </div>
             <h3 class="mt-4 font-semibold text-lg">Visi</h3>
-            <p class="mt-1.5 text-sm text-muted-foreground">Menjadi kos digital paling terpercaya di Yogyakarta dengan pengalaman penghuni terbaik.</p>
+            <p class="mt-1.5 text-sm text-muted-foreground">Menjadi kos digital paling terpercaya di Bogor dengan pengalaman penghuni terbaik.</p>
         </div>
 
         <div class="bg-card rounded-2xl p-6 border border-border/60 shadow-soft">

@@ -20,6 +20,7 @@ class AdminKamarController extends Controller
         return view('admin.kamar_create');
     }
 
+    // PROSES SIMPAN KAMAR BARU
     public function store(Request $request)
     {
         $request->validate([
@@ -27,12 +28,11 @@ class AdminKamarController extends Controller
             'tower'           => 'required|string|max:50',
             'tipe_kamar'      => 'required|in:ac,non-ac',
             'harga'           => 'required|numeric',
-            'dalam_hitungan'  => 'required|string|max:50', // <-- Validasi kolom baru
+            'dalam_hitungan'  => 'required|string|max:50', // Menangkap pilihan periode sewa (tahun / X bulan)
             'luas'            => 'required|string|max:30',
             'fasilitas'       => 'required|array',
             'deskripsi'       => 'required|string',
-            'status'          => 'required|in:tersedia,penfull', // sesuaikan typo penuh jika ada
-            'status'          => 'required|in:tersedia,penuh',
+            'status'          => 'required|in:tersedia,penuh', // Menghapus duplikasi baris typo penfull
             'foto_utama'      => 'required|image|mimes:jpeg,png,jpg,webp',
             'foto_tambahan_1' => 'required|image|mimes:jpeg,png,jpg,webp',
             'foto_tambahan_2' => 'required|image|mimes:jpeg,png,jpg,webp',
@@ -49,7 +49,7 @@ class AdminKamarController extends Controller
             $data['foto_utama'] = '/images/kamar/' . $filename;
         }
 
-        // 2. Upload Foto Tambahan
+        // 2. Upload Foto Tambahan (1, 2, 3)
         for ($i = 1; $i <= 3; $i++) {
             $inputName = 'foto_tambahan_' . $i;
             if ($request->hasFile($inputName)) {
@@ -71,6 +71,7 @@ class AdminKamarController extends Controller
         return view('admin.kamar_edit', compact('kamar'));
     }
 
+    // PROSES UPDATE DATA KAMAR
     public function update(Request $request, $id)
     {
         $kamar = Kamar::findOrFail($id);
@@ -80,12 +81,12 @@ class AdminKamarController extends Controller
             'tower'           => 'required|string|max:50',
             'tipe_kamar'      => 'required|in:ac,non-ac',
             'harga'           => 'required|numeric',
-            'dalam_hitungan'  => 'required|string|max:50', // <-- Validasi kolom baru saat update
+            'dalam_hitungan'  => 'required|string|max:50', // Validasi kolom periode sewa saat diperbarui
             'luas'            => 'required|string|max:30',
             'fasilitas'       => 'required|array',
             'deskripsi'       => 'required|string',
             'status'          => 'required|in:tersedia,penfull',
-            'status'          => 'required|in:tersedia,penuh',
+            'status'          => 'required|in:tersedia,penuh', // Menghapus duplikasi baris typo penfull
             'foto_utama'      => 'nullable|image|mimes:jpeg,png,jpg,webp',
             'foto_tambahan_1' => 'nullable|image|mimes:jpeg,png,jpg,webp',
             'foto_tambahan_2' => 'nullable|image|mimes:jpeg,png,jpg,webp',
@@ -94,7 +95,7 @@ class AdminKamarController extends Controller
 
         $data = $request->all();
 
-        // Update Foto Utama
+        // 1. Update Foto Utama (Hapus berkas fisik lama jika mengunggah foto baru)
         if ($request->hasFile('foto_utama')) {
             if ($kamar->foto_utama) {
                 $oldPath = public_path($kamar->foto_utama);
@@ -108,7 +109,7 @@ class AdminKamarController extends Controller
             $data['foto_utama'] = '/images/kamar/' . $filename;
         }
 
-        // Update Foto Tambahan
+        // 2. Update Foto Tambahan (1, 2, 3) (Hapus berkas fisik lama jika mengunggah foto baru)
         for ($i = 1; $i <= 3; $i++) {
             $inputName = 'foto_tambahan_' . $i;
             if ($request->hasFile($inputName)) {
@@ -130,10 +131,12 @@ class AdminKamarController extends Controller
         return redirect('/admin/kamar')->with('success', 'Data kamar berhasil diperbarui!');
     }
 
+    // PROSES HAPUS KAMAR TOTAL
     public function destroy($id)
     {
         $kamar = Kamar::findOrFail($id);
 
+        // Hapus berkas utama dari local drive
         if ($kamar->foto_utama) {
             $pathUtama = public_path($kamar->foto_utama);
             if (File::exists($pathUtama)) {
@@ -141,6 +144,7 @@ class AdminKamarController extends Controller
             }
         }
 
+        // Hapus seluruh berkas tambahan dari local drive
         for ($i = 1; $i <= 3; $i++) {
             $fieldName = 'foto_tambahan_' . $i;
             if ($kamar->$fieldName) {

@@ -49,7 +49,7 @@
 
     .form-sepertiga {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr)); /* Diubah menjadi 3 kolom agar rapi untuk foto tambahan 1-3 */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 14px;
         padding: 14px 0 14px 0;
     }
@@ -176,7 +176,7 @@
 
     .photo-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr)); /* Diubah menjadi 3 kolom agar rapi untuk foto tambahan 1-3 */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 14px;
     }
 
@@ -275,7 +275,6 @@
             </div>
         @endif
 
-        {{-- Route dinamis mengarah ke ID kamar spesifik menggunakan spoofing method PUT --}}
         <form action="/admin/kamar/{{ $kamar->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -305,7 +304,7 @@
                         <option value="Ganjil" {{ old('tower', $kamar->tower) == 'Ganjil' ? 'selected' : '' }}>Tower Ganjil</option>
                         <option value="Genap" {{ old('tower', $kamar->tower) == 'Genap' ? 'selected' : '' }}>Tower Genap</option>
                     </select>
-                    <span class="form-hint">Tower ganjil untuk kamar Non AC. Tower genap untuk kamar AC</span>
+                    <span class="form-hint">Tower ganjil untuk kamar Non AC. Tower genap untuk kamar AC.</span>
                 </div>
 
                 <div class="form-group">
@@ -329,13 +328,14 @@
                     <input type="number" name="harga" value="{{ old('harga', (int)$kamar->harga) }}" required>
                 </div>
 
+                {{-- PERUBAHAN: name diubah ke dalam_hitungan dan value mengambil data lama dari database ($kamar->dalam_hitungan) --}}
                 <div class="form-group">
                     <label>Dalam Hitungan</label>
-                    <select name="status">
-                        <option value="penuh" {{ old('status', $kamar->status) == 'penuh' ? 'selected' : '' }}>tahun</option>
-                        <option value="tersedia" {{ old('status', $kamar->status) == 'tersedia' ? 'selected' : '' }}>1 bulan</option>
-                        <option value="" {{ old('status', $kamar->status) == 'penuh' ? 'selected' : '' }}>2 bulan</option>
-                        <option value="" {{ old('status', $kamar->status) == 'penuh' ? 'selected' : '' }}>6 bulan</option>
+                    <select name="dalam_hitungan">
+                        <option value="tahun" {{ old('dalam_hitungan', $kamar->dalam_hitungan) == 'tahun' ? 'selected' : '' }}>tahunan</option>
+                        @for ($i = 1; $i <= 11; $i++)
+                            <option value="{{ $i }} bulan" {{ old('dalam_hitungan', $kamar->dalam_hitungan) == "$i bulan" ? 'selected' : '' }}>{{ $i }} bulan</option>
+                        @endfor
                     </select>
                 </div>
 
@@ -494,7 +494,7 @@
 
     setupAdditionalEditPreview('input_tambahan_1', 'preview_tambahan_1', 'text_tambahan_1');
     setupAdditionalEditPreview('input_tambahan_2', 'preview_tambahan_2', 'text_tambahan_2');
-    setupAdditionalEditPreview('input_tambahan_3', 'preview_tambahan_3', 'text_tambahan_3');
+    setupAdditionalPreview('input_tambahan_3', 'preview_tambahan_3', 'text_tambahan_3');
 </script>
 
 @endsection

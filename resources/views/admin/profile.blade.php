@@ -163,7 +163,7 @@
 
             <div class="form-full">
                 <label>Alamat Kos</label>
-                <textarea>Jl. Mawar No. 12, Yogyakarta</textarea>
+                <textarea>Jl. Mawar No. 12, Bogor</textarea>
             </div>
 
             <div class="form-full">

@@ -47,6 +47,13 @@
         grid-column: 1 / -1;
     }
 
+    .form-sepertiga {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        padding: 14px 0 14px 0;
+    }
+
     .form-group {
         margin: 0;
     }
@@ -182,7 +189,7 @@
 
     .photo-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr)); /* Diubah menjadi 3 kolom agar muat foto tambahan 1-3 */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 14px;
         margin-top: 14px;
     }
@@ -296,13 +303,15 @@
                     </select>
                 </div>
 
+            </div>
+            <div class="form-sepertiga">
                 <div class="form-group">
                     <label>Tower</label>
                     <select name="tower">
                         <option value="Ganjil" {{ old('tower') == 'Ganjil' ? 'selected' : '' }}>Tower Ganjil</option>
                         <option value="Genap" {{ old('tower') == 'Genap' ? 'selected' : '' }}>Tower Genap</option>
                     </select>
-                    <span class="form-hint">Tower ganjil untuk kamar Non AC.</span>
+                    <span class="form-hint">Tower ganjil untuk kamar Non AC. Tower genap untuk kamar AC.</span>
                 </div>
 
                 <div class="form-group">
@@ -311,17 +320,29 @@
                         <option value="non-ac" {{ old('tipe_kamar') == 'non-ac' ? 'selected' : '' }}>Non AC</option>
                         <option value="ac" {{ old('tipe_kamar') == 'ac' ? 'selected' : '' }}>AC</option>
                     </select>
-                    <span class="form-hint">Tower genap untuk kamar AC.</span>
                 </div>
 
                 <div class="form-group">
                     <label>Luas Kamar</label>
                     <input type="text" name="luas" placeholder="Contoh: 3 × 3 meter" value="{{ old('luas') }}" required>
                 </div>
+            </div>
+            <div class="form-grid">
 
                 <div class="form-group">
-                    <label>Harga Sewa / Tahun</label>
+                    <label>Harga Sewa</label>
                     <input type="number" name="harga" placeholder="Contoh: 8400000" value="{{ old('harga') }}" required>
+                </div>
+
+                {{-- PERUBAHAN: name diubah menjadi dalam_hitungan & isinya dinamis menggunakan perulangan blade --}}
+                <div class="form-group">
+                    <label>Dalam Hitungan</label>
+                    <select name="dalam_hitungan">
+                        <option value="tahun" {{ old('dalam_hitungan') == 'tahun' ? 'selected' : '' }}>tahunan</option>
+                        @for ($i = 1; $i <= 11; $i++)
+                            <option value="{{ $i }} bulan" {{ old('dalam_hitungan') == "$i bulan" ? 'selected' : '' }}>{{ $i }} bulan</option>
+                        @endfor
+                    </select>
                 </div>
 
                 <div class="form-full">
