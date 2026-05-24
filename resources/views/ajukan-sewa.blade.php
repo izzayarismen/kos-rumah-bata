@@ -101,9 +101,9 @@
                 <div id="preview-content-ktp" class="max-h-60 overflow-hidden flex items-center justify-start rounded-lg">
                     @if(!empty($userLogedIn->ktp_dokumen))
                         @if(Str::endsWith(strtolower($userLogedIn->ktp_dokumen), ['.pdf']))
-                            <embed src="{{ asset('storage/' . $userLogedIn->ktp_dokumen) }}" type="application/pdf" class="w-full h-64 rounded-md border">
+                            <embed src="{{ asset($userLogedIn->ktp_dokumen) }}" type="application/pdf" class="w-full h-64 rounded-md border">
                         @elseif(Str::endsWith(strtolower($userLogedIn->ktp_dokumen), ['.jpg', '.jpeg', '.png']))
-                            <img src="{{ asset('storage/' . $userLogedIn->ktp_dokumen) }}" class="max-w-full max-h-48 object-contain rounded-md border">
+                            <img src="{{ asset($userLogedIn->ktp_dokumen) }}" class="max-w-full max-h-48 object-contain rounded-md border">
                         @else
                             <p class="text-sm text-foreground italic py-2">Berkas KTP sudah tersimpan.</p>
                         @endif
@@ -192,9 +192,9 @@
                 <div id="preview-content-komitmen" class="max-h-60 overflow-hidden flex items-center justify-start rounded-lg">
                     @if(!empty($userLogedIn->surat_komitmen))
                         @if(Str::endsWith(strtolower($userLogedIn->surat_komitmen), ['.pdf']))
-                            <embed src="{{ asset('storage/' . $userLogedIn->surat_komitmen) }}" type="application/pdf" class="w-full h-64 rounded-md border">
+                            <embed src="{{ asset($userLogedIn->surat_komitmen) }}" type="application/pdf" class="w-full h-64 rounded-md border">
                         @elseif(Str::endsWith(strtolower($userLogedIn->surat_komitmen), ['.jpg', '.jpeg', '.png']))
-                            <img src="{{ asset('storage/' . $userLogedIn->surat_komitmen) }}" class="max-w-full max-h-48 object-contain rounded-md border">
+                            <img src="{{ asset($userLogedIn->surat_komitmen) }}" class="max-w-full max-h-48 object-contain rounded-md border">
                         @else
                             <p class="text-sm text-foreground italic py-2">Berkas Surat Komitmen sudah tersimpan.</p>
                         @endif

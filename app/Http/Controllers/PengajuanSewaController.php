@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Kamar;
 use App\Models\PengajuanSewa;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
 
 class PengajuanSewaController extends Controller
 {
@@ -66,16 +66,41 @@ class PengajuanSewaController extends Controller
 
         $user = Auth::user();
 
+        // --- PROSES DOKUMEN KTP ---
         $ktpPath = $user->ktp_dokumen;
         if ($request->hasFile('ktp_dokumen')) {
-            $ktpPath = $request->file('ktp_dokumen')->store('dokumen_ktp', 'public');
+            // Hapus berkas fisik lama KTP milik user jika ada
+            if ($user->ktp_dokumen) {
+                $oldKtpPath = public_path($user->ktp_dokumen);
+                if (File::exists($oldKtpPath)) {
+                    File::delete($oldKtpPath);
+                }
+            }
+
+            $fileKtp = $request->file('ktp_dokumen');
+            $ktpName = time() . '-ktp.' . $fileKtp->getClientOriginalExtension();
+            $fileKtp->move(public_path('documents/ktp'), $ktpName);
+            $ktpPath = '/documents/ktp/' . $ktpName;
         }
 
+        // --- PROSES SURAT KOMITMEN ---
         $suratPath = $user->surat_komitmen;
         if ($request->hasFile('surat_komitmen')) {
-            $suratPath = $request->file('surat_komitmen')->store('surat_komitmen', 'public');
+            // Hapus berkas fisik lama Surat Komitmen milik user jika ada
+            if ($user->surat_komitmen) {
+                $oldSuratPath = public_path($user->surat_komitmen);
+                if (File::exists($oldSuratPath)) {
+                    File::delete($oldSuratPath);
+                }
+            }
+
+            $fileSurat = $request->file('surat_komitmen');
+            $suratName = time() . '-komitmen.' . $fileSurat->getClientOriginalExtension();
+            $fileSurat->move(public_path('documents/surat_komitmen'), $suratName);
+            $suratPath = '/documents/surat_komitmen/' . $suratName;
         }
 
+        // Update data profile user dasar
         $user->update([
             'ktp_dokumen'    => $ktpPath,
             'surat_komitmen' => $suratPath,
@@ -83,6 +108,7 @@ class PengajuanSewaController extends Controller
             'alamat'         => $request->alamat,
         ]);
 
+        // Simpan data pengajuan sewa baru
         PengajuanSewa::create([
             'order_id'        => $orderId,
             'user_id'         => $user->id,
@@ -114,7 +140,7 @@ class PengajuanSewaController extends Controller
     {
         $request->validate([
             'tipe_pembayaran' => 'required|in:lunas,dp',
-            'bukti_transfer'  => 'required|image|mimes:jpg,jpeg,png'
+            'bukti_transfer'  => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ], [
             'tipe_pembayaran.required' => 'Silahkan pilih tipe pembayaran (Lunas / DP).',
             'bukti_transfer.required'  => 'Silahkan unggah bukti transfer terlebih dahulu.',
@@ -125,8 +151,20 @@ class PengajuanSewaController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
+        // --- PROSES BUKTI TRANSFER ---
         if ($request->hasFile('bukti_transfer')) {
-            $buktiPath = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
+            // Hapus bukti transfer lama jika user melakukan re-upload
+            if ($pengajuan->bukti_transfer) {
+                $oldBuktiPath = public_path($pengajuan->bukti_transfer);
+                if (File::exists($oldBuktiPath)) {
+                    File::delete($oldBuktiPath);
+                }
+            }
+
+            $fileBukti = $request->file('bukti_transfer');
+            $buktiName = time() . '-bukti.' . $fileBukti->getClientOriginalExtension();
+            $fileBukti->move(public_path('images/bukti_transfer'), $buktiName);
+            $buktiPath = '/images/bukti_transfer/' . $buktiName;
 
             $pengajuan->update([
                 'sudah_bayar'     => true,

@@ -127,7 +127,7 @@
                         <div id="preview-container" class="max-h-64 overflow-hidden flex items-center justify-start rounded-lg"></div>
                     </div>
                 </div>
-                {{-- Tombol ini langsung men-submit form utama --}}
+                {{-- Tombol submit form utama --}}
                 <button type="submit" id="btn-submit-bukti" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full">Kirim Bukti</button>
             </div>
         </div>
@@ -152,7 +152,7 @@
     </section>
 </form>
 
-{{-- Modal Konfirmasi yang akan muncul secara kondisional jika Session sukses terdeteksi --}}
+{{-- Modal Konfirmasi yang terkunci penuh (Tombol silang dihapus, klik background dinonaktifkan) --}}
 <div id="modal-confirm" class="fixed inset-0 z-50 @if(!session('success_payment')) hidden @endif grid place-items-center p-4" style="background-color: rgba(0, 0, 0, 0.6);">
     <div class="relative bg-card border border-border/80 rounded-2xl max-w-sm sm:max-w-md w-full p-6 shadow-2xl space-y-4">
 
@@ -176,7 +176,6 @@
                 <span>WhatsApp</span>
             </a>
 
-            {{-- PERBAIKAN: Tombol diubah menjadi anchor link mengarah langsung ke halaman status pembayaran --}}
             <a href="/profile/status-pembayaran" class="flex-1 inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-12 rounded-full px-4 text-center shadow-sm">
                 Selesai
             </a>
@@ -193,8 +192,6 @@
         const previewContainer = document.getElementById("preview-container");
 
         const formPembayaran = document.getElementById("form-pembayaran");
-        const modalConfirm = document.getElementById("modal-confirm");
-        const btnXModal = document.getElementById("btn-x-modal");
 
         // Penanganan Switch Pilihan Tipe Pembayaran (Lunas / DP)
         const payLunas = document.getElementById("pay-Lunas");
@@ -288,21 +285,6 @@
                 if (!fileInput.files.length) {
                     e.preventDefault();
                     alert('Silahkan pilih berkas foto bukti transfer terlebih dahulu!');
-                }
-            });
-        }
-
-        // Tombol manual close silang modal jika user ingin menutupnya
-        if (btnXModal && modalConfirm) {
-            btnXModal.addEventListener("click", function () {
-                modalConfirm.classList.add("hidden");
-            });
-        }
-
-        if (modalConfirm) {
-            modalConfirm.addEventListener("click", function (e) {
-                if (e.target === modalConfirm) {
-                    modalConfirm.classList.add("hidden");
                 }
             });
         }

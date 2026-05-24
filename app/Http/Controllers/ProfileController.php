@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -18,45 +18,63 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . Auth::id(),
-            'no_hp' => 'required|numeric',
-            'jenis_kelamin' => 'required|in:Perempuan,Laki-laki',
-            'alamat' => 'required|string',
+            'nama'           => 'required|string|max:255',
+            'email'          => 'required|email|unique:users,email,' . Auth::id(),
+            'no_hp'          => 'required|numeric',
+            'jenis_kelamin'  => 'required|in:Perempuan,Laki-laki',
+            'alamat'         => 'required|string',
             'kontak_darurat' => 'required|numeric',
-            'ktp_dokumen' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
-            'surat_komitmen' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
+            'ktp_dokumen'    => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:3072',
+            'surat_komitmen' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:3072',
         ]);
 
         $user = User::findOrFail(Auth::id());
 
         $data = [
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
+            'nama'           => $request->nama,
+            'email'          => $request->email,
+            'no_hp'          => $request->no_hp,
+            'jenis_kelamin'  => $request->jenis_kelamin,
+            'alamat'         => $request->alamat,
             'kontak_darurat' => $request->kontak_darurat,
         ];
 
-        // Handle upload file KTP jika ada file baru
+        // 1. HANDLE UPLOAD FILE KTP (Mengikuti gaya lokal public luwihaja-hill)
         if ($request->hasFile('ktp_dokumen')) {
+            // Hapus file fisik lama jika sebelumnya sudah ada path yang tersimpan
             if ($user->ktp_dokumen) {
-                Storage::delete('public/documents/' . $user->ktp_dokumen);
+                $oldKtpPath = public_path($user->ktp_dokumen);
+                if (File::exists($oldKtpPath)) {
+                    File::delete($oldKtpPath);
+                }
             }
-            $ktpName = 'ktp_' . time() . '.' . $request->file('ktp_dokumen')->getClientOriginalExtension();
-            $request->file('ktp_dokumen')->store('dokumen_ktp', 'public');
-            $data['ktp_dokumen'] = $ktpName;
+
+            $fileKtp = $request->file('ktp_dokumen');
+            // Membuat nama file unik menggunakan penanda masa (timestamp)
+            $ktpName = time() . '-ktp.' . $fileKtp->getClientOriginalExtension();
+            // Pindahkan file ke direktori public/documents/ktp
+            $fileKtp->move(public_path('documents/ktp'), $ktpName);
+            // Simpan path penuh dari root public ke database
+            $data['ktp_dokumen'] = '/documents/ktp/' . $ktpName;
         }
 
-        // Handle upload file Surat Komitmen jika ada file baru
+        // 2. HANDLE UPLOAD SURAT KOMITMEN (Mengikuti gaya lokal public luwihaja-hill)
         if ($request->hasFile('surat_komitmen')) {
+            // Hapus file fisik lama jika sebelumnya sudah ada path yang tersimpan
             if ($user->surat_komitmen) {
-                Storage::delete('public/documents/' . $user->surat_komitmen);
+                $oldSuratPath = public_path($user->surat_komitmen);
+                if (File::exists($oldSuratPath)) {
+                    File::delete($oldSuratPath);
+                }
             }
-            $suratName = 'surat_' . time() . '.' . $request->file('surat_komitmen')->getClientOriginalExtension();
-            $request->file('surat_komitmen')->store('surat_komitmen', 'public');
-            $data['surat_komitmen'] = $suratName;
+
+            $fileSurat = $request->file('surat_komitmen');
+            // Membuat nama file unik menggunakan penanda masa (timestamp)
+            $suratName = time() . '-komitmen.' . $fileSurat->getClientOriginalExtension();
+            // Pindahkan file ke direktori public/documents/surat_komitmen
+            $fileSurat->move(public_path('documents/surat_komitmen'), $suratName);
+            // Simpan path penuh dari root public ke database
+            $data['surat_komitmen'] = '/documents/surat_komitmen/' . $suratName;
         }
 
         $user->update($data);
@@ -67,9 +85,9 @@ class ProfileController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'current' => 'required',
+            'current'  => 'required',
             'password' => 'required|min:6',
-            'confirm' => 'required'
+            'confirm'  => 'required'
         ]);
 
         if (!Hash::check($request->current, Auth::user()->password)) {

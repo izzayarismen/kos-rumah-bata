@@ -125,7 +125,7 @@
                                         <span id="ktpFileName" class="flex-1 truncate text-foreground font-medium">
                                             {{ Auth::user()->ktp_dokumen ?? 'Belum ada file KTP' }}
                                         </span>
-                                        <a href="{{ Auth::user()->ktp_dokumen ? asset('/public/storage/dokumen_ktp/'.Auth::user()->ktp_dokumen) : '#' }}" id="ktpPreview" target="_blank" class="text-xs font-semibold text-primary hover:underline {{ Auth::user()->ktp_dokumen ? '' : 'pointer-events-none opacity-50' }}">Lihat Dokumen</a>
+                                        <a href="{{ Auth::user()->ktp_dokumen ? asset( Auth::user()->ktp_dokumen) : '#' }}" id="ktpPreview" target="_blank" class="text-xs font-semibold text-primary hover:underline {{ Auth::user()->ktp_dokumen ? '' : 'pointer-events-none opacity-50' }}">Lihat Dokumen</a>
                                     </div>
                                 </div>
 
@@ -141,7 +141,7 @@
                                         <span id="suratFileName" class="flex-1 truncate text-foreground font-medium">
                                             {{ Auth::user()->surat_komitmen ?? 'Belum ada file Surat Komitmen' }}
                                         </span>
-                                        <a href="{{ Auth::user()->surat_komitmen ? asset('storage/documents/'.Auth::user()->surat_komitmen) : '#' }}" id="suratPreview" target="_blank" class="text-xs font-semibold text-primary hover:underline {{ Auth::user()->surat_komitmen ? '' : 'pointer-events-none opacity-50' }}">Lihat Dokumen</a>
+                                        <a href="{{ Auth::user()->surat_komitmen ? asset( Auth::user()->surat_komitmen) : '#' }}" id="suratPreview" target="_blank" class="text-xs font-semibold text-primary hover:underline {{ Auth::user()->surat_komitmen ? '' : 'pointer-events-none opacity-50' }}">Lihat Dokumen</a>
                                     </div>
                                 </div>
                             </div>
