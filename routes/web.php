@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminKamarController;
 use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminActivityController;
 use App\Http\Controllers\Admin\AdminGaleriController;
+use App\Http\Controllers\Admin\AdminPembayaranController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\HomeController;
@@ -78,6 +79,9 @@ Route::prefix('admin')->group(function () {
 
     // CRUD Galeri Admin
     Route::resource('/konten/galeri', AdminGaleriController::class);
+
+    Route::get('/pembayaran', [AdminPembayaranController::class, 'index']);
+    Route::get('/pembayaran/{order_id}', [AdminPembayaranController::class, 'show']);
 });
 
 Route::get('/admin/penghuni', function () {
@@ -94,22 +98,6 @@ Route::get('/admin/penghuni/edit', function () {
 
 Route::get('/admin/penghuni/detail', function () {
     return view('admin.penghuni_detail');
-});
-
-Route::get('/admin/pembayaran', function () {
-    return view('admin.pembayaran');
-});
-
-Route::get('/admin/pembayaran/create', function () {
-    return view('admin.pembayaran_create');
-});
-
-Route::get('/admin/pembayaran/edit', function () {
-    return view('admin.pembayaran_edit');
-});
-
-Route::get('/admin/pembayaran/detail', function () {
-    return view('admin.pembayaran_detail');
 });
 
 Route::get('/admin/maintenance', function () {

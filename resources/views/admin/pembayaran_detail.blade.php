@@ -30,7 +30,7 @@
         margin: 0;
         color: #211713;
         font-size: 27px;
-        font-weight: 700;
+      700;
         letter-spacing: -0.02em;
     }
 
@@ -801,6 +801,55 @@
     }
 </style>
 
+@php
+    // Persiapan Variabel Data Dinamis dari Model PengajuanSewa, User, dan Kamar
+    $namaUser = $pengajuan->user->nama ?? 'N/A';
+    $noHp = $pengajuan->user->no_hp ?? '-';
+    $kontakDarurat = $pengajuan->user->kontak_darurat ?? '-';
+    $alamatUser = $pengajuan->user->alamat ?? '-';
+
+    $namaKamar = $pengajuan->kamar->nama_kamar ?? 'N/A';
+    $towerKamar = $pengajuan->kamar->tower ?? 'N/A';
+    $hargaKamar = $pengajuan->kamar->harga ?? 0;
+    $hitunganKamar = $pengajuan->kamar->dalam_hitungan ?? 'tahun';
+
+    $orderId = $pengajuan->order_id ?? '';
+    $tipeBayar = $pengajuan->tipe_pembayaran ?? 'lunas';
+    $statusPendaftaran = $pengajuan->status ?? 'pending';
+    $tanggalUpload = $pengajuan->updated_at ? $pengajuan->updated_at->translatedFormat('d F Y') : '-';
+    $tanggalMulai = $pengajuan->tanggal_mulai ? \Carbon\Carbon::parse($pengajuan->tanggal_mulai)->translatedFormat('j M Y') : '-';
+
+    // Hitung nominal berdasarkan tipe pembayaran (Lunas atau DP 50%)
+    $jumlahDibayar = $hargaKamar;
+    $sisaPembayaran = 0;
+    $labelTipeBayar = 'Lunas';
+
+    if ($tipeBayar === 'dp') {
+        $jumlahDibayar = $hargaKamar / 2;
+        $sisaPembayaran = $hargaKamar / 2;
+        $labelTipeBayar = 'DP 50%';
+    }
+
+    // Pemetaan label status badge pendaftaran
+    $statusLabel = 'Menunggu Verifikasi';
+    if ($statusPendaftaran === 'disetujui') {
+        $statusLabel = 'Terverifikasi';
+    } elseif ($statusPendaftaran === 'ditolak') {
+        $statusLabel = 'Upload Ulang';
+    }
+
+    // Ekstrak Inisial Nama User
+    $words = explode(' ', $namaUser);
+    $initials = strtoupper(substr($words[0] ?? 'P', 0, 1) . substr($words[1] ?? '', 0, 1));
+
+    // Ekstrak Nama File Bukti Transfer
+    $fileNameBukti = 'tidak_ada_file.jpg';
+    if ($pengajuan->bukti_transfer) {
+        $explodedPath = explode('/', $pengajuan->bukti_transfer);
+        $fileNameBukti = end($explodedPath);
+    }
+@endphp
+
 <div class="payment-detail-page">
 
     <div class="payment-detail-panel">
@@ -814,89 +863,106 @@
             <a href="/admin/pembayaran" class="payment-detail-back">Kembali</a>
         </div>
 
-        <div class="verify-grid">
+        @if(session('success'))
+            <div style="background: #e8f8f5; color: #27ae60; padding: 14px 20px; border-radius: 16px; margin-bottom: 20px; font-size: 14px; font-weight: 600; border: 1px solid #27ae60;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <form action="/admin/pembayaran/{{ $orderId }}/verifikasi" method="POST" class="verify-grid">
+            @csrf
+            @method('PUT')
 
             <div class="verify-card">
                 <div class="applicant-profile">
-                    <div class="applicant-avatar">RC</div>
+                    <div class="applicant-avatar">{{ $initials }}</div>
 
                     <div>
-                        <h3>Raditya Cummalaka</h3>
-                        <p>Mengajukan sewa Kamar 01 · Tower Ganjil</p>
-                        <span class="status-pill">Menunggu Verifikasi</span>
+                        <h3>{{ $namaUser }}</h3>
+                        <p>Mengajukan sewa Kamar {{ $namaKamar }} · {{ $towerKamar }}</p>
+                        <span class="status-pill">{{ $statusLabel }}</span>
                     </div>
                 </div>
 
                 <div class="info-grid">
                     <div class="info-box full">
                         <span>Nama Lengkap</span>
-                        <strong>Raditya Cummalaka</strong>
+                        <strong>{{ $namaUser }}</strong>
                     </div>
 
                     <div class="info-box">
                         <span>No. WhatsApp</span>
-                        <strong>0812-4567-9900</strong>
+                        <strong>{{ $noHp }}</strong>
                     </div>
 
                     <div class="info-box">
-                        <span>Kontak Orang Tua</span>
-                        <strong>0813-1111-7788</strong>
+                        <span>Kontak Orang Tua / Darurat</span>
+                        <strong>{{ $kontakDarurat }}</strong>
                     </div>
 
                     <div class="info-box">
                         <span>Kamar Diajukan</span>
-                        <strong>Kamar 01 · Tower Ganjil · Non AC</strong>
+                        <strong>Kamar {{ $namaKamar }} · {{ $towerKamar }}</strong>
                     </div>
 
                     <div class="info-box">
-                        <span>Tanggal Pengajuan</span>
-                        <strong>9 Mei 2026</strong>
+                        <span>Mulai Sewa</span>
+                        <strong>{{ $tanggalMulai }}</strong>
                     </div>
 
                     <div class="info-box full">
                         <span>Alamat Asal</span>
-                        <strong>Samarinda, Kalimantan Timur</strong>
+                        <strong>{{ $alamatUser }}</strong>
                     </div>
                 </div>
 
                 <div class="document-grid">
                     <div class="doc-box">
                         <h4>Foto KTP</h4>
-                        <div class="doc-preview">Preview Foto KTP</div>
-                        <a href="#" class="doc-link">Lihat Foto KTP</a>
+                        <div class="doc-preview" style="padding: 0; overflow: hidden; border-style: solid;">
+                            @if($pengajuan->user && $pengajuan->user->ktp_dokumen && (str_contains($pengajuan->user->ktp_dokumen, '.jpg') || str_contains($pengajuan->user->ktp_dokumen, '.jpeg') || str_contains($pengajuan->user->ktp_dokumen, '.png')))
+                                <img src="{{ asset($pengajuan->user->ktp_dokumen) }}" alt="KTP" style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <div style="padding: 14px;">File Dokumen KTP (PDF/DOC)</div>
+                            @endif
+                        </div>
+                        <a href="{{ asset($pengajuan->user->ktp_dokumen ?? '#') }}" target="_blank" class="doc-link">Lihat Foto KTP</a>
                     </div>
 
                     <div class="doc-box">
                         <h4>Surat Komitmen</h4>
-                        <div class="doc-preview">Preview Surat Komitmen</div>
-                        <a href="#" class="doc-link">Lihat Surat</a>
+                        <div class="doc-preview">
+                            <span style="color: #c8664a; font-size: 28px; display:block; margin-bottom:4px;">📄</span>
+                            Surat Komitmen Penghuni
+                        </div>
+                        <a href="{{ asset($pengajuan->user->surat_komitmen ?? '#') }}" target="_blank" class="doc-link">Lihat Surat</a>
                     </div>
                 </div>
 
                 <div class="payment-info-list">
                     <div class="payment-info-row">
                         <span>Jenis Pembayaran</span>
-                        <strong>DP 50%</strong>
+                        <strong>{{ $labelTipeBayar }}</strong>
                     </div>
 
                     <div class="payment-info-row">
                         <span>Jumlah Dibayar</span>
-                        <strong>Rp 4.200.000</strong>
+                        <strong>Rp {{ number_format($jumlahDibayar, 0, ',', '.') }}</strong>
                     </div>
 
                     <div class="payment-info-row">
                         <span>Total Tagihan</span>
-                        <strong>Rp 8.400.000 / tahun</strong>
+                        <strong>Rp {{ number_format($hargaKamar, 0, ',', '.') }} / {{ $hitunganKamar }}</strong>
                     </div>
 
                     <div class="payment-info-row">
                         <span>Sisa Pembayaran</span>
-                        <strong>Rp 4.200.000</strong>
+                        <strong>Rp {{ number_format($sisaPembayaran, 0, ',', '.') }}</strong>
                     </div>
 
                     <div class="payment-info-row">
                         <span>Tanggal Upload</span>
-                        <strong>9 Mei 2026</strong>
+                        <strong>{{ $tanggalUpload }}</strong>
                     </div>
 
                     <div class="payment-info-row">
@@ -908,23 +974,27 @@
                 <div class="payment-proof">
                     <h4>Bukti Transfer</h4>
 
-                    <div class="proof-preview">
-                        Preview bukti transfer akan tampil di sini
+                    <div class="proof-preview" style="padding: 0; overflow: hidden; border-style: solid;">
+                        @if($pengajuan->bukti_transfer)
+                            <img src="{{ asset($pengajuan->bukti_transfer) }}" alt="Bukti Transfer" style="width: 100%; height: 100%; object-fit: contain; background: #fff;">
+                        @else
+                            <div style="padding: 18px;">Belum ada bukti transfer diupload</div>
+                        @endif
                     </div>
 
                     <div class="proof-meta">
                         <div class="proof-meta-box">
                             <span>Nama File</span>
-                            <strong>bukti_dp_rani.jpg</strong>
+                            <strong>{{ $fileNameBukti }}</strong>
                         </div>
 
                         <div class="proof-meta-box">
                             <span>Status File</span>
-                            <strong>Sudah diupload</strong>
+                            <strong>{{ $pengajuan->bukti_transfer ? 'Sudah diupload' : 'Kosong' }}</strong>
                         </div>
                     </div>
 
-                    <a href="#" class="proof-action">Lihat Bukti Transfer</a>
+                    <a href="{{ asset($pengajuan->bukti_transfer ?? '#') }}" target="_blank" class="proof-action">Lihat Bukti Transfer</a>
                 </div>
             </div>
 
@@ -933,7 +1003,7 @@
 
                 <div class="verify-checklist">
                     <label class="check-item">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Data diri sudah sesuai.</strong>
                             <span>Nama, nomor HP, dan alamat calon penghuni sudah dicek.</span>
@@ -941,7 +1011,7 @@
                     </label>
 
                     <label class="check-item">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Kontak orang tua valid.</strong>
                             <span>Nomor orang tua dapat dihubungi jika diperlukan.</span>
@@ -949,7 +1019,7 @@
                     </label>
 
                     <label class="check-item">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Dokumen terlihat jelas.</strong>
                             <span>Foto KTP dan surat komitmen dapat dibaca.</span>
@@ -957,7 +1027,7 @@
                     </label>
 
                     <label class="check-item">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Kamar masih tersedia.</strong>
                             <span>Kamar yang diajukan belum ditempati penghuni lain.</span>
@@ -968,7 +1038,7 @@
                 <div class="decision-checklist">
 
                     <label class="decision-check">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Nominal pembayaran sesuai.</strong>
                             <span>Jumlah transfer sama dengan data pembayaran yang dikirim penghuni.</span>
@@ -976,7 +1046,7 @@
                     </label>
 
                     <label class="decision-check">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Bukti transfer terlihat jelas.</strong>
                             <span>Nama pengirim, nominal, dan tanggal transfer dapat dibaca.</span>
@@ -984,7 +1054,7 @@
                     </label>
 
                     <label class="decision-check">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Tujuan rekening sesuai.</strong>
                             <span>Pembayaran masuk ke rekening Kos Rumah Bata.</span>
@@ -992,7 +1062,7 @@
                     </label>
 
                     <label class="decision-check">
-                        <input type="checkbox">
+                        <input type="checkbox" required>
                         <div>
                             <strong>Data penghuni cocok.</strong>
                             <span>Nama dan kamar sesuai dengan data penghuni di sistem.</span>
@@ -1003,15 +1073,15 @@
 
                 <div class="admin-note">
                     <label>Catatan Admin</label>
-                    <textarea placeholder="Tulis catatan jika ada data yang perlu diperbaiki."></textarea>
+                    <textarea name="catatan_admin" placeholder="Tulis catatan jika ada data yang perlu diperbaiki atau alasan penolakan."></textarea>
                 </div>
 
                 <div class="verify-actions">
-                    <button type="button" class="approve-btn" onclick="alert('Pengajuan disetujui. Nantinya backend akan mengubah status menjadi terverifikasi dan membuka akses pembayaran.')">
+                                        <button type="submit" name="action" value="setuju" class="decision-btn decision-approve">
                         Setujui Pengajuan
                     </button>
 
-                    <button type="button" class="reject-btn" onclick="alert('Pengajuan ditolak. Nantinya backend akan menyimpan alasan penolakan.')">
+                                        <button type="submit" name="action" value="tolak" class="decision-btn decision-reupload" onclick="disableRequiredFields()">
                         Tolak Pengajuan
                     </button>
                 </div>
@@ -1021,10 +1091,24 @@
                 </p>
             </div>
 
-        </div>
+        </form>
 
     </div>
 
 </div>
+
+<script>
+    /**
+     * Fungsi pembantu agar saat admin menekan tombol "Tolak Pengajuan",
+     * atribut HTML5 'required' pada elemen checklist dilewati/dimatikan
+     * sehingga admin dapat langsung mengirimkan catatan revisi upload ulang.
+     */
+    function disableRequiredFields() {
+        const requiredInputs = document.querySelectorAll('input[required]');
+        requiredInputs.forEach(input => {
+            input.removeAttribute('required');
+        });
+    }
+</script>
 
 @endsection

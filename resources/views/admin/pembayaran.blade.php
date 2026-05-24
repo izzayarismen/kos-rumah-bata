@@ -106,7 +106,7 @@
 
     .payment-search:focus {
         border-color: #d79b86;
-        box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
+    0 0 0 4px rgba(200, 102, 74, 0.08);
     }
 
     .payment-filter {
@@ -326,25 +326,25 @@
     <div class="payment-summary">
         <div class="summary-card">
             <span>Bukti Masuk</span>
-            <strong>3</strong>
+            <strong>{{ $pembayaran->count() }}</strong>
             <small>Total bukti pembayaran yang masuk.</small>
         </div>
 
         <div class="summary-card">
             <span>Menunggu Verifikasi</span>
-            <strong>1</strong>
+            <strong>{{ $pembayaran->where('status', 'pending')->count() }}</strong>
             <small>Perlu dicek oleh admin.</small>
         </div>
 
         <div class="summary-card">
             <span>Terverifikasi</span>
-            <strong>1</strong>
+            <strong>{{ $pembayaran->where('status', 'disetujui')->count() }}</strong>
             <small>Bukti pembayaran sudah valid.</small>
         </div>
 
         <div class="summary-card">
             <span>Upload Ulang</span>
-            <strong>1</strong>
+            <strong>{{ $pembayaran->where('status', 'ditolak')->count() }}</strong>
             <small>Bukti belum jelas atau tidak sesuai.</small>
         </div>
     </div>
@@ -357,7 +357,7 @@
                 <p>Cek bukti transfer yang dikirim penghuni dari halaman pembayaran. Detail nominal dan bukti pembayaran dibuka melalui tombol cek data.</p>
             </div>
 
-            <input type="text" id="paymentSearch" class="payment-search" placeholder="Cari nama atau kamar...">
+            <input type="text" id="paymentSearch" class="payment-search" placeholder="Cari kamar, tower, atau tipe pembayaran...">
         </div>
 
         <div class="payment-filter">
@@ -369,53 +369,51 @@
 
         <div class="payment-list" id="paymentList">
 
-            <div class="payment-item" data-name="rani amelia kamar 08 tower genap dp" data-status="waiting">
-                <div class="payment-avatar">RA</div>
+            @foreach($pembayaran as $item)
+                @php
+                    // Pemetaan status tabel ke data-status atribut JS Anda
+                    $statusAttr = 'waiting';
+                    $badgeText = 'Menunggu Verifikasi';
+                    $dateText = 'Dikirim ' . ($item->updated_at ? $item->updated_at->diffForHumans() : 'hari ini');
 
-                <div class="payment-main">
-                    <h3>Rani Amelia</h3>
-                    <p>Kamar 08 · Tower Genap</p>
+                    if ($item->status === 'disetujui') {
+                        $statusAttr = 'verified';
+                        $badgeText = 'Terverifikasi';
+                        $dateText = 'Dicek ' . ($item->updated_at ? $item->updated_at->diffForHumans() : 'kemarin');
+                    } elseif ($item->status === 'ditolak') {
+                        $statusAttr = 'reupload';
+                        $badgeText = 'Upload Ulang';
+                        $dateText = 'Dikembalikan ' . ($item->updated_at ? $item->updated_at->diffForHumans() : 'beberapa hari lalu');
+                    }
 
-                    <div class="payment-meta">
-                        <span class="payment-badge">Menunggu Verifikasi</span>
-                        <span class="payment-date">Dikirim hari ini</span>
+                    // Logika pembuatan inisial nama dinamis dari model User
+                    $namaUser = $item->user->nama ?? 'Penghuni';
+                    $words = explode(' ', $namaUser);
+                    $initials = strtoupper(substr($words[0] ?? 'K', 0, 1) . substr($words[1] ?? '', 0, 1));
+
+                    // Atribut pencarian gabungan string (nama, kamar, tower, tipe pembayaran)
+                    $namaKamar = $item->kamar->nomor_kamar ?? '00';
+                    $towerKamar = $item->kamar->tower ?? 'Tower';
+                    $tipeBayar = $item->tipe_pembayaran ?? 'dp';
+                    $searchData = strtolower("{$namaUser} kamar {$namaKamar} tower {$towerKamar} {$tipeBayar}");
+                @endphp
+
+                <div class="payment-item" data-name="{{ $searchData }}" data-status="{{ $statusAttr }}">
+                    <div class="payment-avatar">{{ $initials }}</div>
+
+                    <div class="payment-main">
+                        <h3>{{ $namaUser }}</h3>
+                        <p>Kamar {{ $namaKamar }} · Tower {{ $towerKamar }}</p>
+
+                        <div class="payment-meta">
+                            <span class="payment-badge">{{ $badgeText }}</span>
+                            <span class="payment-date">{{ $dateText }}</span>
+                        </div>
                     </div>
+
+                    <a href="/admin/pembayaran/{{ $item->order_id }}" class="payment-action">Cek Data</a>
                 </div>
-
-                <a href="/admin/pembayaran/detail" class="payment-action">Cek Data</a>
-            </div>
-
-            <div class="payment-item" data-name="nadya putri kamar 01 tower ganjil lunas" data-status="verified">
-                <div class="payment-avatar">NP</div>
-
-                <div class="payment-main">
-                    <h3>Nadya Putri</h3>
-                    <p>Kamar 01 · Tower Ganjil</p>
-
-                    <div class="payment-meta">
-                        <span class="payment-badge">Terverifikasi</span>
-                        <span class="payment-date">Dicek kemarin</span>
-                    </div>
-                </div>
-
-                <a href="/admin/pembayaran/detail" class="payment-action">Cek Data</a>
-            </div>
-
-            <div class="payment-item" data-name="melati safira kamar 12 tower genap upload ulang" data-status="reupload">
-                <div class="payment-avatar">MS</div>
-
-                <div class="payment-main">
-                    <h3>Melati Safira</h3>
-                    <p>Kamar 12 · Tower Genap</p>
-
-                    <div class="payment-meta">
-                        <span class="payment-badge">Upload Ulang</span>
-                        <span class="payment-date">Dikembalikan 2 hari lalu</span>
-                    </div>
-                </div>
-
-                <a href="/admin/pembayaran/detail" class="payment-action">Cek Data</a>
-            </div>
+            @endforeach
 
         </div>
 
