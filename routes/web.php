@@ -17,39 +17,12 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/aktivitas', [HomeController::class, 'activity']);
 Route::get('/tentang-kami', [HomeController::class, 'galeri']);
 
-// Flow Sewa
-Route::prefix('kamar')->group(function () {
-    Route::get('/', [KamarController::class, 'index']);
-    Route::get('/{id}', [KamarController::class, 'show']);
-});
+// Kamar
+Route::get('/kamar', [KamarController::class, 'index']);
+Route::get('/kamar/{id}', [KamarController::class, 'show']);
 
 Route::get('/pelunasan', function () {
     return view('pelunasan');
-});
-
-Route::middleware('auth')->group(function () {
-
-    Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'getProfile']);
-        Route::put('/', [ProfileController::class, 'updateProfile']);
-        Route::put('/password', [ProfileController::class, 'updatePassword']);
-
-        Route::get('/status-pembayaran', function () {
-            return view('status-pembayaran');
-        });
-
-        Route::get('/laporan-fasilitas', function () {
-            return view('laporan-fasilitas');
-        });
-    });
-
-    Route::get('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'create']);
-    Route::post('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'store']);
-
-    Route::get('/pembayaran/{order_id}', [PengajuanSewaController::class, 'show']);
-    Route::post('/pembayaran/{order_id}', [PengajuanSewaController::class, 'payment']);
-
-    Route::get('/logout', [AuthController::class, 'getLogout']);
 });
 
 Route::middleware('guest')->group(function () {
@@ -62,12 +35,34 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'postLogin']);
 });
 
-// admin
-Route::get('/admin', function () {
-    return view('admin.dashboard');
+Route::middleware('auth')->group(function () {
+    // Logout
+    Route::get('/logout', [AuthController::class, 'getLogout']);
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'getProfile']);
+    Route::put('/profile', [ProfileController::class, 'updateProfile']);
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
+    Route::get('/profile/status-pembayaran', function () {
+        return view('status-pembayaran');
+    });
+    Route::get('/profile/laporan-fasilitas', function () {
+        return view('laporan-fasilitas');
+    });
+
+    // Flow Sewa
+    Route::get('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'create']);
+    Route::post('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'store']);
+    Route::get('/pembayaran/{order_id}', [PengajuanSewaController::class, 'show']);
+    Route::post('/pembayaran/{order_id}', [PengajuanSewaController::class, 'payment']);
 });
 
 Route::prefix('admin')->group(function () {
+    // Dashboard
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    });
+
     // CRUD Kamar Admin
     Route::resource('/kamar', AdminKamarController::class);
 
