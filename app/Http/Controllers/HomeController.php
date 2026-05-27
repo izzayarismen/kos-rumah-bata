@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faq;
-use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\Galeri;
 use App\Models\Kamar;

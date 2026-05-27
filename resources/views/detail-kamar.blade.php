@@ -64,7 +64,7 @@
         <div class="mt-8 bg-card rounded-2xl border border-border/60 p-6 shadow-soft">
             <h2 class="font-semibold text-lg">Deskripsi Kamar</h2>
             <p class="text-sm text-muted-foreground mt-2 leading-relaxed">
-                {{ $kamar->deskripsi ?? 'Kamar standar nyaman untuk satu orang. Cocok untuk pelajar atau pekerja yang mengutamakan kenyamanan dengan harga terjangkau. Sirkulasi udara baik dengan jendela besar.' }}
+                {!! $kamar->deskripsi ? nl2br(e($kamar->deskripsi)) : 'Kamar standar nyaman untuk satu orang. Cocok untuk pelajar atau pekerja yang mengutamakan kenyamanan dengan harga terjangkau. Sirkulasi udara baik dengan jendela besar.' !!}
             </p>
 
             <h3 class="font-semibold mt-6">Fasilitas</h3>

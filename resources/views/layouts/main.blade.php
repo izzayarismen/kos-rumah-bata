@@ -26,15 +26,8 @@
                 <header class="sticky top-0 z-40 w-full border-b border-border/60 bg-surface/85 backdrop-blur-md">
                     <div class="container-app flex h-16 items-center justify-between">
                         <a class="flex items-center gap-2.5" href="/">
-                            {{-- <span class="grid h-9 w-9 place-items-center rounded-lg bg-gradient-primary text-primary-foreground shadow-soft">
-                                {{-- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house h-4.5 w-4.5"> --}}
-                                {{-- <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                                <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                </svg> --}}
-                            {{-- </span> --}}
                             <div class="flex items-center gap-2.5">
                                 <img src="{{ asset('logo.png') }}" alt="Logo Kos Rumah Bata" class="h-8 w-8 object-contain">
-
                                 <div class="leading-tight">
                                     <p class="text-sm font-bold">Kos Rumah Bata</p>
                                     <p class="text-[11px] text-muted-foreground -mt-0.5">Hunian nyaman, urusan beres.</p>
@@ -42,44 +35,42 @@
                             </div>
                         </a>
                         <nav class="hidden md:flex items-center gap-1">
-                            <a href="/"
-                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('/') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}"
-                            aria-current="{{ request()->is('/') ? 'page' : 'false' }}">
-                            Beranda
-                            </a>
-
-                            <a href="/kamar"
-                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('kamar*') || request()->is('pembayaran*') || request()->is('pelunasan*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
-                            Kamar
-                            </a>
-
-                            <a href="/tentang-kami"
-                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('tentang*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
-                            Tentang Kami
-                            </a>
-
-                            <a href="/aktivitas"
-                            class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('aktivitas*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">
-                            Aktivitas
-                            </a>
+                            <a href="/" class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('/') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">Beranda</a>
+                            <a href="/kamar" class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('kamar*') || request()->is('pembayaran*') || request()->is('pelunasan*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">Kamar</a>
+                            <a href="/tentang-kami" class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('tentang*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">Tentang Kami</a>
+                            <a href="/aktivitas" class="px-3.5 py-2 text-sm font-medium rounded-md transition-colors {{ request()->is('aktivitas*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:text-foreground hover:bg-secondary' }}">Aktivitas</a>
                         </nav>
                         <div class="flex items-center gap-2">
                             @auth
-                            <a href="/profile"><button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-2 rounded-full pl-1.5 pr-3" type="button" id="radix-:r0:" aria-haspopup="menu" aria-expanded="true" data-state="open" aria-controls="radix-:r1:"><span class="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">{{ Str::upper(substr(auth()->user()->nama, 0, 1)) }}</span><span class="hidden sm:inline text-sm">{{ auth()->user()->nama }}</span></button></a>
-                            @else
-                            <a href="/login"><button class="items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 hidden sm:inline-flex">Login</button></a>
-                            <a href="/register"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">Register</button></a>
+                            <a href="/profile"><button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-2 rounded-full pl-1.5 pr-3"><span class="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">{{ Str::upper(substr(auth()->user()->nama, 0, 1)) }}</span><span class="hidden sm:inline text-sm">{{ auth()->user()->nama }}</span></button></a>
                             @endauth
-                            <button class="md:hidden grid h-9 w-9 place-items-center rounded-md hover:bg-secondary" aria-label="Menu">
+
+                            <button id="menu-toggle" class="md:hidden grid h-9 w-9 place-items-center rounded-md hover:bg-secondary" aria-label="Menu">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu h-5 w-5">
-                                <line x1="4" x2="20" y1="12" y2="12"></line>
-                                <line x1="4" x2="20" y1="6" y2="6"></line>
-                                <line x1="4" x2="20" y1="18" y2="18"></line>
+                                    <line x1="4" x2="20" y1="12" y2="12"></line>
+                                    <line x1="4" x2="20" y1="6" y2="6"></line>
+                                    <line x1="4" x2="20" y1="18" y2="18"></line>
                                 </svg>
                             </button>
                         </div>
                     </div>
                 </header>
+
+                <div id="mobile-menu" class="hidden md:hidden border-b border-border/60 bg-surface bg-white/95 backdrop-blur-md px-4 py-4 space-y-2 transition-all duration-300">
+                    <a href="/" class="block px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->is('/') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:bg-secondary' }}">Beranda</a>
+                    <a href="/kamar" class="block px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->is('kamar*') || request()->is('pembayaran*') || request()->is('pelunasan*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:bg-secondary' }}">Kamar</a>
+                    <a href="/tentang-kami" class="block px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->is('tentang*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:bg-secondary' }}">Tentang Kami</a>
+                    <a href="/aktivitas" class="block px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->is('aktivitas*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:bg-secondary' }}">Aktivitas</a>
+                    @auth
+                        <hr class="border-border/40 my-2">
+                        <a href="/profile" class="block px-4 py-2.5 text-sm font-medium rounded-lg text-foreground/70 hover:bg-secondary">Profil Saya ({{ auth()->user()->nama }})</a>
+                    @else
+                        <div class="grid grid-cols-2 gap-2 pt-2 sm:hidden">
+                            <a href="/login" class="text-center py-2 text-sm font-medium border border-input rounded-md hover:bg-accent">Login</a>
+                            <a href="/register" class="text-center py-2 text-sm font-medium bg-primary text-primary-foreground rounded-md hover:bg-primary/90">Register</a>
+                        </div>
+                    @endauth
+                </div>
 
                 @yield("content")
 
@@ -138,4 +129,17 @@
         </div>
     </body>
     @stack("scripts")
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', function () {
+                    // Melakukan toggle class 'hidden' untuk menampilkan atau menyembunyikan menu
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </html>
