@@ -159,77 +159,96 @@
             <p>Ubah data kamar, keluhan, biaya, status pengerjaan, dan catatan perbaikan.</p>
         </div>
 
-        <form action="/admin/maintenance/update" method="POST" enctype="multipart/form-data">
+        @if ($errors->any())
+            <div style="background: #fde8e8; border: 1px solid #f8b4b4; color: #9b1c1c; padding: 16px; border-radius: 16px; margin-bottom: 20px; font-weight: 600;">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="/admin/maintenance/{{ $maintenance->id }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
 
             <div class="maintenance-form-grid">
 
                 <div class="maintenance-form-group">
                     <label>Kamar</label>
-                    <select name="kamar">
-                        <option value="01">Kamar 01 · Tower Ganjil</option>
-                        <option value="02">Kamar 02 · Tower Genap</option>
-                        <option value="03" selected>Kamar 03 · Tower Ganjil</option>
-                        <option value="04">Kamar 04 · Tower Genap</option>
-                        <option value="08">Kamar 08 · Tower Genap</option>
-                        <option value="12">Kamar 12 · Tower Genap</option>
+                    <select name="kamar_id">
+                        @foreach($kamars as $kamar)
+                            @php
+                                $nomorKamar = is_numeric($kamar->nomor_kamar) ? sprintf('%02d', $kamar->nomor_kamar) : $kamar->nomor_kamar;
+                            @endphp
+                            <option value="{{ $kamar->id }}" {{ $maintenance->kamar_id == $kamar->id ? 'selected' : '' }}>
+                                Kamar {{ $nomorKamar }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Status Maintenance</label>
                     <select name="status">
-                        <option value="menunggu">Menunggu</option>
-                        <option value="proses" selected>Dalam Proses</option>
-                        <option value="selesai">Selesai</option>
+                        <option value="waiting" {{ $maintenance->status === 'waiting' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="process" {{ $maintenance->status === 'process' ? 'selected' : '' }}>Dalam Proses</option>
+                        <option value="done" {{ $maintenance->status === 'done' ? 'selected' : '' }}>Selesai</option>
                     </select>
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Jenis Perbaikan</label>
-                    <input type="text" name="jenis_perbaikan" value="Perbaikan AC">
+                    <input type="text" name="title" value="{{ old('title', $maintenance->title) }}">
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Biaya</label>
-                    <input type="text" name="biaya" value="Rp 500.000">
-                    <span class="maintenance-form-hint">Nanti saat backend, nilai ini bisa disimpan sebagai angka: 500000.</span>
+                    <input type="number" name="cost" value="{{ old('cost', $maintenance->cost) }}" min="0">
+                    <span class="maintenance-form-hint">Nilai disimpan sebagai angka murni, misal: 500000</span>
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Tanggal Laporan</label>
-                    <input type="date" name="tanggal_laporan" value="2026-06-12">
+                    <input type="date" name="date" value="{{ old('date', $maintenance->date) }}">
                 </div>
 
                 <div class="maintenance-form-group">
-                    <label>Estimasi Selesai</label>
-                    <input type="date" name="estimasi_selesai" value="2026-06-14">
+                    <label>Estimasi Selesai (Opsional)</label>
+                    <input type="date" name="estimasi_selesai" value="{{ old('estimasi_selesai', $maintenance->estimasi_selesai ?? '') }}">
                 </div>
 
                 <div class="maintenance-form-full maintenance-form-group">
                     <label>Keluhan / Kerusakan</label>
-                    <textarea name="keluhan">AC kamar tidak dingin dan perlu dicek oleh teknisi.</textarea>
+                    <textarea name="description">{{ old('description', $maintenance->description) }}</textarea>
                 </div>
 
                 <div class="maintenance-form-full maintenance-form-group">
-                    <label>Catatan Admin</label>
-                    <textarea name="catatan_admin">Teknisi sudah dijadwalkan untuk melakukan pengecekan AC.</textarea>
+                    <label>Catatan Admin (Opsional)</label>
+                    <textarea name="catatan_admin">{{ old('catatan_admin', $maintenance->catatan_admin ?? '') }}</textarea>
                 </div>
 
                 <div class="maintenance-form-full maintenance-form-group">
-                    <label>Foto Kerusakan / Bukti Perbaikan</label>
+                    <label>Foto Kerusakan / Bukti Perbaikan (Opsional)</label>
                     <div class="maintenance-upload-box">
                         <input type="file" name="foto_maintenance" accept="image/*">
-                        <div class="maintenance-current-file">
-                            File saat ini: maintenance_kamar_03.jpg
-                        </div>
+                        @if(!empty($maintenance->foto_maintenance))
+                            <div class="maintenance-current-file">
+                                File saat ini: <a href="{{ asset('images/maintenance/' . $maintenance->foto_maintenance) }}" target="_blank" style="color: #c8664a; font-weight: 600;">{{ $maintenance->foto_maintenance }}</a>
+                            </div>
+                        @else
+                            <div class="maintenance-current-file">
+                                Belum ada file foto yang diunggah.
+                            </div>
+                        @endif
                     </div>
                 </div>
 
             </div>
 
             <div class="maintenance-form-actions">
-                <button type="submit" class="btn">Update</button>
+                <button type="submit" class="btn" style="background: #c8664a; color: #ffffff; border: 1px solid #c8664a; border-radius: 15px; font-weight: 600; cursor: pointer;">Update</button>
                 <a href="/admin/maintenance" class="btn btn-secondary">Batal</a>
             </div>
         </form>

@@ -777,7 +777,19 @@
                 padding: 20px;
             }
         }
-    </style>
+
+                .brand-logo {
+            background: none !important;      
+            background-color: transparent !important;
+            border-radius: 0 !important;  
+            padding: 0;                   
+            
+            
+            width: 45px;                      
+            height: auto;                     
+            object-fit: contain;
+        }
+            </style>
 </head>
 
 <body>
@@ -787,7 +799,7 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="brand">
-            <div class="brand-logo">K</div>
+            <img src="/logo.png" alt="Logo Kos Rumah Bata" class="brand-logo">
 
             <div>
                 <h3>Kos Rumah Bata</h3>

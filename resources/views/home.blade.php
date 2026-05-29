@@ -177,100 +177,100 @@
 {{-- Fasilitas --}}
 <section id="fasilitas" class="container-app py-16">
     <div class="grid lg:grid-cols-2 gap-10 items-center">
+        
         <div class="grid grid-cols-2 gap-4">
-            <img src="1.jpg" alt="Dapur bersama" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card"><img src="4.jpg" alt="Kamar deluxe" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card mt-8"><img src="6.jpg" alt="Area parkir" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card">
-            <div class="rounded-2xl aspect-square bg-gradient-primary text-primary-foreground p-6 mt-8 flex flex-col justify-between shadow-card">
-                <svg xmlns="http://www.w3.org/2000/xl" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-7 w-7">
-                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
-                <path d="M20 3v4"></path>
-                <path d="M22 5h-4"></path>
-                <path d="M4 17v2"></path>
-                <path d="M5 18H3"></path>
-                </svg>
-                <div>
-                <p class="text-3xl font-bold">6+</p>
-                <p class="text-sm opacity-90">Fasilitas premium tersedia</p>
-                </div>
+            <img src="1.jpg" alt="Dapur bersama" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card">
+            <img src="2.jpg" alt="Kamar deluxe" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card mt-8">
+            <img src="3.jpg" alt="Area parkir" loading="lazy" class="rounded-2xl aspect-square object-cover shadow-card">
+            
+            <div class="relative rounded-2xl aspect-square mt-8 overflow-hidden shadow-card">
+                <img src="4.jpg" alt="Fasilitas" class="w-full h-full object-cover text-primary-foreground bg-gradient-primary bg-blend-multiply">
             </div>
-        </div>
-        <div>
+        </div> <div>
             <p class="text-sm font-semibold text-primary uppercase tracking-wide">Fasilitas</p>
             <h2 class="text-3xl md:text-4xl font-bold mt-2">Semua kebutuhanmu, dalam satu hunian.</h2>
             <p class="text-muted-foreground mt-3 max-w-lg">Nikmati berbagai fasilitas bersama mulai dari dapur luas, area belajar kelompok, hingga pemandangan gunung yang asri demi mendukung produktivitas dan keseimbangan hidupmu.</p>
+            
             <div class="mt-6 grid grid-cols-2 gap-3">
                 <div class="flex items-center gap-3 bg-card rounded-xl p-3.5 border border-border/60">
-                <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wifi h-4.5 w-4.5">
-                        <path d="M12 20h.01"></path>
-                        <path d="M2 8.82a15 15 0 0 1 20 0"></path>
-                        <path d="M5 12.859a10 10 0 0 1 14 0"></path>
-                        <path d="M8.5 16.429a5 5 0 0 1 7 0"></path>
-                    </svg>
+                    <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wifi h-4.5 w-4.5">
+                            <path d="M12 20h.01"></path>
+                            <path d="M2 8.82a15 15 0 0 1 20 0"></path>
+                            <path d="M5 12.859a10 10 0 0 1 14 0"></path>
+                            <path d="M8.5 16.429a5 5 0 0 1 7 0"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium">Wi-Fi Cepat</p>
                 </div>
-                <p class="text-sm font-medium">Wi-Fi Cepat</p>
-                </div>
+
                 <div class="flex items-center gap-3 bg-card rounded-xl p-3.5 border border-border/60">
-                <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car h-4.5 w-4.5">
-                        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
-                        <circle cx="7" cy="17" r="2"></circle>
-                        <path d="M9 17h6"></path>
-                        <circle cx="17" cy="17" r="2"></circle>
-                    </svg>
+                    <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-car h-4.5 w-4.5">
+                            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path>
+                            <circle cx="7" cy="17" r="2"></circle>
+                            <path d="M9 17h6"></path>
+                            <circle cx="17" cy="17" r="2"></circle>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium">Parkir Luas</p>
                 </div>
-                <p class="text-sm font-medium">Parkir Luas</p>
-                </div>
+
                 <div class="flex items-center gap-3 bg-card rounded-xl p-3.5 border border-border/60">
-                <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-utensils-crossed h-4.5 w-4.5">
-                        <path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"></path>
-                        <path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6 l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"></path>
-                        <path d="m2.1 21.8 6.4-6.3"></path>
-                        <path d="m19 5-7 7"></path>
-                    </svg>
+                    <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-utensils-crossed h-4.5 w-4.5">
+                            <path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"></path>
+                            <path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6 l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"></path>
+                            <path d="m2.1 21.8 6.4-6.3"></path>
+                            <path d="m19 5-7 7"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium">Dapur Bersama</p>
                 </div>
-                <p class="text-sm font-medium">Dapur Bersama</p>
-                </div>
+
                 <div class="flex items-center gap-3 bg-card rounded-xl p-3.5 border border-border/60">
-                <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shower-head h-4.5 w-4.5">
-                        <path d="m4 4 2.5 2.5"></path>
-                        <path d="M13.5 6.5a4.95 4.95 0 0 0-7 7"></path>
-                        <path d="M15 5 5 15"></path>
-                        <path d="M14 17v.01"></path>
-                        <path d="M10 16v.01"></path>
-                        <path d="M13 13v.01"></path>
-                        <path d="M16 10v.01"></path>
-                        <path d="M11 20v.01"></path>
-                        <path d="M17 14v.01"></path>
-                        <path d="M20 11v.01"></path>
-                    </svg>
+                    <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shower-head h-4.5 w-4.5">
+                            <path d="m4 4 2.5 2.5"></path>
+                            <path d="M13.5 6.5a4.95 4.95 0 0 0-7 7"></path>
+                            <path d="M15 5 5 15"></path>
+                            <path d="M14 17v.01"></path>
+                            <path d="M10 16v.01"></path>
+                            <path d="M13 13v.01"></path>
+                            <path d="M16 10v.01"></path>
+                            <path d="M11 20v.01"></path>
+                            <path d="M17 14v.01"></path>
+                            <path d="M20 11v.01"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium">Air Bersih 24 Jam</p>
                 </div>
-                <p class="text-sm font-medium">Air Bersih 24 Jam</p>
-                </div>
+
                 <div class="flex items-center gap-3 bg-card rounded-xl p-3.5 border border-border/60">
-                <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock h-4.5 w-4.5">
-                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
+                    <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock h-4.5 w-4.5">
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium">Akses 24 Jam</p>
                 </div>
-                <p class="text-sm font-medium">Akses 24 Jam</p>
-                </div>
+
                 <div class="flex items-center gap-3 bg-card rounded-xl p-3.5 border border-border/60">
-                <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-4.5 w-4.5">
-                        <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
-                        <path d="M20 3v4"></path>
-                        <path d="M22 5h-4"></path>
-                        <path d="M4 17v2"></path>
-                        <path d="M5 18H3"></path>
-                    </svg>
-                </div>
-                <p class="text-sm font-medium">Cleaning Service</p>
+                    <div class="h-9 w-9 rounded-lg bg-secondary text-primary grid place-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles h-4.5 w-4.5">
+                            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
+                            <path d="M20 3v4"></path>
+                            <path d="M22 5h-4"></path>
+                            <path d="M4 17v2"></path>
+                            <path d="M5 18H3"></path>
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium">Cleaning Service</p>
                 </div>
             </div>
         </div>
+
     </div>
 </section>
 

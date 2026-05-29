@@ -5,12 +5,15 @@ use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminActivityController;
 use App\Http\Controllers\Admin\AdminGaleriController;
 use App\Http\Controllers\Admin\AdminPembayaranController;
+use App\Http\Controllers\Admin\AdminMaintenanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PengajuanSewaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MaintenanceController;
 use Illuminate\Support\Facades\Route;
+
 
 // User
 Route::get('/', [HomeController::class, 'index']);
@@ -46,9 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/status-pembayaran', function () {
         return view('status-pembayaran');
     });
-    Route::get('/profile/laporan-fasilitas', function () {
-        return view('laporan-fasilitas');
-    });
+    Route::get('/profile/status-pembayaran', [ProfileController::class, 'statusPembayaran'])->name('profile.status-pembayaran');
+    Route::get('/profile/laporan-fasilitas', [ProfileController::class, 'laporanFasilitas'])->name('profile.laporan-fasilitas');
 
     // Flow Sewa
     Route::get('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'create']);
@@ -79,6 +81,8 @@ Route::prefix('admin')->group(function () {
     Route::get('/pembayaran', [AdminPembayaranController::class, 'index']);
     Route::get('/pembayaran/{order_id}', [AdminPembayaranController::class, 'show']);
     Route::put('/pembayaran/{order_id}/verifikasi', [AdminPembayaranController::class, 'verifikasi']);
+
+    Route::resource('/maintenance', AdminMaintenanceController::class);
 });
 
 Route::get('/admin/penghuni', function () {
@@ -97,25 +101,25 @@ Route::get('/admin/penghuni/detail', function () {
     return view('admin.penghuni_detail');
 });
 
-Route::get('/admin/maintenance', function () {
-    return view('admin.maintenance');
-});
+// Route::get('/admin/maintenance', function () {
+//     return view('admin.maintenance');
+// });
 
-Route::get('/admin/maintenance/create', function () {
-    return view('admin.maintenance_create');
-});
+// Route::get('/admin/maintenance/create', function () {
+//     return view('admin.maintenance_create');
+// });
 
-Route::get('/admin/maintenance/edit', function () {
-    return view('admin.maintenance_edit');
-});
+// Route::get('/admin/maintenance/edit', function () {
+//     return view('admin.maintenance_edit');
+// });
 
-Route::get('/admin/pengajuan-maintenance', function () {
-    return view('admin.pengajuan_maintenance');
-});
+// Route::get('/admin/pengajuan-maintenance', function () {
+//     return view('admin.pengajuan_maintenance');
+// });
 
-Route::get('/admin/pengajuan-maintenance/detail', function () {
-    return view('admin.pengajuan_maintenance_detail');
-});
+// Route::get('/admin/pengajuan-maintenance/detail', function () {
+//     return view('admin.pengajuan_maintenance_detail');
+// });
 
 Route::get('/admin/laporan', function () {
     return view('admin.laporan');
