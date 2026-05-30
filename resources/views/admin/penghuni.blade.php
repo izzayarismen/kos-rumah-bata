@@ -380,76 +380,62 @@
                 <h2>Penghuni Aktif</h2>
                 <p>Data penghuni yang sudah diverifikasi dan sedang menempati kamar.</p>
             </div>
-
-            {{-- <div class="tenant-top-actions">
-                <a href="/admin/pengajuan-sewa" class="rent-request-btn">
-                    Pengajuan Sewa
-                    <span class="rent-request-count">2</span>
-                </a>
-
-                <a href="/admin/penghuni/create" class="tenant-add-btn">
-                    Tambah Penghuni
-                </a>
-            </div> --}}
         </div>
 
         <div class="tenant-toolbar">
             <input type="text" id="tenantSearch" class="tenant-search" placeholder="Cari nama penghuni atau kamar...">
 
             <div class="tenant-mini-info">
-                3 penghuni aktif ditampilkan
+                <span id="tenantCount">{{ count($penghuni) }}</span> penghuni aktif ditampilkan
             </div>
         </div>
 
         <div class="tenant-list" id="tenantList">
 
-            <div class="tenant-item" data-name="nadya putri kamar 01 tower ganjil">
-                <div class="tenant-avatar">NP</div>
+            @foreach($penghuni as $item)
+                @php
+                    // Ambil pengajuan sewa pertama yang disetujui (hasMany / belongsTo)
+                    // Menggunakan kebiasaan laravel jika hasMany mengambil kumpulan data memakai first()
+                    $sewaAktif = $item->pengajuanSewa instanceof \Illuminate\Database\Eloquent\Collection
+                        ? $item->pengajuanSewa->first()
+                        : $item->pengajuanSewa;
 
-                <div class="tenant-main">
-                    <h3>Nadya Putri</h3>
-                    <p>Kamar 01 · Tower Ganjil</p>
-                    <span class="tenant-status">Aktif</span>
+                    $nomorKamar = $sewaAktif && $sewaAktif->kamar ? $sewaAktif->kamar->nomor_kamar : '-';
+                    $towerKamar = $sewaAktif && $sewaAktif->kamar ? ucfirst($sewaAktif->kamar->tower) : '-';
+
+                    // Logika inisial avatar dinamis
+                    $words = explode(' ', $item->nama);
+                    $initials = '';
+                    if (count($words) >= 2) {
+                        $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+                    } else {
+                        $initials = strtoupper(substr($item->nama, 0, 2));
+                    }
+
+                    // Format pencarian untuk dataset JavaScript
+                    $dataName = strtolower($item->nama . ' kamar ' . $nomorKamar . ' tower ' . $towerKamar);
+                @endphp
+
+                <div class="tenant-item" data-name="{{ $dataName }}">
+                    <div class="tenant-avatar">{{ $initials }}</div>
+
+                    <div class="tenant-main">
+                        <h3>{{ $item->nama }}</h3>
+                        <p>Kamar {{ $nomorKamar }} · Tower {{ $towerKamar }}</p>
+                        <span class="tenant-status">Aktif</span>
+                    </div>
+
+                    <div class="tenant-actions">
+                        <a href="/admin/penghuni/{{ $item->id }}" class="btn-detail">Detail Informasi</a>
+                        <a href="/admin/penghuni/edit/{{ $item->id }}" class="btn-edit-soft">Edit</a>
+                        <form action="/admin/penghuni/delete/{{ $item->id }}" method="POST" style="display:none;" id="delete-form-{{ $item->id }}">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                        <button type="button" class="btn-delete-soft" onclick="confirmDelete({{ $item->id }})">Hapus</button>
+                    </div>
                 </div>
-
-                <div class="tenant-actions">
-                    <a href="/admin/penghuni/detail" class="btn-detail">Detail Informasi</a>
-                    <a href="/admin/penghuni/edit" class="btn-edit-soft">Edit</a>
-                    <button type="button" class="btn-delete-soft" onclick="confirmDelete()">Hapus</button>
-                </div>
-            </div>
-
-            <div class="tenant-item" data-name="rani amelia kamar 08 tower genap">
-                <div class="tenant-avatar">RA</div>
-
-                <div class="tenant-main">
-                    <h3>Rani Amelia</h3>
-                    <p>Kamar 08 · Tower Genap</p>
-                    <span class="tenant-status">Aktif</span>
-                </div>
-
-                <div class="tenant-actions">
-                    <a href="/admin/penghuni/detail" class="btn-detail">Detail Informasi</a>
-                    <a href="/admin/penghuni/edit" class="btn-edit-soft">Edit</a>
-                    <button type="button" class="btn-delete-soft" onclick="confirmDelete()">Hapus</button>
-                </div>
-            </div>
-
-            <div class="tenant-item" data-name="melati safira kamar 12 tower genap">
-                <div class="tenant-avatar">MS</div>
-
-                <div class="tenant-main">
-                    <h3>Melati Safira</h3>
-                    <p>Kamar 12 · Tower Genap</p>
-                    <span class="tenant-status">Aktif</span>
-                </div>
-
-                <div class="tenant-actions">
-                    <a href="/admin/penghuni/detail" class="btn-detail">Detail Informasi</a>
-                    <a href="/admin/penghuni/edit" class="btn-edit-soft">Edit</a>
-                    <button type="button" class="btn-delete-soft" onclick="confirmDelete()">Hapus</button>
-                </div>
-            </div>
+            @endforeach
 
         </div>
 
@@ -465,6 +451,7 @@
     const tenantSearch = document.getElementById('tenantSearch');
     const tenantItems = document.querySelectorAll('.tenant-item');
     const emptyTenant = document.getElementById('emptyTenant');
+    const tenantCount = document.getElementById('tenantCount');
 
     tenantSearch.addEventListener('input', function () {
         const keyword = this.value.toLowerCase().trim();
@@ -481,8 +468,15 @@
             }
         });
 
+        tenantCount.textContent = visibleCount;
         emptyTenant.classList.toggle('show', visibleCount === 0);
     });
+
+    function confirmDelete(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus data penghuni ini?')) {
+            document.getElementById('delete-form-' + id).submit();
+        }
+    }
 </script>
 
 @endsection

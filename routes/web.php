@@ -89,22 +89,6 @@ Route::prefix('admin')->group(function () {
     Route::resource('/maintenance', AdminMaintenanceController::class);
 });
 
-// Route::get('/admin/penghuni', function () {
-//     return view('admin.penghuni');
-// });
-
-Route::get('/admin/penghuni/create', function () {
-    return view('admin.penghuni_create');
-});
-
-Route::get('/admin/penghuni/edit', function () {
-    return view('admin.penghuni_edit');
-});
-
-Route::get('/admin/penghuni/detail', function () {
-    return view('admin.penghuni_detail');
-});
-
 // Route::get('/admin/maintenance', function () {
 //     return view('admin.maintenance');
 // });
@@ -133,11 +117,11 @@ Route::get('/admin/profile', function () {
     return view('admin.profile');
 });
 
-Route::get('/admin/pengajuan-sewa', function () {
-    return view('admin.pengajuan_sewa');
-});
+// Route::get('/admin/pengajuan-sewa', function () {
+//     return view('admin.pengajuan_sewa');
+// });
 
-Route::get('/admin/pengajuan-sewa/detail', function () {
-    return view('admin.pengajuan_sewa_detail');
-});
+// Route::get('/admin/pengajuan-sewa/detail', function () {
+//     return view('admin.pengajuan_sewa_detail');
+// });
 
