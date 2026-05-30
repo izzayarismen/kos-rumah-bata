@@ -21,7 +21,7 @@ class PembayaranSeeder extends Seeder
         if ($sewa1) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa1->id,
-                'nominal'           => 12000000,
+                'nominal'           => 14500000,
                 'tipe_pembayaran'   => 'full',
                 'tanggal_bayar'     => Carbon::now()->subDays(2)->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -37,7 +37,7 @@ class PembayaranSeeder extends Seeder
         if ($sewa6) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa6->id,
-                'nominal'           => 12000000,
+                'nominal'           => 14500000,
                 'tipe_pembayaran'   => 'full',
                 'tanggal_bayar'     => Carbon::now()->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -53,7 +53,7 @@ class PembayaranSeeder extends Seeder
         if ($sewa7) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa7->id,
-                'nominal'           => 6000000, // Setengah harga
+                'nominal'           => 7250000, // Setengah harga
                 'tipe_pembayaran'   => 'dp',
                 'tanggal_bayar'     => Carbon::now()->subDays(3)->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -69,7 +69,7 @@ class PembayaranSeeder extends Seeder
         if ($sewa8) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa8->id,
-                'nominal'           => 6000000,
+                'nominal'           => 14500000,
                 'tipe_pembayaran'   => 'full',
                 'tanggal_bayar'     => Carbon::now()->subDays(4)->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -87,7 +87,7 @@ class PembayaranSeeder extends Seeder
         if ($sewa2) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa2->id,
-                'nominal'           => 6000000,
+                'nominal'           => 6250000,
                 'tipe_pembayaran'   => 'dp',
                 'tanggal_bayar'     => Carbon::now()->subDays(5)->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -99,7 +99,7 @@ class PembayaranSeeder extends Seeder
 
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa2->id,
-                'nominal'           => 6000000,
+                'nominal'           => 6250000,
                 'tipe_pembayaran'   => 'pelunasan',
                 'tanggal_bayar'     => Carbon::now()->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -115,7 +115,7 @@ class PembayaranSeeder extends Seeder
         if ($sewa3) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa3->id,
-                'nominal'           => 5000000,
+                'nominal'           => 7250000,
                 'tipe_pembayaran'   => 'dp',
                 'tanggal_bayar'     => Carbon::now()->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -126,12 +126,12 @@ class PembayaranSeeder extends Seeder
             ]);
         }
 
-        // 4. Transaksi untuk Kontrak Fadhil (ID: 4)
+        // 4. Transaksi untuk Kontrak Radit (ID: 4)
         $sewa4 = PengajuanSewa::find(4);
         if ($sewa4) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa4->id,
-                'nominal'           => 8000000,
+                'nominal'           => 12500000,
                 'tipe_pembayaran'   => 'full',
                 'tanggal_bayar'     => Carbon::now()->subDays(4)->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -147,7 +147,7 @@ class PembayaranSeeder extends Seeder
         if ($sewa5) {
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa5->id,
-                'nominal'           => 7000000,
+                'nominal'           => 7250000,
                 'tipe_pembayaran'   => 'dp',
                 'tanggal_bayar'     => Carbon::now()->subWeek()->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
@@ -159,7 +159,7 @@ class PembayaranSeeder extends Seeder
 
             Pembayaran::create([
                 'pengajuan_sewa_id' => $sewa5->id,
-                'nominal'           => 7000000,
+                'nominal'           => 7250000,
                 'tipe_pembayaran'   => 'pelunasan',
                 'tanggal_bayar'     => Carbon::now()->subDay()->format('Y-m-d'),
                 'jenis'             => 'pemasukan',

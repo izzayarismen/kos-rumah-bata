@@ -427,8 +427,8 @@
 
                     <div class="tenant-actions">
                         <a href="/admin/penghuni/{{ $item->id }}" class="btn-detail">Detail Informasi</a>
-                        <a href="/admin/penghuni/edit/{{ $item->id }}" class="btn-edit-soft">Edit</a>
-                        <form action="/admin/penghuni/delete/{{ $item->id }}" method="POST" style="display:none;" id="delete-form-{{ $item->id }}">
+                        <a href="/admin/penghuni/{{ $item->id }}/edit" class="btn-edit-soft">Edit</a>
+                        <form action="/admin/penghuni/{{ $item->id }}" method="POST" style="display:none;" id="delete-form-{{ $item->id }}">
                             @csrf
                             @method('DELETE')
                         </form>

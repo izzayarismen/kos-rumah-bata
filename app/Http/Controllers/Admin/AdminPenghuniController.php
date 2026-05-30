@@ -11,16 +11,23 @@ use Illuminate\Http\Request;
 class AdminPenghuniController extends Controller
 {
     /**
-     * Display a listing of the active tenants.
+     * Display a listing of the active tenants based on approved payments.
      */
     public function index()
     {
-        // Ambil user ber-role customer yang pengajuan sewanya berstatus disetujui
+        // Ambil customer yang memiliki pengajuan sewa dengan pembayaran berstatus disetujui
         $penghuni = User::where('role', 'customer')
-            ->whereHas('pengajuanSewa', function ($query) {
+            ->whereHas('pengajuanSewa.pembayarans', function ($query) {
                 $query->where('status', 'disetujui');
             })
-            ->with(['pengajuanSewa.kamar'])
+            ->with(['pengajuanSewa' => function($query) {
+                // Ambil pengajuan sewa yang pembayarannya disetujui beserta data kamar dan pembayarannya
+                $query->whereHas('pembayarans', function($q) {
+                    $q->where('status', 'disetujui');
+                })->with(['kamar', 'pembayarans' => function($q) {
+                    $q->where('status', 'disetujui');
+                }]);
+            }])
             ->get();
 
         return view('admin.penghuni', compact('penghuni'));
@@ -31,10 +38,17 @@ class AdminPenghuniController extends Controller
      */
     public function show($id)
     {
-        // Cari user berdasarkan ID beserta data pengajuan sewa dan kamarnya
+        // Cari user berdasarkan ID yang memenuhi kriteria pembayaran disetujui
         $penghuni = User::where('role', 'customer')
+            ->whereHas('pengajuanSewa.pembayarans', function ($query) {
+                $query->where('status', 'disetujui');
+            })
             ->with(['pengajuanSewa' => function($query) {
-                $query->where('status', 'disetujui')->with('kamar');
+                $query->whereHas('pembayarans', function($q) {
+                    $q->where('status', 'disetujui');
+                })->with(['kamar', 'pembayarans' => function($q) {
+                    $q->where('status', 'disetujui');
+                }]);
             }])
             ->findOrFail($id);
 
@@ -46,14 +60,19 @@ class AdminPenghuniController extends Controller
      */
     public function edit($id)
     {
-        // Ambil data penghuni saat ini beserta pengajuan sewa aktifnya
+        // Ambil data penghuni saat ini yang pembayaran sewanya valid
         $penghuni = User::where('role', 'customer')
-            ->with(['pengajuanSewa' => function($query) {
+            ->whereHas('pengajuanSewa.pembayarans', function ($query) {
                 $query->where('status', 'disetujui');
+            })
+            ->with(['pengajuanSewa' => function($query) {
+                $query->whereHas('pembayarans', function($q) {
+                    $q->where('status', 'disetujui');
+                })->with('kamar');
             }])
             ->findOrFail($id);
 
-        // Ambil semua daftar kamar untuk opsi jika admin ingin memindahkan kamar penghuni
+        // Ambil semua daftar kamar untuk pilihan opsi pindah kamar
         $allKamar = Kamar::all();
 
         return view('admin.penghuni_edit', compact('penghuni', 'allKamar'));
@@ -64,9 +83,9 @@ class AdminPenghuniController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validasi input data profil dasar penghuni
+        // Validasi input data profil dasar penghuni (Menyesuaikan kolom 'nama' dari model User)
         $request->validate([
-            'name' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'kamar_id' => 'required|exists:kamars,id',
         ]);
@@ -74,13 +93,15 @@ class AdminPenghuniController extends Controller
         // Update data user/penghuni
         $penghuni = User::findOrFail($id);
         $penghuni->update([
-            'name' => $request->name,
+            'nama' => $request->nama, // Menggunakan 'nama' sesuai konfigurasi fillable model User
             'email' => $request->email,
         ]);
 
-        // Update atau pindahkan kamar melalui tabel relasi pengajuan_sewas
+        // Update kamar melalui pengajuan sewa yang terkait dengan pembayaran disetujui
         $sewaAktif = PengajuanSewa::where('user_id', $id)
-            ->where('status', 'disetujui')
+            ->whereHas('pembayarans', function($query) {
+                $query->where('status', 'disetujui');
+            })
             ->first();
 
         if ($sewaAktif) {
@@ -97,21 +118,25 @@ class AdminPenghuniController extends Controller
      */
     public function destroy($id)
     {
-        // Cari pengajuan sewa yang aktif disetujui untuk user tersebut
+        // Cari pengajuan sewa terkait untuk pembatalan/pengosongan status sewa
         $sewaAktif = PengajuanSewa::where('user_id', $id)
-            ->where('status', 'disetujui')
+            ->whereHas('pembayarans', function($query) {
+                $query->where('status', 'disetujui');
+            })
             ->first();
 
         if ($sewaAktif) {
-            // Ubah status pengajuan sewa menjadi selesai/dibatalkan agar kamar menjadi kosong kembali
+            // Ubah status pengajuan sewa menjadi batal/ditolak agar status kamar kembali kosong/terbuka
             $sewaAktif->update([
-                'status' => 'ditolak' // atau 'selesai' tergantung kebutuhan alur bisnis sistem Anda
+                'status' => 'ditolak'
+            ]);
+
+            // Opsional: Jika Anda ingin membatalkan status pembayarannya juga di database
+            $sewaAktif->pembayarans()->where('status', 'disetujui')->update([
+                'status' => 'ditolak'
             ]);
         }
 
-        // Catatan: Jika ingin menghapus user-nya dari database sepenuhnya, buka comment line di bawah ini:
-        // User::destroy($id);
-
-        return redirect()->back()->with('success', 'Penghuni berhasil dikeluarkan dan kamar telah dikosongkan.');
+        return redirect()->route('admin.penghuni.index')->with('success', 'Penghuni berhasil dinonaktifkan dari kamar.');
     }
 }

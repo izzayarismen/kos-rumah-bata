@@ -30,10 +30,9 @@ class PengajuanSewaSeeder extends Seeder
                 'id'            => 1,
                 'order_id'      => 'KRB-GNP-1001',
                 'user_id'       => $badzlan->id,
-                'kamar_id'      => 1,
+                'kamar_id'      => 2,
                 'tanggal_mulai' => Carbon::now()->addDays(5)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
-                'catatan'       => 'Minta kamar yang dekat dengan akses Wi-Fi utama.',
                 'status'        => 'disetujui',
             ]);
 
@@ -45,7 +44,6 @@ class PengajuanSewaSeeder extends Seeder
                 'kamar_id'      => 6, // Asumsi ID Kamar 6
                 'tanggal_mulai' => Carbon::now()->addDays(12)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
-                'catatan'       => 'Pengajuan kamar kedua baru diupload.',
                 'status'        => 'pending',
             ]);
 
@@ -54,10 +52,9 @@ class PengajuanSewaSeeder extends Seeder
                 'id'            => 7,
                 'order_id'      => 'KRB-GNP-1007',
                 'user_id'       => $badzlan->id,
-                'kamar_id'      => 7, // Asumsi ID Kamar 7
+                'kamar_id'      => 8, // Asumsi ID Kamar 7
                 'tanggal_mulai' => Carbon::now()->addDays(15)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
-                'catatan'       => 'Skema cicilan DP berkala.',
                 'status'        => 'pending',
             ]);
 
@@ -66,10 +63,10 @@ class PengajuanSewaSeeder extends Seeder
                 'id'            => 8,
                 'order_id'      => 'KRB-GNP-1008',
                 'user_id'       => $badzlan->id,
-                'kamar_id'      => 8, // Asumsi ID Kamar 8
+                'kamar_id'      => 10, // Asumsi ID Kamar 8
                 'tanggal_mulai' => Carbon::now()->addDays(2)->format('Y-m-d'),
                 'durasi_sewa'   => 6,
-                'catatan'       => 'Mencoba mengajukan sewa bulanan singkat.',
+                'catatan'       => 'Bukti transfer terpotong atau kurang jelas, harap unggah kembali struk resmi ATM/M-Banking yang mencantumkan nomor referensi bank secara utuh.',
                 'status'        => 'ditolak',
             ]);
         }
@@ -82,10 +79,9 @@ class PengajuanSewaSeeder extends Seeder
                 'id'            => 2,
                 'order_id'      => 'KRB-GJL-2002',
                 'user_id'       => $izza->id,
-                'kamar_id'      => 2,
+                'kamar_id'      => 1,
                 'tanggal_mulai' => Carbon::now()->addDays(7)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
-                'catatan'       => 'Membawa kendaraan roda dua.',
                 'status'        => 'pending',
             ]);
         }
@@ -96,10 +92,9 @@ class PengajuanSewaSeeder extends Seeder
                 'id'            => 3,
                 'order_id'      => 'KRB-GNP-3003',
                 'user_id'       => $faza->id,
-                'kamar_id'      => 3,
+                'kamar_id'      => 4,
                 'tanggal_mulai' => Carbon::now()->addDays(10)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
-                'catatan'       => null,
                 'status'        => 'pending',
             ]);
         }
@@ -110,10 +105,9 @@ class PengajuanSewaSeeder extends Seeder
                 'id'            => 4,
                 'order_id'      => 'KRB-GJL-4004',
                 'user_id'       => $fadhil->id,
-                'kamar_id'      => 4,
+                'kamar_id'      => 3,
                 'tanggal_mulai' => Carbon::now()->addDays(3)->format('Y-m-d'),
                 'durasi_sewa'   => 6,
-                'catatan'       => 'Pindahan dari kosan lama.',
                 'status'        => 'ditolak',
             ]);
         }
@@ -124,10 +118,9 @@ class PengajuanSewaSeeder extends Seeder
                 'id'            => 5,
                 'order_id'      => 'KRB-GNP-5005',
                 'user_id'       => $putra->id,
-                'kamar_id'      => 5,
+                'kamar_id'      => 20,
                 'tanggal_mulai' => Carbon::now()->addDays(14)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
-                'catatan'       => null,
                 'status'        => 'disetujui',
             ]);
         }
