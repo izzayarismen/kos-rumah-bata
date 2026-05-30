@@ -50,4 +50,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function pengajuanSewa()
+    {
+        return $this->hasMany(PengajuanSewa::class, 'user_id');
+    }
 }
