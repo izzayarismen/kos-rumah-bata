@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PengajuanSewa;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 
 class AdminPembayaranController extends Controller
 {
     public function index()
     {
-        $pembayaran = PengajuanSewa::with(['user', 'kamar'])
-            ->where('sudah_bayar', true)
-            ->orderBy('updated_at', 'desc')
+        // Ambil semua data dari tabel pembayarans yang bertipe pemasukan
+        $pembayaran = Pembayaran::with(['pengajuanSewa.user', 'pengajuanSewa.kamar'])
+            ->where('jenis', 'pemasukan')
+            ->orderBy('created_at', 'desc')
             ->get();
 
-        // Hitung data summary secara dinamis
+        // Hitung data summary secara dinamis berdasarkan status pembayaran
         $totalMasuk = $pembayaran->count();
         $menungguVerifikasi = $pembayaran->where('status', 'pending')->count();
         $terverifikasi = $pembayaran->where('status', 'disetujui')->count();
@@ -30,70 +31,83 @@ class AdminPembayaranController extends Controller
         ));
     }
 
-    public function show($order_id)
+    public function show($id)
     {
-        $pengajuan = PengajuanSewa::with(['user', 'kamar'])
-            ->where('order_id', $order_id)
-            ->where('sudah_bayar', true)
-            ->firstOrFail();
+        // Parameter diubah mencari berdasarkan ID primary key dari tabel pembayarans
+        $pembayaranItem = Pembayaran::with(['pengajuanSewa.user', 'pengajuanSewa.kamar'])
+            ->findOrFail($id);
 
-        return view('admin.pembayaran_detail', compact('pengajuan'));
+        // Mengirimkan variabel pengajuan agar struktur blade detail lama Anda tidak pecah
+        $pengajuan = $pembayaranItem->pengajuanSewa;
+
+        return view('admin.pembayaran_detail', compact('pengajuan', 'pembayaranItem'));
     }
 
     /**
-     * Memproses persetujuan atau penolakan pembayaran dari admin
+     * Memproses persetujuan atau penolakan transaksi pembayaran dari admin
      */
-    public function verifikasi(Request $request, $order_id)
+    public function verifikasi(Request $request, $id)
     {
-        // Cari data pengajuan berdasarkan order_id
-        $pengajuan = PengajuanSewa::where('order_id', $order_id)->firstOrFail();
+        $pembayaranItem = Pembayaran::with('pengajuanSewa.kamar')->findOrFail($id);
+        $pengajuan = $pembayaranItem->pengajuanSewa;
 
-        // Ambil nilai tombol action yang ditekan admin (setuju / tolak)
         $action = $request->input('action');
         $catatanAdmin = $request->input('catatan_admin');
 
         if ($action === 'setuju') {
-            // Jika setuju: status menjadi disetujui
-            $pengajuan->update([
+            // Update status pada baris transaksi pembayaran yang dipilih
+            $pembayaranItem->update([
                 'status' => 'disetujui',
-                'catatan_admin' => $catatanAdmin // menyimpan catatan jika ada
+                'deskripsi' => $pembayaranItem->deskripsi . ' (Disetujui Admin)'
             ]);
 
+            // Jika tipe pembayarannya adalah Lunas langsung ('full') atau Pelunasan sisa DP,
+            // Maka set status utama kontrak pengajuan sewa menjadi disetujui
+            if (in_array($pembayaranItem->tipe_pembayaran, ['full', 'pelunasan'])) {
+                $pengajuan->update([
+                    'status' => 'disetujui',
+                ]);
+            }
+
             // Pastikan status kamar berubah menjadi 'penuh'
-            if ($pengajuan->kamar) {
+            if ($pengajuan && $pengajuan->kamar) {
                 $pengajuan->kamar->update([
                     'status' => 'penuh'
                 ]);
             }
 
-            return redirect('/admin/pembayaran/' . $order_id)
-                ->with('success', 'Pembayaran berhasil diverifikasi. Pengajuan sewa telah disetujui.');
+            return redirect('/admin/pembayaran/' . $id)
+                ->with('success', 'Transaksi pembayaran berhasil diverifikasi dan disetujui.');
 
         } elseif ($action === 'tolak') {
-            // Validasi opsional: pastikan admin mengisi catatan alasan penolakan
             $request->validate([
                 'catatan_admin' => 'required|string|min:5'
             ], [
                 'catatan_admin.required' => 'Silakan tulis alasan penolakan pada catatan admin terlebih dahulu.'
             ]);
 
-            // Jika ditolak: status menjadi ditolak (calon penghuni harus upload ulang)
-            $pengajuan->update([
+            // Update status transaksi pembayaran menjadi ditolak
+            $pembayaranItem->update([
                 'status' => 'ditolak',
-                'catatan' => $catatanAdmin
             ]);
 
-            // Kembalikan status kamar menjadi 'tersedia' jika sebelumnya sempat dikuncipenuh
-            if ($pengajuan->kamar) {
+            // Ubah status pengajuan sewa utama menjadi ditolak agar user mendapat notifikasi/instruksi upload ulang
+            $pengajuan->update([
+                'status' => 'ditolak',
+                'catatan' => $catatanAdmin // menyimpan pesan error ke user
+            ]);
+
+            // Kembalikan status kamar menjadi 'tersedia' jika penolakan membatalkan pemesanan awal
+            if ($pengajuan && $pengajuan->kamar) {
                 $pengajuan->kamar->update([
                     'status' => 'tersedia'
                 ]);
             }
 
-            return redirect('/admin/pembayaran/' . $order_id)
-                ->with('success', 'Pengajuan pembayaran telah ditolak. Penghuni diminta untuk melakukan upload ulang.');
+            return redirect('/admin/pembayaran/' . $id)
+                ->with('success', 'Transaksi pembayaran telah ditolak.');
         }
 
-        return redirect('/admin/pembayaran/' . $order_id);
+        return redirect('/admin/pembayaran/' . $id);
     }
 }

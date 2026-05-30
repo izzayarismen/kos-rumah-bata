@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kamar;
 use App\Models\PengajuanSewa;
+use App\Models\Pembayaran; // <-- Tambahkan import model Pembayaran baru
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -33,7 +34,7 @@ class PengajuanSewaController extends Controller
             'nama'            => 'required|string|max:255',
             'no_hp'           => 'required|string|max:20',
             'kontak_darurat'  => 'required|string|max:20',
-            'tanggal_mulai'   => 'required|date|after_or_equal:today', // <-- Tambah validasi tanggal mulai sewa
+            'tanggal_mulai'   => 'required|date|after_or_equal:today',
             'alamat'          => 'required|string',
             'ktp_dokumen'     => 'required_without:user_ktp|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'surat_komitmen'  => 'required_without:user_komitmen|file|mimes:pdf,doc,docx|max:2048',
@@ -42,14 +43,10 @@ class PengajuanSewaController extends Controller
         $kamar = Kamar::where('id', $id)->where('status', 'tersedia')->firstOrFail();
         $user = Auth::user();
 
-        $pengajuanLama = PengajuanSewa::where('user_id', $user->id)
-                                        ->where('kamar_id', $kamar->id)
-                                        ->where('status', 'pending')
-                                        ->first();
+        $pengajuanLama = PengajuanSewa::where('user_id', $user->id)->where('kamar_id', $kamar->id)->where('status', 'pending')->first();
 
         if ($pengajuanLama) {
-            return redirect('/pembayaran/' . $pengajuanLama->order_id)
-                ->with('success', 'Anda sudah memiliki pengajuan aktif untuk kamar ini. Silakan lanjutkan pembayaran dengan Order ID: ' . $pengajuanLama->order_id);
+            return redirect('/pembayaran/' . $pengajuanLama->order_id)->with('success', 'Anda sudah memiliki pengajuan aktif untuk kamar ini. Silakan lanjutkan pembayaran dengan Order ID: ' . $pengajuanLama->order_id);
         }
 
         $towerLower = strtolower($kamar->tower);
@@ -67,18 +64,15 @@ class PengajuanSewaController extends Controller
             $exists = PengajuanSewa::where('order_id', $orderId)->exists();
         } while ($exists);
 
-        // --- PROSES TANGGAL & DURASI DINAMIS ---
-        $tanggalMulai = $request->tanggal_mulai; // Menggunakan tanggal yang dipilih user dari form
+        $tanggalMulai = $request->tanggal_mulai;
         $hitunganKamar = strtolower($kamar->dalam_hitungan ?? 'tahun');
 
-        // Cek isi field dalam_hitungan untuk menentukan durasi dalam satuan bulan
         if (str_contains($hitunganKamar, 'bulan')) {
-            $durasiSewa = (int) $hitunganKamar; // mengambil angka dari string, misal "2 bulan" -> 2
+            $durasiSewa = (int) $hitunganKamar;
         } else {
-            $durasiSewa = 12; // Default jika tahunan/tahun adalah 12 bulan
+            $durasiSewa = 12;
         }
 
-        // --- PROSES DOKUMEN KTP ---
         $ktpPath = $user->ktp_dokumen;
         if ($request->hasFile('ktp_dokumen')) {
             if ($user->ktp_dokumen) {
@@ -94,7 +88,6 @@ class PengajuanSewaController extends Controller
             $ktpPath = '/documents/ktp/' . $ktpName;
         }
 
-        // --- PROSES SURAT KOMITMEN ---
         $suratPath = $user->surat_komitmen;
         if ($request->hasFile('surat_komitmen')) {
             if ($user->surat_komitmen) {
@@ -110,7 +103,6 @@ class PengajuanSewaController extends Controller
             $suratPath = '/documents/surat_komitmen/' . $suratName;
         }
 
-        // Update data profile user dasar
         $user->update([
             'ktp_dokumen'    => $ktpPath,
             'surat_komitmen' => $suratPath,
@@ -118,7 +110,6 @@ class PengajuanSewaController extends Controller
             'alamat'         => $request->alamat,
         ]);
 
-        // Simpan data pengajuan sewa baru dengan tanggal & durasi dinamis
         PengajuanSewa::create([
             'order_id'        => $orderId,
             'user_id'         => $user->id,
@@ -142,11 +133,12 @@ class PengajuanSewaController extends Controller
 
     public function payment(Request $request, $order_id)
     {
+        // Ubah validasi agar menerima 'lunas', 'dp', atau 'pelunasan' sesuai kebutuhan baru
         $request->validate([
-            'tipe_pembayaran' => 'required|in:lunas,dp',
+            'tipe_pembayaran' => 'required|in:lunas,dp,pelunasan',
             'bukti_transfer'  => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ], [
-            'tipe_pembayaran.required' => 'Silahkan pilih tipe pembayaran (Lunas / DP).',
+            'tipe_pembayaran.required' => 'Silahkan pilih tipe pembayaran.',
             'bukti_transfer.required'  => 'Silahkan unggah bukti transfer terlebih dahulu.',
             'bukti_transfer.image'     => 'Bukti transfer harus berupa gambar.',
         ]);
@@ -156,24 +148,38 @@ class PengajuanSewaController extends Controller
             ->firstOrFail();
 
         if ($request->hasFile('bukti_transfer')) {
-            if ($pengajuan->bukti_transfer) {
-                $oldBuktiPath = public_path($pengajuan->bukti_transfer);
-                if (File::exists($oldBuktiPath)) {
-                    File::delete($oldBuktiPath);
-                }
-            }
-
             $fileBukti = $request->file('bukti_transfer');
             $buktiName = time() . '-bukti.' . $fileBukti->getClientOriginalExtension();
             $fileBukti->move(public_path('images/bukti_transfer'), $buktiName);
             $buktiPath = '/images/bukti_transfer/' . $buktiName;
 
-            $pengajuan->update([
-                'sudah_bayar'     => true,
-                'tipe_pembayaran' => $request->tipe_pembayaran,
-                'bukti_transfer'  => $buktiPath,
+            // --- PERBAIKAN LOGIKA NOMINAL DAN MAPPING TIPE ---
+            $hargaDasarKamar = $pengajuan->kamar->harga ?? 0;
+            $tipePembayaranInv = 'full';
+            $nominalBayar = $hargaDasarKamar; // Default nominal full (lunas)
+
+            if ($request->tipe_pembayaran === 'dp') {
+                $tipePembayaranInv = 'dp';
+                $nominalBayar = $hargaDasarKamar / 2; // Jika DP, nominal dihitung setengah dari harga kamar
+            } elseif ($request->tipe_pembayaran === 'pelunasan') {
+                $tipePembayaranInv = 'pelunasan';
+                $nominalBayar = $hargaDasarKamar / 2; // Pelunasan sisa DP juga mengambil setengah sisanya
+            }
+
+            // Simpan sebagai baris pemasukan baru di tabel pembayarans dengan nominal yang sudah dinamis
+            Pembayaran::create([
+                'pengajuan_sewa_id' => $pengajuan->id,
+                'nominal'           => $nominalBayar, // <-- Menggunakan nominal hasil kalkulasi di atas
+                'tipe_pembayaran'   => $tipePembayaranInv,
+                'tanggal_bayar'     => Carbon::today()->format('Y-m-d'),
+                'jenis'             => 'pemasukan',
+                'nama'              => 'Pembayaran Sewa ' . $pengajuan->order_id,
+                'deskripsi'         => 'Pembayaran dari ' . Auth::user()->nama . ' untuk Kamar ' . $pengajuan->kamar->nomor_kamar,
+                'bukti_transfer'    => $buktiPath,
+                'status'            => 'pending',
             ]);
 
+            // Status kamar diubah menjadi penuh
             $pengajuan->kamar->update([
                 'status' => 'penuh'
             ]);

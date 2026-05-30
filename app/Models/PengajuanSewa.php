@@ -19,9 +19,6 @@ class PengajuanSewa extends Model
         'durasi_sewa',
         'catatan',
         'status',
-        'sudah_bayar',
-        'bukti_transfer',
-        'tipe_pembayaran',
     ];
 
     public function user()
@@ -32,5 +29,10 @@ class PengajuanSewa extends Model
     public function kamar()
     {
         return $this->belongsTo(Kamar::class, 'kamar_id');
+    }
+
+    public function pembayarans()
+    {
+        return $this->hasMany(Pembayaran::class, 'pengajuan_sewa_id');
     }
 }

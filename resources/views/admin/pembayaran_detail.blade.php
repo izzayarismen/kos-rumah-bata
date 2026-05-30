@@ -451,7 +451,6 @@
 
     .verify-head h2 {
         margin: 0;
- inversion: none;
         font-size: 27px;
         font-weight: 700;
         color: #211713;
@@ -484,7 +483,6 @@
     }
 
     .verify-back:hover {
- purchase: none;
         background: #f4ddd4;
     }
 
@@ -676,7 +674,7 @@
         border-radius: 18px;
         padding: 15px;
         display: grid;
-       grid-template-columns: 20px 1fr;
+        grid-template-columns: 20px 1fr;
         gap: 12px;
         align-items: start;
         cursor: pointer;
@@ -828,35 +826,36 @@
 </style>
 
 @php
-    // Persiapan Variabel Data Dinamis dari Model PengajuanSewa, User, dan Kamar
-    $namaUser = $pengajuan->user->nama ?? 'N/A';
-    $noHp = $pengajuan->user->no_hp ?? '-';
-    $kontakDarurat = $pengajuan->user->kontak_darurat ?? '-';
-    $alamatUser = $pengajuan->user->alamat ?? '-';
+    // --- PERBAIKAN PEMETAAN LOGIK VARIABEL DARI OBJEK BARU TABEL PEMBAYARANS ---
+    $namaUser = $pembayaranItem->pengajuanSewa->user->nama ?? 'N/A';
+    $noHp = $pembayaranItem->pengajuanSewa->user->no_hp ?? '-';
+    $kontakDarurat = $pembayaranItem->pengajuanSewa->user->kontak_darurat ?? '-';
+    $alamatUser = $pembayaranItem->pengajuanSewa->user->alamat ?? '-';
 
-    $namaKamar = $pengajuan->kamar->nama_kamar ?? 'N/A';
-    $towerKamar = $pengajuan->kamar->tower ?? 'N/A';
-    $hargaKamar = $pengajuan->kamar->harga ?? 0;
-    $hitunganKamar = $pengajuan->kamar->dalam_hitungan ?? 'tahun';
+    $namaKamar = $pembayaranItem->pengajuanSewa->kamar->nomor_kamar ?? 'N/A';
+    $towerKamar = $pembayaranItem->pengajuanSewa->kamar->tower ?? 'N/A';
+    $hargaKamar = $pembayaranItem->pengajuanSewa->kamar->harga ?? 0;
+    $hitunganKamar = $pembayaranItem->pengajuanSewa->kamar->dalam_hitungan ?? 'tahun';
 
-    $orderId = $pengajuan->order_id ?? '';
-    $tipeBayar = $pengajuan->tipe_pembayaran ?? 'lunas';
-    $statusPendaftaran = $pengajuan->status ?? 'pending';
-    $tanggalUpload = $pengajuan->updated_at ? $pengajuan->updated_at->translatedFormat('d F Y') : '-';
-    $tanggalMulai = $pengajuan->tanggal_mulai ? \Carbon\Carbon::parse($pengajuan->tanggal_mulai)->translatedFormat('j M Y') : '-';
+    $tipeBayar = $pembayaranItem->tipe_pembayaran ?? 'full';
+    $statusPendaftaran = $pembayaranItem->status ?? 'pending';
+    $tanggalUpload = $pembayaranItem->created_at ? $pembayaranItem->created_at->translatedFormat('d F Y') : '-';
+    $tanggalMulai = $pembayaranItem->pengajuanSewa->tanggal_mulai ? \Carbon\Carbon::parse($pembayaranItem->pengajuanSewa->tanggal_mulai)->translatedFormat('j M Y') : '-';
 
-    // Hitung nominal berdasarkan tipe pembayaran (Lunas atau DP 50%)
-    $jumlahDibayar = $hargaKamar;
+    // Nominal dinamis disesuaikan dari data asli record transaksi di tabel pembayarans
+    $jumlahDibayar = $pembayaranItem->nominal;
     $sisaPembayaran = 0;
     $labelTipeBayar = 'Lunas';
 
     if ($tipeBayar === 'dp') {
-        $jumlahDibayar = $hargaKamar / 2;
-        $sisaPembayaran = $hargaKamar / 2;
-        $labelTipeBayar = 'DP 50%';
+        $sisaPembayaran = $hargaKamar - $jumlahDibayar;
+        $labelTipeBayar = 'DP (Down Payment)';
+    } elseif ($tipeBayar === 'pelunasan') {
+        $sisaPembayaran = 0;
+        $labelTipeBayar = 'Pelunasan sisa DP';
     }
 
-    // Pemetaan label status badge pendaftaran
+    // Pemetaan label status badge pendaftaran transaksi pembayaran
     $statusLabel = 'Menunggu Verifikasi';
     if ($statusPendaftaran === 'disetujui') {
         $statusLabel = 'Terverifikasi';
@@ -870,8 +869,8 @@
 
     // Ekstrak Nama File Bukti Transfer
     $fileNameBukti = 'tidak_ada_file.jpg';
-    if ($pengajuan->bukti_transfer) {
-        $explodedPath = explode('/', $pengajuan->bukti_transfer);
+    if ($pembayaranItem->bukti_transfer) {
+        $explodedPath = explode('/', $pembayaranItem->bukti_transfer);
         $fileNameBukti = end($explodedPath);
     }
 @endphp
@@ -883,13 +882,13 @@
         <div class="payment-detail-head">
             <div>
                 <h2>Cek Bukti Pembayaran</h2>
-                <p>Pastikan nominal, tujuan rekening, dan bukti transfer sudah sesuai sebelum pembayaran diverifikasi.</p>
+                <p>Pastikan nominal, tujuan rekening, and bukti transfer sudah sesuai sebelum pembayaran diverifikasi.</p>
             </div>
 
             <a href="/admin/pembayaran" class="payment-detail-back">Kembali</a>
         </div>
 
-                @if(session('success'))
+        @if(session('success'))
             <div style="background: #e8f8f5; color: #27ae60; padding: 14px 20px; border-radius: 16px; margin-bottom: 20px; font-size: 14px; font-weight: 600; border: 1px solid #27ae60;">
                 {{ session('success') }}
             </div>
@@ -909,7 +908,7 @@
             </div>
         @endif
 
-                <form action="/admin/pembayaran/{{ $orderId }}/verifikasi" method="POST" class="verify-grid">
+        <form action="/admin/pembayaran/{{ $pembayaranItem->id }}/verifikasi" method="POST" class="verify-grid">
             @csrf
             @method('PUT')
 
@@ -942,7 +941,7 @@
 
                     <div class="info-box">
                         <span>Kamar Diajukan</span>
-                        <strong>Kamar {{ $namaKamar }} · {{ $towerKamar }}</strong>
+                        <strong>Kamar {{ $namaKamar }} · Tower {{ $towerKamar }}</strong>
                     </div>
 
                     <div class="info-box">
@@ -960,22 +959,22 @@
                     <div class="doc-box">
                         <h4>Foto KTP</h4>
                         <div class="doc-preview" style="padding: 0; overflow: hidden; border-style: solid;">
-                            @if($pengajuan->user && $pengajuan->user->ktp_dokumen && (str_contains($pengajuan->user->ktp_dokumen, '.jpg') || str_contains($pengajuan->user->ktp_dokumen, '.jpeg') || str_contains($pengajuan->user->ktp_dokumen, '.png')))
-                                <img src="{{ asset($pengajuan->user->ktp_dokumen) }}" alt="KTP" style="width: 100%; height: 100%; object-fit: cover;">
-                           @else
+                            @if($pembayaranItem->pengajuanSewa->user && $pembayaranItem->pengajuanSewa->user->ktp_dokumen && (str_contains($pembayaranItem->pengajuanSewa->user->ktp_dokumen, '.jpg') || str_contains($pembayaranItem->pengajuanSewa->user->ktp_dokumen, '.jpeg') || str_contains($pembayaranItem->pengajuanSewa->user->ktp_dokumen, '.png')))
+                                <img src="{{ asset($pembayaranItem->pengajuanSewa->user->ktp_dokumen) }}" alt="KTP" style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
                                 <div style="padding: 14px;">File Dokumen KTP (PDF/DOC)</div>
                             @endif
                         </div>
-                        <a href="{{ asset($pengajuan->user->ktp_dokumen ?? '#') }}" target="_blank" class="doc-link">Lihat Foto KTP</a>
+                        <a href="{{ asset($pembayaranItem->pengajuanSewa->user->ktp_dokumen ?? '#') }}" target="_blank" class="doc-link">Lihat Foto KTP</a>
                     </div>
 
                     <div class="doc-box">
                         <h4>Surat Komitmen</h4>
                         <div class="doc-preview">
                             <span style="color: #c8664a; font-size: 28px; display:block; margin-bottom:4px;">📄</span>
-                           Surat Komitmen Penghuni
-                       </div>
-                        <a href="{{ asset($pengajuan->user->surat_komitmen ?? '#') }}" target="_blank" class="doc-link">Lihat Surat</a>
+                            Surat Komitmen Penghuni
+                        </div>
+                        <a href="{{ asset($pembayaranItem->pengajuanSewa->user->surat_komitmen ?? '#') }}" target="_blank" class="doc-link">Lihat Surat</a>
                     </div>
                 </div>
 
@@ -1002,7 +1001,7 @@
 
                     <div class="payment-info-row">
                         <span>Tanggal Upload</span>
-                      <strong>{{ $tanggalUpload }}</strong>
+                        <strong>{{ $tanggalUpload }}</strong>
                     </div>
 
                     <div class="payment-info-row">
@@ -1015,8 +1014,8 @@
                     <h4>Bukti Transfer</h4>
 
                     <div class="proof-preview" style="padding: 0; overflow: hidden; border-style: solid;">
-                        @if($pengajuan->bukti_transfer)
-                            <img src="{{ asset($pengajuan->bukti_transfer) }}" alt="Bukti Transfer" style="width: 100%; height: 100%; object-fit: contain; background: #fff;">
+                        @if($pembayaranItem->bukti_transfer)
+                            <img src="{{ asset($pembayaranItem->bukti_transfer) }}" alt="Bukti Transfer" style="width: 100%; height: 100%; object-fit: contain; background: #fff;">
                         @else
                             <div style="padding: 18px;">Belum ada bukti transfer diupload</div>
                         @endif
@@ -1030,11 +1029,11 @@
 
                         <div class="proof-meta-box">
                             <span>Status File</span>
-                            <strong>{{ $pengajuan->bukti_transfer ? 'Sudah diupload' : 'Kosong' }}</strong>
+                            <strong>{{ $pembayaranItem->bukti_transfer ? 'Sudah diupload' : 'Kosong' }}</strong>
                         </div>
                     </div>
 
-                    <a href="{{ asset($pengajuan->bukti_transfer ?? '#') }}" target="_blank" class="proof-action">Lihat Bukti Transfer</a>
+                    <a href="{{ asset($pembayaranItem->bukti_transfer ?? '#') }}" target="_blank" class="proof-action">Lihat Bukti Transfer</a>
                 </div>
             </div>
 
@@ -1143,10 +1142,8 @@
         const btnApprove = document.getElementById('btnApprove');
 
         function checkFormValidity() {
-            // Menghitung berapa banyak checkbox yang sedang dicentang oleh admin
             const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
 
-            // Jika seluruh 8 poin checklist sudah terpenuhi, aktifkan tombol setujui
             if (checkedCount === 8) {
                 btnApprove.removeAttribute('disabled');
             } else {
@@ -1154,7 +1151,6 @@
             }
         }
 
-        // Daftarkan event listener perubahan untuk setiap elemen checklist pendukung
         checkboxes.forEach(cb => {
             cb.addEventListener('change', checkFormValidity);
         });

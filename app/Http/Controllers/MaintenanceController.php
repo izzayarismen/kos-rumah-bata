@@ -3,25 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Maintenance;
-use App\Models\Kamar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MaintenanceController extends Controller
 {
-    // Menampilkan riwayat pelaporan fasilitas oleh user yang login
     public function index()
     {
         $user = Auth::user();
-        // Menampilkan list laporan pengerjaan milik user saat ini
-        $maintenances = Maintenance::where('user_id', $user->id)
-                                    ->orderBy('created_at', 'desc')
-                                    ->get();
-
+        $maintenances = Maintenance::where('user_id', $user->id)->orderBy('created_at', 'desc')->get();
         return view('laporan-fasilitas', compact('maintenances'));
     }
 
-    // Menyimpan laporan kerusakan baru dari user
     public function store(Request $request)
     {
         $request->validate([
@@ -30,9 +23,7 @@ class MaintenanceController extends Controller
         ]);
 
         $user = Auth::user();
-        
-        // Mengambil nomor kamar user secara dinamis (pastikan model User mempunyai relasi kamar / field kamar_id)
-        $kamarId = $user->kamar_id; 
+        $kamarId = $user->kamar_id;
 
         if (!$kamarId) {
             return redirect()->back()->with('error', 'Anda belum terdaftar di kamar manapun.');

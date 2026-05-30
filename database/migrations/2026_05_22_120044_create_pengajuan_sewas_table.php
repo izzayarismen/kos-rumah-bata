@@ -23,10 +23,6 @@ return new class extends Migration
             $table->text('catatan')->nullable();
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
 
-            $table->boolean('sudah_bayar')->default(false);
-            $table->string('bukti_transfer')->nullable();
-            $table->enum('tipe_pembayaran', ['lunas', 'dp'])->nullable();
-
             $table->timestamps();
         });
     }

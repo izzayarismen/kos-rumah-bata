@@ -49,8 +49,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/status-pembayaran', function () {
         return view('status-pembayaran');
     });
-    Route::get('/profile/status-pembayaran', [ProfileController::class, 'statusPembayaran'])->name('profile.status-pembayaran');
-    Route::get('/profile/laporan-fasilitas', [ProfileController::class, 'laporanFasilitas'])->name('profile.laporan-fasilitas');
+    // Route::get('/profile/status-pembayaran', [ProfileController::class, 'statusPembayaran'])->name('profile.status-pembayaran');
+    Route::get('/profile/laporan-fasilitas', [MaintenanceController::class, 'index']);
 
     // Flow Sewa
     Route::get('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'create']);

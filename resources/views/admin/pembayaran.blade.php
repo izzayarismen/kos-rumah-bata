@@ -212,7 +212,6 @@
         border: 1px solid #eee1da;
     }
 
-    /* Tambahan Style Spesifik Warna Badge Sesuai Status Atribut Data-Status */
     .payment-item[data-status="waiting"] .payment-badge {
         background: #fff9e6;
         color: #b37400;
@@ -277,7 +276,7 @@
     .empty-payment strong {
         display: block;
         color: #211713;
-       font-size: 18px;
+        font-size: 18px;
         margin-bottom: 8px;
     }
 
@@ -345,25 +344,25 @@
     <div class="payment-summary">
         <div class="summary-card">
             <span>Bukti Masuk</span>
-            <strong>{{ $pembayaran->count() }}</strong>
+            <strong>{{ $totalMasuk }}</strong>
             <small>Total bukti pembayaran yang masuk.</small>
         </div>
 
         <div class="summary-card">
             <span>Menunggu Verifikasi</span>
-            <strong>{{ $pembayaran->where('status', 'pending')->count() }}</strong>
+            <strong>{{ $menungguVerifikasi }}</strong>
             <small>Perlu dicek oleh admin.</small>
         </div>
 
         <div class="summary-card">
             <span>Terverifikasi</span>
-            <strong>{{ $pembayaran->where('status', 'disetujui')->count() }}</strong>
+            <strong>{{ $terverifikasi }}</strong>
             <small>Bukti pembayaran sudah valid.</small>
         </div>
 
         <div class="summary-card">
             <span>Upload Ulang</span>
-            <strong>{{ $pembayaran->where('status', 'ditolak')->count() }}</strong>
+            <strong>{{ $uploadUlang }}</strong>
             <small>Bukti belum jelas atau tidak sesuai.</small>
         </div>
     </div>
@@ -390,11 +389,11 @@
 
             @foreach($pembayaran as $item)
                 @php
-                    // Pemetaan status tabel ke data-status atribut JS Anda
-                    // waiting = Menunggu Verifikasi, verified = Terverifikasi, reupload = Upload Ulang
+                    $pengajuanItem = $item->pengajuanSewa;
+
                     $statusAttr = 'waiting';
                     $badgeText = 'Menunggu Verifikasi';
-                    $dateText = 'Dikirim ' . ($item->updated_at ? $item->updated_at->diffForHumans() : 'hari ini');
+                    $dateText = 'Dikirim ' . ($item->created_at ? $item->created_at->diffForHumans() : 'hari ini');
 
                     if ($item->status === 'disetujui') {
                         $statusAttr = 'verified';
@@ -406,14 +405,12 @@
                         $dateText = 'Dikembalikan ' . ($item->updated_at ? $item->updated_at->diffForHumans() : 'beberapa hari lalu');
                     }
 
-                    // Logika pembuatan inisial nama dinamis dari model User
-                    $namaUser = $item->user->nama ?? 'Penghuni';
+                    $namaUser = $pengajuanItem->user->nama ?? 'Penghuni';
                     $words = explode(' ', $namaUser);
                     $initials = strtoupper(substr($words[0] ?? 'K', 0, 1) . substr($words[1] ?? '', 0, 1));
 
-                    // Atribut pencarian gabungan string (nama, kamar, tower, tipe pembayaran)
-                    $namaKamar = $item->kamar->nomor_kamar ?? '00';
-                    $towerKamar = $item->kamar->tower ?? 'Tower';
+                    $namaKamar = $pengajuanItem->kamar->nomor_kamar ?? '00';
+                    $towerKamar = $pengajuanItem->kamar->tower ?? 'Tower';
                     $tipeBayar = $item->tipe_pembayaran ?? 'dp';
                     $searchData = strtolower("{$namaUser} kamar {$namaKamar} tower {$towerKamar} {$tipeBayar}");
                 @endphp
@@ -422,8 +419,8 @@
                     <div class="payment-avatar">{{ $initials }}</div>
 
                     <div class="payment-main">
-                        <h3>{{ $namaUser }}</h3>
-                        <p>Kamar {{ $namaKamar }} · Tower {{ $towerKamar }}</p>
+                        <h3>{{ $namaUser }} ({{ strtoupper($tipeBayar) }})</h3>
+                        <p>Kamar {{ $namaKamar }} · Tower {{ $towerKamar }} · Nominal: Rp {{ number_format($item->nominal, 0, ',', '.') }}</p>
 
                         <div class="payment-meta">
                             <span class="payment-badge">{{ $badgeText }}</span>
@@ -431,7 +428,7 @@
                         </div>
                     </div>
 
-                    <a href="/admin/pembayaran/{{ $item->order_id }}" class="payment-action">Cek Data</a>
+                    <a href="/admin/pembayaran/{{ $item->id }}" class="payment-action">Cek Data</a>
                 </div>
             @endforeach
 
