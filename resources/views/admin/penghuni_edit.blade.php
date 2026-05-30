@@ -154,6 +154,34 @@
 
     .tenant-form-actions .btn {
         min-width: 120px;
+        height: 46px;
+        border: 1px solid #c8664a;
+        background: #c8664a;
+        color: #ffffff;
+        border-radius: 15px;
+        padding: 0 18px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s ease;
+        text-decoration: none;
+    }
+
+    .tenant-form-actions .btn:hover {
+        background: #b75a41;
+    }
+
+    .tenant-form-actions .btn-secondary {
+        background: #f4ddd4;
+        border-color: #ead6ce;
+        color: #c8664a;
+    }
+
+    .tenant-form-actions .btn-secondary:hover {
+        background: #ebcec2;
     }
 
     @media (max-width: 900px) {
@@ -183,6 +211,24 @@
     }
 </style>
 
+@php
+    // Membaca data pengajuan sewa aktif dari user saat ini
+    $sewaAktif = $penghuni->pengajuanSewa->first();
+    $kamarIdSekarang = $sewaAktif ? $sewaAktif->kamar_id : null;
+    $tanggalMasuk = $sewaAktif ? \Carbon\Carbon::parse($sewaAktif->tanggal_mulai)->format('Y-m-d') : '';
+    $catatanSewa = $sewaAktif ? $sewaAktif->catatan : '';
+
+    // Kalkulasi ringkasan status pembayaran saat ini
+    $totalTagihan = 0;
+    $totalSudahBayar = 0;
+    if ($sewaAktif) {
+        $hargaKamar = $sewaAktif->kamar ? $sewaAktif->kamar->harga : 0;
+        $totalTagihan = $hargaKamar * $sewaAktif->durasi_sewa;
+        $totalSudahBayar = $sewaAktif->pembayarans->where('status', 'disetujui')->sum('nominal');
+    }
+    $sisaTagihan = $totalTagihan - $totalSudahBayar;
+@endphp
+
 <div class="tenant-form-page">
     <div class="tenant-form-panel">
 
@@ -191,74 +237,80 @@
             <p>Ubah data penghuni, kamar, kontak keluarga, dan dokumen administrasi.</p>
         </div>
 
-        <form action="/admin/penghuni/update" method="POST" enctype="multipart/form-data">
+        @if ($errors->any())
+            <div style="background: #fdf2f2; border: 1px solid #f8b4b4; padding: 16px; border-radius: 15px; margin-bottom: 20px; color: #9b1c1c; font-size: 14px;">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="/admin/penghuni/update/{{ $penghuni->id }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
 
             <div class="tenant-form-grid">
 
                 <div class="tenant-form-group">
                     <label>Nama Lengkap</label>
-                    <input type="text" name="nama_lengkap" value="Nadya Putri">
+                    <input type="text" name="nama" value="{{ old('nama', $penghuni->nama) }}" required>
                 </div>
 
                 <div class="tenant-form-group">
-                    <label>Tipe Penghuni</label>
-                    <select name="tipe_penghuni">
-                        <option value="mahasiswi" selected>Mahasiswi</option>
-                        <option value="mahasiswa">Mahasiswa</option>
-                        <option value="umum">Umum</option>
-                    </select>
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ old('email', $penghuni->email) }}" required>
                 </div>
 
                 <div class="tenant-form-group">
                     <label>Kamar</label>
-                    <select name="kamar">
-                        <option value="01" selected>Kamar 01 · Tower Ganjil</option>
-                        <option value="02">Kamar 02 · Tower Genap</option>
-                        <option value="03">Kamar 03 · Tower Ganjil</option>
-                        <option value="04">Kamar 04 · Tower Genap</option>
-                        <option value="08">Kamar 08 · Tower Genap</option>
-                        <option value="12">Kamar 12 · Tower Genap</option>
-                    </select>
-                    <span class="tenant-form-hint">Jika kamar diganti, status kamar lama dan kamar baru nanti bisa diatur dari backend.</span>
-                </div>
+                    <select name="kamar_id" required>
+                        @foreach($allKamar as $kamar)
+                            @php
+                                // Filter: Kamar hanya muncul jika statusnya 'tersedia' ATAU kamar tersebut merupakan kamar yang sedang ditempati saat ini oleh si penghuni
+                                $isKamarSekarang = ($kamar->id == $kamarIdSekarang);
+                                $isTersedia = (strtolower($kamar->status) == 'tersedia');
+                            @endphp
 
-                <div class="tenant-form-group">
-                    <label>Status Penghuni</label>
-                    <select name="status_penghuni">
-                        <option value="aktif" selected>Aktif</option>
-                        <option value="keluar">Sudah Keluar</option>
-                        <option value="nonaktif">Nonaktif</option>
+                            @if($isTersedia || $isKamarSekarang)
+                                <option value="{{ $kamar->id }}" {{ $isKamarSekarang ? 'selected' : '' }}>
+                                    Kamar {{ $kamar->nomor_kamar }} · Tower {{ ucfirst($kamar->tower) }}
+                                    @if($isKamarSekarang) (Kamar Saat Ini) @endif
+                                </option>
+                            @endif
+                        @endforeach
                     </select>
                 </div>
 
                 <div class="tenant-form-group">
                     <label>No. HP / WhatsApp</label>
-                    <input type="text" name="no_hp" value="0812-3456-7890">
+                    <input type="text" name="no_hp" value="{{ old('no_hp', $penghuni->no_hp) }}">
                 </div>
 
                 <div class="tenant-form-group">
-                    <label>Kontak Orang Tua</label>
-                    <input type="text" name="kontak_orang_tua" value="0813-2222-1111">
+                    <label>Kontak Orang Tua / Darurat</label>
+                    <input type="text" name="kontak_darurat" value="{{ old('kontak_darurat', $penghuni->kontak_darurat) }}">
                 </div>
 
                 <div class="tenant-form-group">
                     <label>Tanggal Mulai Masuk</label>
-                    <input type="date" name="tanggal_masuk" value="2026-06-01">
+                    <input type="date" name="tanggal_masuk" value="{{ old('tanggal_masuk', $tanggalMasuk) }}">
                 </div>
 
-                <div class="tenant-form-group">
-                    <label>Status Pembayaran</label>
-                    <select name="status_pembayaran">
-                        <option value="lunas" selected>Lunas</option>
-                        <option value="dp">DP</option>
-                        <option value="belum_bayar">Belum Bayar</option>
+                <div class="tenant-form-group tenant-form-full">
+                    <label>Status Pembayaran (Info Internal)</label>
+                    <select name="status_pembayaran" disabled style="background-color: #f7f9fa; cursor: not-allowed;">
+                        <option value="lunas" {{ ($sisaTagihan <= 0 && $totalTagihan > 0) ? 'selected' : '' }}>Lunas</option>
+                        <option value="dp" {{ ($totalSudahBayar > 0 && $sisaTagihan > 0) ? 'selected' : '' }}>DP / Dicicil</option>
+                        <option value="belum_bayar" {{ ($totalSudahBayar == 0) ? 'selected' : '' }}>Belum Bayar</option>
                     </select>
+                    <span class="tenant-form-hint">Status keuangan diatur otomatis via konfirmasi menu Transaksi Pembayaran.</span>
                 </div>
 
                 <div class="tenant-form-full tenant-form-group">
                     <label>Alamat Asal</label>
-                    <textarea name="alamat_asal">Samarinda, Kalimantan Timur</textarea>
+                    <textarea name="alamat">{{ old('alamat', $penghuni->alamat) }}</textarea>
                 </div>
 
                 <div class="tenant-form-full">
@@ -269,28 +321,42 @@
                             <div class="tenant-upload">
                                 <label>Ganti Foto KTP</label>
                                 <input type="file" name="foto_ktp" accept="image/*">
-                                <div class="tenant-current-file">File saat ini: ktp_nadya_putri.jpg</div>
+                                <div class="tenant-current-file">
+                                    File saat ini:
+                                    @if($penghuni->ktp_dokumen)
+                                        <a href="{{ asset($penghuni->ktp_dokumen) }}" target="_blank" style="color: #c8664a; font-weight: 600;">{{ $penghuni->ktp_dokumen }}</a>
+                                    @else
+                                        <span style="color: #c0392b;">Belum ada dokumen</span>
+                                    @endif
+                                </div>
                             </div>
 
                             <div class="tenant-upload">
                                 <label>Ganti Surat Komitmen</label>
                                 <input type="file" name="surat_komitmen" accept=".pdf,image/*">
-                                <div class="tenant-current-file">File saat ini: surat_komitmen_nadya.pdf</div>
+                                <div class="tenant-current-file">
+                                    File saat ini:
+                                    @if($penghuni->surat_komitmen)
+                                        <a href="{{ asset($penghuni->surat_komitmen) }}" target="_blank" style="color: #c8664a; font-weight: 600;">{{ $penghuni->surat_komitmen }}</a>
+                                    @else
+                                        <span style="color: #c0392b;">Belum ada dokumen</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="tenant-form-full tenant-form-group">
-                    <label>Catatan Admin</label>
-                    <textarea name="catatan_admin" placeholder="Tambahkan catatan internal jika diperlukan.">Data penghuni sudah lengkap dan pembayaran lunas.</textarea>
-                </div>
+                {{-- <div class="tenant-form-full tenant-form-group">
+                    <label>Catatan / Keterangan Pengajuan</label>
+                    <textarea name="catatan_admin" placeholder="Keterangan tambahan dari transaksi sewa.">{{ old('catatan_admin', $catatanSewa) }}</textarea>
+                </div> --}}
 
             </div>
 
             <div class="tenant-form-actions">
                 <button type="submit" class="btn">Update</button>
-                <a href="/admin/penghuni/detail" class="btn btn-secondary">Batal</a>
+                <a href="/admin/penghuni/{{ $penghuni->id }}" class="btn btn-secondary">Batal</a>
             </div>
         </form>
 

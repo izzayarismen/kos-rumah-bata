@@ -137,6 +137,6 @@ class AdminPenghuniController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.penghuni.index')->with('success', 'Penghuni berhasil dinonaktifkan dari kamar.');
+        return redirect()->back()->with('success', 'Penghuni berhasil dinonaktifkan dari kamar.');
     }
 }
