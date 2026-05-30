@@ -47,10 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'getProfile']);
     Route::put('/profile', [ProfileController::class, 'updateProfile']);
     Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
-    Route::get('/profile/status-pembayaran', function () {
-        return view('status-pembayaran');
-    });
-    // Route::get('/profile/status-pembayaran', [ProfileController::class, 'statusPembayaran'])->name('profile.status-pembayaran');
+    Route::get('/profile/status-pembayaran', [ProfileController::class, 'statusPembayaran']);
+
     Route::get('/profile/laporan-fasilitas', [MaintenanceController::class, 'index']);
 
     // Flow Sewa

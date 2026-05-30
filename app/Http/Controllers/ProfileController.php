@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\PengajuanSewa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -39,9 +40,7 @@ class ProfileController extends Controller
             'kontak_darurat' => $request->kontak_darurat,
         ];
 
-        // 1. HANDLE UPLOAD FILE KTP (Mengikuti gaya lokal public luwihaja-hill)
         if ($request->hasFile('ktp_dokumen')) {
-            // Hapus file fisik lama jika sebelumnya sudah ada path yang tersimpan
             if ($user->ktp_dokumen) {
                 $oldKtpPath = public_path($user->ktp_dokumen);
                 if (File::exists($oldKtpPath)) {
@@ -50,17 +49,12 @@ class ProfileController extends Controller
             }
 
             $fileKtp = $request->file('ktp_dokumen');
-            // Membuat nama file unik menggunakan penanda masa (timestamp)
             $ktpName = time() . '-ktp.' . $fileKtp->getClientOriginalExtension();
-            // Pindahkan file ke direktori public/documents/ktp
             $fileKtp->move(public_path('documents/ktp'), $ktpName);
-            // Simpan path penuh dari root public ke database
             $data['ktp_dokumen'] = '/documents/ktp/' . $ktpName;
         }
 
-        // 2. HANDLE UPLOAD SURAT KOMITMEN (Mengikuti gaya lokal public luwihaja-hill)
         if ($request->hasFile('surat_komitmen')) {
-            // Hapus file fisik lama jika sebelumnya sudah ada path yang tersimpan
             if ($user->surat_komitmen) {
                 $oldSuratPath = public_path($user->surat_komitmen);
                 if (File::exists($oldSuratPath)) {
@@ -69,11 +63,8 @@ class ProfileController extends Controller
             }
 
             $fileSurat = $request->file('surat_komitmen');
-            // Membuat nama file unik menggunakan penanda masa (timestamp)
             $suratName = time() . '-komitmen.' . $fileSurat->getClientOriginalExtension();
-            // Pindahkan file ke direktori public/documents/surat_komitmen
             $fileSurat->move(public_path('documents/surat_komitmen'), $suratName);
-            // Simpan path penuh dari root public ke database
             $data['surat_komitmen'] = '/documents/surat_komitmen/' . $suratName;
         }
 
@@ -105,5 +96,17 @@ class ProfileController extends Controller
         ]);
 
         return back()->with('success', 'Password berhasil diperbarui!');
+    }
+
+    public function statusPembayaran()
+    {
+        $riwayatSewa = PengajuanSewa::where('user_id', Auth::id())
+            ->with(['kamar', 'pembayarans' => function($query) {
+                $query->orderBy('created_at', 'desc');
+            }])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('status-pembayaran', compact('riwayatSewa'));
     }
 }

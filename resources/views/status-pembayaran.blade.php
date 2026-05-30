@@ -59,199 +59,127 @@
                         </div>
                     </div>
                 @endif
+
                 <div class="space-y-4">
 
-                    <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <h3 class="font-semibold">Kamar B1 — Deluxe AC</h3>
-                                <p class="text-xs text-muted-foreground mt-0.5">ID R-1777970464572 · diajukan 5 Mei 2026</p>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <div class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border bg-destructive/15 text-destructive border-destructive/40">Upload Ulang</div>
-                            </div>
-                        </div>
+                    @forelse($riwayatSewa as $sewa)
+                        @php
+                            // 4. Total sewa murni harga kamar tunggal tanpa perkalian durasi bulan
+                            $totalSewa = $sewa->kamar ? $sewa->kamar->harga : 0;
 
-                        <div class="mt-4 rounded-xl border border-warning/30 bg-warning/10 p-4 text-sm text-warning-foreground">
-                            <div class="flex items-start gap-2.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-circle shrink-0 mt-0.5 text-warning-foreground">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" x2="12" y1="8" y2="12"></line>
-                                    <line x1="12" x2="12.01" y1="16" y2="16"></line>
-                                </svg>
+                            // Hitung akumulasi pembayaran khusus yang disetujui admin
+                            $sudahDibayar = $sewa->pembayarans->sum('nominal');
+
+                            // Ambil data detail record pembayaran untuk validasi status kondisional
+                            $pembayaranDitolak = $sewa->pembayarans->where('status', 'ditolak')->first();
+                            $pembayaranPending = $sewa->pembayarans->where('status', 'pending')->first();
+                            $pembayaranDisetujui = $sewa->pembayarans->where('status', 'disetujui')->first();
+
+                            $statusGlobalSewa = strtolower($sewa->status);
+
+                            // Default penentuan komponen status teks & desain badge
+                            $badgeStyle = "bg-warning/15 text-warning-foreground border-warning/40";
+                            $statusTeks = "Menunggu Approval";
+
+                            // Urutan logika penentu kriteria status transaksi pembayaran yang presisi
+                            if ($statusGlobalSewa == 'ditolak') {
+                                $badgeStyle = "bg-destructive/15 text-destructive border-destructive/40";
+                                $statusTeks = "Upload Ulang";
+                            } elseif ($pembayaranDitolak) {
+                                // 1. Jika ada pembayaran ditolak, status wajib "Upload Ulang"
+                                $badgeStyle = "bg-destructive/15 text-destructive border-destructive/40";
+                                $statusTeks = "Upload Ulang";
+                            } elseif ($pembayaranDisetujui) {
+                                if ($sudahDibayar >= $totalSewa) {
+                                    // 3. Jika bayar pelunasan / full terpenuhi
+                                    $badgeStyle = "bg-success/15 text-success border-success/40";
+                                    $statusTeks = "Approved";
+                                } else {
+                                    // 2. Jika sudah pernah dp dan disetujui namun belum lunas sepenuhnya
+                                    $badgeStyle = "bg-success/15 text-success border-success/40";
+                                    $statusTeks = "DP Approved";
+                                }
+                            } elseif ($pembayaranPending) {
+                                $badgeStyle = "bg-warning/15 text-warning-foreground border-warning/40";
+                                $statusTeks = "Menunggu Approval";
+                            }
+
+                            $jatuhTempo = \Carbon\Carbon::parse($sewa->tanggal_mulai)->addMonths($sewa->durasi_sewa)->translatedFormat('d F Y');
+                        @endphp
+
+                        <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
                                 <div>
-                                    <p class="font-bold text-amber-900">Catatan Admin (Upload Ulang Bukti Pembayaran):</p>
-                                    <p class="mt-1 text-xs leading-relaxed text-amber-800">
-                                        "Bukti transfer terpotong atau kurang jelas, harap unggah kembali struk resmi ATM/M-Banking yang mencantumkan nomor referensi bank secara utuh."
-                                    </p>
+                                    <h3 class="font-semibold">Kamar {{ $sewa->kamar->nomor_kamar ?? '-' }} — {{ $sewa->kamar->tipe ?? 'Deluxe' }}</h3>
+                                    <p class="text-xs text-muted-foreground mt-0.5">ID {{ $sewa->order_id }} · diajukan {{ \Carbon\Carbon::parse($sewa->created_at)->translatedFormat('d F Y') }}</p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <div class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border {{ $badgeStyle }}">{{ $statusTeks }}</div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Total Sewa</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;13.800.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Sudah Dibayar</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;6.900.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Jatuh Tempo</p>
-                                <p class="font-semibold mt-0.5">5 Mei 2027</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <a href="/pembayaran" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft">Upload Ulang Bukti</a>
-                            <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20terkait%20sewa%20Kamar%20B1%20%E2%80%94%20Deluxe%20AC%20(ID%20R-1777970464572)." target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle h-3.5 w-3.5">
-                                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                                </svg>
-                                Hubungi Admin
-                            </a>
-                        </div>
-                    </div>
+                            {{-- 1. Menampilkan catatan admin apabila status transaksi ditolak (Upload Ulang) --}}
+                            @if($statusTeks == 'Upload Ulang' && $pembayaranDitolak)
+                                <div class="mt-4 rounded-xl border border-warning/30 bg-warning/10 p-4 text-sm text-warning-foreground">
+                                    <div class="flex items-start gap-2.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-circle shrink-0 mt-0.5 text-warning-foreground">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="12" x2="12" y1="8" y2="12"></line>
+                                            <line x1="12" x2="12.01" y1="16" y2="16"></line>
+                                        </svg>
+                                        <div>
+                                            <p class="font-bold text-amber-900">Catatan Admin (Upload Ulang Bukti Pembayaran):</p>
+                                            <p class="mt-1 text-xs leading-relaxed text-amber-800">
+                                                "{{ $pembayaranDitolak->deskripsi ?? 'Bukti transfer terpotong atau kurang jelas, harap unggah kembali struk resmi ATM/M-Banking yang mencantumkan nomor referensi bank secara utuh.' }}"
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
 
-                    <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <h3 class="font-semibold">Kamar A1 — Standard</h3>
-                                <p class="text-xs text-muted-foreground mt-0.5">ID R-1776694987139 · diajukan 20 April 2026</p>
+                            <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
+                                <div class="rounded-lg bg-secondary p-3">
+                                    <p class="text-xs text-muted-foreground">Total Sewa</p>
+                                    <p class="font-semibold mt-0.5">Rp&nbsp;{{ number_format($totalSewa, 0, ',', '.') }}</p>
+                                </div>
+                                <div class="rounded-lg bg-secondary p-3">
+                                    <p class="text-xs text-muted-foreground">Sudah Dibayar</p>
+                                    <p class="font-semibold mt-0.5 @if($statusTeks == 'Approved') text-green-600 @endif">
+                                        Rp&nbsp;{{ number_format($sudahDibayar, 0, ',', '.') }}
+                                        @if($statusTeks == 'Approved') (Lunas) @endif
+                                        @if($statusGlobalSewa == 'ditolak') (Gagal) @endif
+                                    </p>
+                                </div>
+                                <div class="rounded-lg bg-secondary p-3">
+                                    <p class="text-xs text-muted-foreground">{{ $statusTeks == 'Approved' ? 'Jatuh Tempo Perpanjang' : 'Jatuh Tempo' }}</p>
+                                    <p class="font-semibold mt-0.5">{{ $statusGlobalSewa == 'ditolak' ? 'Dibatalkan' : $jatuhTempo }}</p>
+                                </div>
                             </div>
-                            <div class="flex flex-wrap gap-2">
-                                <div class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border bg-warning/15 text-warning-foreground border-warning/40">Menunggu Approval</div>
-                            </div>
-                        </div>
-                        <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Total Sewa</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;8.400.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Sudah Dibayar</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;8.400.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Jatuh Tempo</p>
-                                <p class="font-semibold mt-0.5">20 April 2027</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20terkait%20sewa%20Kamar%20A1%20%E2%80%94%20Standard%20(ID%20R-1776694987139)." target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle h-3.5 w-3.5">
-                                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                                </svg>
-                                Hubungi Admin
-                            </a>
-                        </div>
-                    </div>
 
-                    <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <h3 class="font-semibold">Kamar B2 — Deluxe AC</h3>
-                                <p class="text-xs text-muted-foreground mt-0.5">ID R-1778392019483 · diajukan 1 Mei 2026</p>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <div class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border bg-success/15 text-success border-success/40">DP Approved</div>
-                            </div>
-                        </div>
-                        <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Total Sewa</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;13.800.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Sudah Dibayar</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;6.900.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Jatuh Tempo</p>
-                                <p class="font-semibold mt-0.5">1 Mei 2027</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <a href="/pelunasan" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">Bayar Pelunasan</a>
-                            <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20terkait%20sewa%20Kamar%20B2%20%E2%80%94%20Deluxe%20AC." target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle h-3.5 w-3.5">
-                                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                                </svg>
-                                Hubungi Admin
-                            </a>
-                        </div>
-                    </div>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                @if($statusTeks == 'Upload Ulang')
+                                    <a href="/pembayaran/{{ $sewa->order_id }}?status=upload-ulang" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft">Upload Ulang Bukti</a>
+                                @elseif($statusTeks == 'DP Approved')
+                                    {{-- 2. Menampilkan tombol Bayar Pelunasan jika masih berstatus DP Approved --}}
+                                    <a href="/pembayaran/{{ $sewa->order_id }}?status=pelunasan" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft" style="background-color: #c8664a; color: #ffffff;">Bayar Pelunasan</a>
+                                @elseif($statusTeks == 'Approved')
+                                    {{-- 3. Jika sudah bayar full / Approve, tombol perpanjang sewa dihilangkan sepenuhnya (sesuai instruksi) --}}
+                                @endif
 
-                    <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <h3 class="font-semibold">Kamar C1 — Deluxe AC Suite</h3>
-                                <p class="text-xs text-muted-foreground mt-0.5">ID R-1779948201938 · diajukan 10 Mei 2026</p>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <div class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border bg-success/15 text-success border-success/40">Approved</div>
+                                <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20terkait%20sewa%20Kamar%20{{ $sewa->kamar->nomor_kamar ?? '-' }}%20(ID%20{{ $sewa->order_id }})." target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle h-3.5 w-3.5">
+                                        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+                                    </svg>
+                                    Hubungi Admin
+                                </a>
                             </div>
                         </div>
-                        <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Total Sewa</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;15.000.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Sudah Dibayar</p>
-                                <p class="font-semibold text-green-600 mt-0.5">Rp&nbsp;15.000.000 (Lunas)</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Jatuh Tempo Perpanjang</p>
-                                <p class="font-semibold mt-0.5">10 Mei 2027</p>
-                            </div>
+                    @empty
+                        <div class="bg-card border border-border/60 rounded-2xl p-8 text-center text-muted-foreground shadow-card">
+                            <p class="font-medium text-sm">Belum ada riwayat pengajuan pemesanan kamar.</p>
+                            <a href="/kamar" class="mt-3 inline-flex text-xs bg-primary text-primary-foreground px-4 py-2 rounded-xl font-semibold">Cari Kamar Kos</a>
                         </div>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <a href="/kamar/detail/pembayaran" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft">Perpanjang Sewa</a>
-
-                            <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20terkait%20sewa%20Kamar%20C1%20%E2%80%94%20Deluxe%20AC%20Suite." target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle h-3.5 w-3.5">
-                                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                                </svg>
-                                Hubungi Admin
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <h3 class="font-semibold">Kamar A2 — Standard</h3>
-                                <p class="text-xs text-muted-foreground mt-0.5">ID R-1775549301940 · diajukan 15 April 2026</p>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <div class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border bg-destructive/15 text-destructive border-destructive/40">Ditolak Sistem</div>
-                            </div>
-                        </div>
-                        <div class="mt-4 grid sm:grid-cols-3 gap-3 text-sm">
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Total Sewa</p>
-                                <p class="font-semibold mt-0.5">Rp&nbsp;8.400.000</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Sudah Dibayar</p>
-                                <p class="font-semibold text-red-500 mt-0.5">Rp&nbsp;0 (Gagal)</p>
-                            </div>
-                            <div class="rounded-lg bg-secondary p-3">
-                                <p class="text-xs text-muted-foreground">Status Kamar</p>
-                                <p class="font-semibold mt-0.5">Dibatalkan</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <a href="/kamar" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 font-medium">Pilih Kamar Kembali</a>
-                            <a href="https://wa.me/6281234567890?text=Halo%20Admin%2C%20terkait%20pembatalan%20sewa%20Kamar%20A2%20%E2%80%94%20Standard." target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle h-3.5 w-3.5">
-                                    <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
-                                </svg>
-                                Hubungi Admin
-                            </a>
-                        </div>
-                    </div>
+                    @endforelse
 
                 </div>
             </main>
