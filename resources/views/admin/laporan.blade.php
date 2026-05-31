@@ -601,10 +601,10 @@
         <div class="report-total-card">
             <div class="card-header-flex">
                 <span class="card-title">TOTAL PENDAPATAN</span>
-                <div class="trend-badge trend-up">
+                {{-- <div class="trend-badge trend-up">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7" y2="7" x2="17" y1="7"></polyline></svg>
                     12.5%
-                </div>
+                </div> --}}
             </div>
             <h3>{{ $totalPendapatan }}</h3>
 
@@ -612,10 +612,10 @@
                 <div class="bar-base">
                     <div class="bar-progress-fill fill-pemasukan" style="width: {{ $progressPemasukan }}%;"></div>
                 </div>
-                <div class="metric-values">
+                {{-- <div class="metric-values">
                     <span>Target Capaian</span>
                     <span>{{ $progressPemasukan }}%</span>
-                </div>
+                </div> --}}
             </div>
             <p class="card-desc">Pendapatan berasal dari pembayaran lunas dan DP penghuni periode terpilih.</p>
         </div>
@@ -623,10 +623,10 @@
         <div class="report-total-card">
             <div class="card-header-flex">
                 <span class="card-title">TOTAL PENGELUARAN</span>
-                <div class="trend-badge trend-down">
+                {{-- <div class="trend-badge trend-down">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"></line><polyline points="17" y2="17" x2="7" y1="17"></polyline></svg>
                     4.2%
-                </div>
+                </div> --}}
             </div>
             <h3>{{ $totalPengeluaran }}</h3>
 
@@ -634,10 +634,10 @@
                 <div class="bar-base">
                     <div class="bar-progress-fill fill-pengeluaran" style="width: {{ $progressPengeluaran }}%;"></div>
                 </div>
-                <div class="metric-values">
+                {{-- <div class="metric-values">
                     <span>Batas Anggaran Operasional</span>
                     <span>{{ $progressPengeluaran }}%</span>
-                </div>
+                </div> --}}
             </div>
             <p class="card-desc">Pengeluaran berasal dari biaya maintenance kamar dan kebutuhan operasional kos.</p>
         </div>
