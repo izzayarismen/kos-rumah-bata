@@ -481,11 +481,11 @@
         .transaction-item b {
             white-space: normal;
         }
-        
+
         .report-form-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .report-form-full {
             grid-column: span 1;
         }
@@ -512,7 +512,7 @@
                 </div>
 
                 <label id="filter_label">{{ request('tipe') == 'tahunan' ? 'Pilih Tahun Laporan' : 'Pilih Bulan Laporan' }}</label>
-                
+
                 <select name="bulan" id="select_bulan" style="{{ request('tipe') == 'tahunan' ? 'display: none;' : '' }}">
                     @php
                         $daftarBulan = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
@@ -552,7 +552,7 @@
                 </div>
             </div>
             <h3>{{ $totalPendapatan ?? 'Rp 36.000.000' }}</h3>
-            
+
             <div class="metric-progress-container">
                 <div class="bar-base">
                     <div class="bar-progress-fill fill-pemasukan" style="width: 78%;"></div>
@@ -574,7 +574,7 @@
                 </div>
             </div>
             <h3>{{ $totalPengeluaran ?? 'Rp 2.500.000' }}</h3>
-            
+
             <div class="metric-progress-container">
                 <div class="bar-base">
                     <div class="bar-progress-fill fill-pengeluaran" style="width: 23%;"></div>
@@ -661,7 +661,7 @@
                                     <span class="badge-transaction badge-pengeluaran">Pengeluaran</span>
                                 @endif
                                 <strong>{{ $t['nama'] }}</strong>
-                                <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">📅 {{ isset($t['tanggal']) ? date('d M Y', strtotime($t['tanggal'])) : '-' }}</span>
+                                <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">{{ isset($t['tanggal']) ? date('d M Y', strtotime($t['tanggal'])) : '-' }}</span>
                                 <span>{{ $t['deskripsi'] }}</span>
                             </div>
                             <b class="{{ $t['jenis'] == 'pemasukan' ? 'text-pemasukan' : 'text-pengeluaran' }}">
@@ -674,7 +674,7 @@
                         <div>
                             <span class="badge-transaction badge-pemasukan">Pemasukan</span>
                             <strong>Pembayaran Lunas</strong>
-                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">📅 05 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
+                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">05 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
                             <span>Penghuni melakukan pembayaran penuh pada periode ini.</span>
                         </div>
                         <b class="text-pemasukan">+ {{ request('tipe') == 'tahunan' ? 'Rp 288.000.000' : 'Rp 24.000.000' }}</b>
@@ -684,7 +684,7 @@
                         <div>
                             <span class="badge-transaction badge-pemasukan">Pemasukan</span>
                             <strong>Pembayaran DP</strong>
-                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">📅 12 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
+                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">12 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
                             <span>Penghuni melakukan pembayaran tahap pertama (DP).</span>
                         </div>
                         <b class="text-pemasukan">+ {{ request('tipe') == 'tahunan' ? 'Rp 144.000.000' : 'Rp 12.000.000' }}</b>
@@ -694,17 +694,12 @@
                         <div>
                             <span class="badge-transaction badge-pengeluaran">Pengeluaran</span>
                             <strong>Maintenance Kamar</strong>
-                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">📅 18 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
+                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">18 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
                             <span>Biaya perbaikan sarana AC, lampu, air, dan operasional bangunan.</span>
                         </div>
                         <b class="text-pengeluaran">- {{ request('tipe') == 'tahunan' ? 'Rp 30.000.000' : 'Rp 2.500.000' }}</b>
                     </div>
                 @endif
-            </div>
-
-            <div class="report-actions">
-                <a href="#" class="report-action-btn report-action-primary">Export PDF</a>
-                <a href="#" class="report-action-btn report-action-secondary">Export Excel</a>
             </div>
         </div>
 
@@ -742,6 +737,10 @@
                     <strong>{{ request('tipe') == 'tahunan' ? '60 pekerjaan' : '5 pekerjaan' }}</strong>
                 </div>
             </div>
+            <div class="report-actions">
+                <a href="#" class="report-action-btn report-action-primary">Export PDF</a>
+                <a href="#" class="report-action-btn report-action-secondary">Export Excel</a>
+            </div>
         </div>
     </div>
 </div>
@@ -756,7 +755,7 @@
 
         typeInput.value = type;
         tabBtns.forEach(btn => btn.classList.remove('active'));
-        
+
         if (type === 'bulanan') {
             event.target.classList.add('active');
             selectBulan.style.display = 'block';

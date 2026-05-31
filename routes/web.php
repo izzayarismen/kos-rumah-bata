@@ -66,6 +66,17 @@ Route::prefix('admin')->group(function () {
     // CRUD Kamar Admin
     Route::resource('/kamar', AdminKamarController::class);
 
+    // Penghuni
+    Route::resource('/penghuni', AdminPenghuniController::class);
+
+    // Pembayaran
+    Route::get('/pembayaran', [AdminPembayaranController::class, 'index']);
+    Route::get('/pembayaran/{order_id}', [AdminPembayaranController::class, 'show']);
+    Route::put('/pembayaran/{order_id}/verifikasi', [AdminPembayaranController::class, 'verifikasi']);
+
+    // CRUD Maintenance Admin
+    Route::resource('/maintenance', AdminMaintenanceController::class);
+
     // CRUD FAQ Admin
     Route::resource('/konten/faq', AdminFaqController::class);
 
@@ -75,15 +86,10 @@ Route::prefix('admin')->group(function () {
     // CRUD Galeri Admin
     Route::resource('/konten/galeri', AdminGaleriController::class);
 
-    // Penghuni
-    Route::resource('/penghuni', AdminPenghuniController::class);
+    Route::get('/laporan', function () {
+        return view('admin.laporan');
+    });
 
-    // Pembayaran
-    Route::get('/pembayaran', [AdminPembayaranController::class, 'index']);
-    Route::get('/pembayaran/{order_id}', [AdminPembayaranController::class, 'show']);
-    Route::put('/pembayaran/{order_id}/verifikasi', [AdminPembayaranController::class, 'verifikasi']);
-
-    Route::resource('/maintenance', AdminMaintenanceController::class);
 });
 
 // Route::get('/admin/maintenance', function () {
@@ -105,10 +111,6 @@ Route::prefix('admin')->group(function () {
 // Route::get('/admin/pengajuan-maintenance/detail', function () {
 //     return view('admin.pengajuan_maintenance_detail');
 // });
-
-Route::get('/admin/laporan', function () {
-    return view('admin.laporan');
-});
 
 Route::get('/admin/profile', function () {
     return view('admin.profile');
