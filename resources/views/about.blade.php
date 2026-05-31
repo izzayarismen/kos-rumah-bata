@@ -147,15 +147,12 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+    {{-- Mengubah grid menjadi 3 kolom (md:grid-cols-3) untuk mendukung formasi 3x3 --}}
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
         @foreach($galeris as $index => $item)
-            @php
-                // Logika grid bento: Item ke-1 (index 0) dan Item ke-6 (index 5) memanjang ke bawah.
-                $isTallCard = ($index == 0 || $index == 5);
-            @endphp
-
-            <div class="gallery-item rounded-2xl shadow-card border border-border/40 {{ $isTallCard ? 'row-span-2 aspect-3/4' : 'aspect-square' }}">
-                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->title }}" loading="lazy" class="h-full w-full object-cover">
+            {{-- Semua item menggunakan rasio landscape yang sama (aspect-[4/3]) tanpa pengondisian bento --}}
+            <div class="gallery-item rounded-2xl shadow-card border border-border/40 aspect-[4/3]">
+                <img src="{{ asset( $item->image) }}" alt="{{ $item->title }}" loading="lazy" class="h-full w-full object-cover">
                 <div class="gallery-text-content">
                     <h4 class="gallery-text-title">{{ $item->title }}</h4>
                     <p class="gallery-text-desc">{{ $item->description }}</p>
