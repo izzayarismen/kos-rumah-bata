@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminKamarController;
 use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminActivityController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminGaleriController;
 use App\Http\Controllers\Admin\AdminPembayaranController;
 use App\Http\Controllers\Admin\AdminMaintenanceController;
@@ -60,9 +61,7 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('admin')->group(function () {
     // Dashboard
-    Route::get('/', function () {
-        return view('admin.dashboard');
-    });
+    Route::get('/', [AdminDashboardController::class, 'index']);
 
     // CRUD Kamar Admin
     Route::resource('/kamar', AdminKamarController::class);

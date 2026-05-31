@@ -331,25 +331,25 @@
     <div class="dash-stats">
         <div class="dash-card">
             <span>Total Kamar</span>
-            <h2>40</h2>
+            <h2>{{ $totalKamar }}</h2>
             <p>Tower ganjil & genap</p>
         </div>
 
         <div class="dash-card">
             <span>Penghuni Aktif</span>
-            <h2>31</h2>
+            <h2>{{ $penghuniAktif }}</h2>
             <p>Sedang menempati kamar</p>
         </div>
 
         <div class="dash-card">
-            <span>Pembayaran DP</span>
-            <h2>7</h2>
+            <span>Pembayaran</span>
+            <h2>{{ $pembayaranDP }}</h2>
             <p>Menunggu pelunasan</p>
         </div>
 
         <div class="dash-card">
             <span>Maintenance</span>
-            <h2>4</h2>
+            <h2>{{ $maintenanceCount }}</h2>
             <p>Sedang diproses</p>
         </div>
     </div>
@@ -367,49 +367,22 @@
             </div>
 
             <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-icon">P</div>
+                @forelse($recentActivities as $act)
+                    <div class="activity-item">
+                        <div class="activity-icon">{{ $act['icon'] }}</div>
 
-                    <div>
-                        <strong>Pembayaran diterima</strong>
-                        <p>Rani Amelia mengirim bukti DP Kamar 08.</p>
+                        <div>
+                            <strong>{{ $act['title'] }}</strong>
+                            <p>{{ $act['description'] }}</p>
+                        </div>
+
+                        <div class="activity-time">{{ $act['time']->format('H.i') }}</div>
                     </div>
-
-                    <div class="activity-time">20.19</div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon">S</div>
-
-                    <div>
-                        <strong>Pengajuan sewa baru</strong>
-                        <p>Calon penghuni mengajukan Kamar A1.</p>
+                @empty
+                    <div style="padding: 24px; text-align: center; color: #806f66; font-size: 13px;">
+                        Belum ada riwayat aktivitas sistem baru hari ini.
                     </div>
-
-                    <div class="activity-time">18.45</div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon">M</div>
-
-                    <div>
-                        <strong>Laporan maintenance masuk</strong>
-                        <p>Kamar 12 melaporkan saluran air tersumbat.</p>
-                    </div>
-
-                    <div class="activity-time">16.30</div>
-                </div>
-
-                <div class="activity-item">
-                    <div class="activity-icon">K</div>
-
-                    <div>
-                        <strong>Kamar tersedia</strong>
-                        <p>Kamar 22 siap ditawarkan ke calon penghuni.</p>
-                    </div>
-
-                    <div class="activity-time">14.00</div>
-                </div>
+                @endforelse
             </div>
         </div>
 
@@ -418,25 +391,26 @@
                 <div class="dash-box-head">
                     <div>
                         <h3>Peta Kamar</h3>
-                        <p>40 kamar total</p>
+                        <p>{{ $totalKamar }} kamar total</p>
                     </div>
                 </div>
 
                 <div class="room-map">
-                    @for ($i = 1; $i <= 40; $i++)
+                    @forelse($kamars as $kamar)
                         @php
-                            $maintenance = [3, 7, 15, 28];
-                            $kosong = [11, 19, 20, 24, 33, 35, 38, 39, 40];
+                            $classStatus = 'empty'; // default / tersedia / kosong (#ffffff)
+                            if ($kamar->status_visual === 'maintenance') {
+                                $classStatus = 'fix'; // perbaikan (#fef3e0 / #b77700)
+                            } elseif ($kamar->status_visual === 'terisi') {
+                                $classStatus = 'filled'; // penuh (#faf1ed / #c8664a)
+                            }
                         @endphp
-
-                        @if (in_array($i, $maintenance))
-                            <div class="room fix">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</div>
-                        @elseif (in_array($i, $kosong))
-                            <div class="room empty">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</div>
-                        @else
-                            <div class="room filled">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</div>
-                        @endif
-                    @endfor
+                        <div class="room {{ $classStatus }}">{{ str_pad($kamar->nomor_kamar, 2, '0', STR_PAD_LEFT) }}</div>
+                    @empty
+                        <div style="grid-column: span 5; padding: 20px; text-align: center; color: #806f66; font-size: 13px;">
+                            Belum ada data kamar terdaftar di sistem.
+                        </div>
+                    @endforelse
                 </div>
 
                 <div class="room-legend">
