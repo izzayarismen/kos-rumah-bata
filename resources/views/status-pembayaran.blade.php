@@ -63,49 +63,54 @@
                 <div class="space-y-4">
 
                     @forelse($riwayatSewa as $sewa)
-                        @php
-                            // 4. Total sewa murni harga kamar tunggal tanpa perkalian durasi bulan
-                            $totalSewa = $sewa->kamar ? $sewa->kamar->harga : 0;
+                    @php
+                        // Total sewa murni harga kamar tunggal tanpa perkalian durasi bulan
+                        $totalSewa = $sewa->kamar ? $sewa->kamar->harga : 0;
 
-                            // Hitung akumulasi pembayaran khusus yang disetujui admin
-                            $sudahDibayar = $sewa->pembayarans->sum('nominal');
+                        // Hitung akumulasi seluruh nominal pembayaran yang telah disetujui admin
+                        $sudahDibayar = $sewa->pembayarans->whereIn('status', ['disetujui', 'pending'])->sum('nominal');
 
-                            // Ambil data detail record pembayaran untuk validasi status kondisional
-                            $pembayaranDitolak = $sewa->pembayarans->where('status', 'ditolak')->first();
-                            $pembayaranPending = $sewa->pembayarans->where('status', 'pending')->first();
-                            $pembayaranDisetujui = $sewa->pembayarans->where('status', 'disetujui')->first();
+                        // Ambil data detail record pembayaran berdasarkan status untuk validasi yang presisi
+                        $pembayaranDitolak = $sewa->pembayarans->where('status', 'ditolak')->first();
+                        $pembayaranPending = $sewa->pembayarans->where('status', 'pending')->first();
+                        $pembayaranDisetujui = $sewa->pembayarans->where('status', 'disetujui')->first();
 
-                            $statusGlobalSewa = strtolower($sewa->status);
+                        $statusGlobalSewa = strtolower($sewa->status);
 
-                            // Default penentuan komponen status teks & desain badge
+                        // Default penentuan komponen status teks & desain badge
+                        $badgeStyle = "bg-warning/15 text-warning-foreground border-warning/40";
+                        $statusTeks = "Menunggu Approval";
+
+                        // =====================================================================
+                        // URUTAN LOGIKA PENENTU KRITERIA STATUS YANG PRESISI
+                        // =====================================================================
+                        if ($statusGlobalSewa == 'ditolak') {
+                            $badgeStyle = "bg-destructive/15 text-destructive border-destructive/40";
+                            $statusTeks = "Upload Ulang";
+                        } elseif ($pembayaranDitolak) {
+                            // 1. Jika ada pembayaran yang ditolak admin, wajib masuk mode Upload Ulang
+                            $badgeStyle = "bg-destructive/15 text-destructive border-destructive/40";
+                            $statusTeks = "Upload Ulang";
+                        } elseif ($pembayaranPending) {
+                            // 2. PRIORITAS UTAMA BARU: Jika ada transaksi pending (baik DP awal atau Pelunasan sisa),
+                            //    maka status harus tetap menampilkan "Menunggu Approval"
                             $badgeStyle = "bg-warning/15 text-warning-foreground border-warning/40";
                             $statusTeks = "Menunggu Approval";
-
-                            // Urutan logika penentu kriteria status transaksi pembayaran yang presisi
-                            if ($statusGlobalSewa == 'ditolak') {
-                                $badgeStyle = "bg-destructive/15 text-destructive border-destructive/40";
-                                $statusTeks = "Upload Ulang";
-                            } elseif ($pembayaranDitolak) {
-                                // 1. Jika ada pembayaran ditolak, status wajib "Upload Ulang"
-                                $badgeStyle = "bg-destructive/15 text-destructive border-destructive/40";
-                                $statusTeks = "Upload Ulang";
-                            } elseif ($pembayaranDisetujui) {
-                                if ($sudahDibayar >= $totalSewa) {
-                                    // 3. Jika bayar pelunasan / full terpenuhi
-                                    $badgeStyle = "bg-success/15 text-success border-success/40";
-                                    $statusTeks = "Approved";
-                                } else {
-                                    // 2. Jika sudah pernah dp dan disetujui namun belum lunas sepenuhnya
-                                    $badgeStyle = "bg-success/15 text-success border-success/40";
-                                    $statusTeks = "DP Approved";
-                                }
-                            } elseif ($pembayaranPending) {
-                                $badgeStyle = "bg-warning/15 text-warning-foreground border-warning/40";
-                                $statusTeks = "Menunggu Approval";
+                        } elseif ($pembayaranDisetujui) {
+                            // 3. Jika tidak ada yang pending/ditolak, baru kita cek akumulasi dana terkumpul
+                            if ($sudahDibayar >= $totalSewa) {
+                                // Jika sudah bayar pelunasan / full terpenuhi dan disetujui
+                                $badgeStyle = "bg-success/15 text-success border-success/40";
+                                $statusTeks = "Approved";
+                            } else {
+                                // Jika baru DP awal yang disetujui dan belum mengirim berkas pelunasan
+                                $badgeStyle = "bg-success/15 text-success border-success/40";
+                                $statusTeks = "DP Approved";
                             }
+                        }
 
-                            $jatuhTempo = \Carbon\Carbon::parse($sewa->tanggal_mulai)->addMonths($sewa->durasi_sewa)->translatedFormat('d F Y');
-                        @endphp
+                        $jatuhTempo = \Carbon\Carbon::parse($sewa->tanggal_mulai)->addMonths($sewa->durasi_sewa)->translatedFormat('d F Y');
+                    @endphp
 
                         <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
                             <div class="flex flex-wrap items-start justify-between gap-3">
@@ -158,10 +163,10 @@
 
                             <div class="mt-4 flex flex-wrap gap-2">
                                 @if($statusTeks == 'Upload Ulang')
-                                    <a href="/pembayaran/{{ $sewa->order_id }}?status=upload-ulang" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft">Upload Ulang Bukti</a>
+                                    <a href="/pembayaran/{{ $sewa->order_id }}" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft">Upload Ulang Bukti</a>
                                 @elseif($statusTeks == 'DP Approved')
                                     {{-- 2. Menampilkan tombol Bayar Pelunasan jika masih berstatus DP Approved --}}
-                                    <a href="/pembayaran/{{ $sewa->order_id }}?status=pelunasan" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft" style="background-color: #c8664a; color: #ffffff;">Bayar Pelunasan</a>
+                                    <a href="/pembayaran/{{ $sewa->order_id }}" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 font-semibold shadow-soft" style="background-color: #c8664a; color: #ffffff;">Bayar Pelunasan</a>
                                 @elseif($statusTeks == 'Approved')
                                     {{-- 3. Jika sudah bayar full / Approve, tombol perpanjang sewa dihilangkan sepenuhnya (sesuai instruksi) --}}
                                 @endif

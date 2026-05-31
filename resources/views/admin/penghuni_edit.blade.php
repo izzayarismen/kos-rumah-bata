@@ -298,16 +298,6 @@
                     <input type="date" name="tanggal_masuk" value="{{ old('tanggal_masuk', $tanggalMasuk) }}">
                 </div>
 
-                <div class="tenant-form-group tenant-form-full">
-                    <label>Status Pembayaran (Info Internal)</label>
-                    <select name="status_pembayaran" disabled style="background-color: #f7f9fa; cursor: not-allowed;">
-                        <option value="lunas" {{ ($sisaTagihan <= 0 && $totalTagihan > 0) ? 'selected' : '' }}>Lunas</option>
-                        <option value="dp" {{ ($totalSudahBayar > 0 && $sisaTagihan > 0) ? 'selected' : '' }}>DP / Dicicil</option>
-                        <option value="belum_bayar" {{ ($totalSudahBayar == 0) ? 'selected' : '' }}>Belum Bayar</option>
-                    </select>
-                    <span class="tenant-form-hint">Status keuangan diatur otomatis via konfirmasi menu Transaksi Pembayaran.</span>
-                </div>
-
                 <div class="tenant-form-full tenant-form-group">
                     <label>Alamat Asal</label>
                     <textarea name="alamat">{{ old('alamat', $penghuni->alamat) }}</textarea>

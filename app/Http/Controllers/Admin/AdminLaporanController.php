@@ -108,6 +108,7 @@ class AdminLaporanController extends Controller
         return redirect()->back()->with('success', 'Transaksi berhasil disimpan!');
     }
 
+    // METHOD BARU: EXPORT PDF
     public function exportPdf(Request $request)
     {
         $dataLaporan = $this->getLaporanData($request);
@@ -123,6 +124,7 @@ class AdminLaporanController extends Controller
         return $pdf->download('Laporan_Keuangan_' . str_replace(' ', '_', $periodeAktif) . '.pdf');
     }
 
+    // METHOD BARU: EXPORT EXCEL
     public function exportExcel(Request $request)
     {
         $dataLaporan = $this->getLaporanData($request);

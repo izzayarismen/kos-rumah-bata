@@ -28,6 +28,7 @@ class AdminPenghuniController extends Controller
                     $q->where('status', 'disetujui');
                 }]);
             }])
+            ->orderBy('nama', 'asc')
             ->get();
 
         return view('admin.penghuni', compact('penghuni'));

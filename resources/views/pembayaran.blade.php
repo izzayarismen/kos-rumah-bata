@@ -87,46 +87,96 @@
             <div class="bg-card border border-border/60 rounded-2xl p-6 shadow-card">
                 <h2 class="font-semibold">Pilih Pembayaran</h2>
 
-                {{-- Hidden input asli untuk menyimpan state tipe pembayaran --}}
-                <input type="hidden" name="tipe_pembayaran" id="tipe-pembayaran-input" value="lunas">
+                @if($pembayaranTerakhir && $pembayaranTerakhir->status === 'rejected')
+                    {{-- KONDISI 1: UPLOAD ULANG (Mengunci jenis pembayaran lama tanpa membuat input baru) --}}
+                    <input type="hidden" name="tipe_pembayaran" id="tipe-pembayaran-input" value="{{ $pembayaranTerakhir->tipe_pembayaran }}">
 
-                <div role="radiogroup" aria-required="false" dir="ltr" class="mt-4 grid sm:grid-cols-2 gap-3" style="outline: none;">
-                    {{-- Opsi Lunas --}}
-                    <label id="label-Lunas" for="pay-Lunas" class="rounded-xl border-2 p-4 cursor-pointer transition-colors border-primary bg-primary-soft/40">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <button type="button" role="radio" aria-checked="true" data-state="checked" value="lunas" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background" id="pay-Lunas">
-                                    <span class="flex items-center justify-center" id="dot-Lunas">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle h-2.5 w-2.5 fill-current text-current">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                        </svg>
-                                    </span>
-                                </button>
-                                <p class="font-medium">Lunas (100%)</p>
+                    <div role="radiogroup" aria-required="false" dir="ltr" class="mt-4 grid gap-3" style="outline: none;">
+                        <label id="label-Lunas" class="rounded-xl border-2 p-4 cursor-default transition-colors border-primary bg-primary-soft/40">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <button type="button" role="radio" aria-checked="true" data-state="checked" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background">
+                                        <span class="flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle h-2.5 w-2.5 fill-current text-current">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <p class="font-medium">Upload Ulang Bukti ({{ $pembayaranTerakhir->tipe_pembayaran === 'dp' ? 'DP 50%' : 'Lunas 100%' }})</p>
+                                </div>
+                                <p class="font-bold text-primary">
+                                    Rp&nbsp;{{ number_format($pembayaranTerakhir->tipe_pembayaran === 'dp' ? $pengajuan->kamar->harga / 2 : $pengajuan->kamar->harga, 0, ',', '.') }}
+                                </p>
                             </div>
-                            <p class="font-bold text-primary">Rp&nbsp;{{ number_format($pengajuan->kamar->harga, 0, ',', '.') }}</p>
-                        </div>
-                        <p class="text-xs text-muted-foreground mt-2 ml-7">Sewa langsung diproses untuk approval.</p>
-                    </label>
+                            <p class="text-xs text-muted-foreground mt-2 ml-7">Memperbarui berkas bukti transaksi yang ditolak sebelumnya.</p>
+                        </label>
+                    </div>
 
-                    {{-- Opsi DP --}}
-                    <label id="label-DP" for="pay-DP" class="rounded-xl border-2 p-4 cursor-pointer transition-colors border-border hover:border-primary/50">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <button type="button" role="radio" aria-checked="false" data-state="unchecked" value="dp" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background" id="pay-DP">
-                                    <span class="flex items-center justify-center hidden" id="dot-DP">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle h-2.5 w-2.5 fill-current text-current">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                        </svg>
-                                    </span>
-                                </button>
-                                <p class="font-medium">DP (50%)</p>
+                @elseif($pembayaranTerakhir && $pembayaranTerakhir->tipe_pembayaran === 'dp' && $pembayaranTerakhir->status === 'approved')
+                    {{-- KONDISI 2: PELUNASAN SISA DP (Hanya menampilkan opsi pelunasan 50% saja) --}}
+                    <input type="hidden" name="tipe_pembayaran" id="tipe-pembayaran-input" value="pelunasan">
+
+                    <div role="radiogroup" aria-required="false" dir="ltr" class="mt-4 grid gap-3" style="outline: none;">
+                        <label id="label-Pelunasan" class="rounded-xl border-2 p-4 cursor-default transition-colors border-primary bg-primary-soft/40">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <button type="button" role="radio" aria-checked="true" data-state="checked" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background">
+                                        <span class="flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle h-2.5 w-2.5 fill-current text-current">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <p class="font-medium">Pelunasan Sisa Kamar (50%)</p>
+                                </div>
+                                <p class="font-bold text-primary">Rp&nbsp;{{ number_format($pengajuan->kamar->harga / 2, 0, ',', '.') }}</p>
                             </div>
-                            <p class="font-bold text-primary">Rp&nbsp;{{ number_format($pengajuan->kamar->harga / 2, 0, ',', '.') }}</p>
-                        </div>
-                        <p class="text-xs text-muted-foreground mt-2 ml-7">Status berubah menjadi Booked sampai pelunasan.</p>
-                    </label>
-                </div>
+                            <p class="text-xs text-muted-foreground mt-2 ml-7">Pelunasan tahap akhir untuk mengaktifkan seluruh akses sewa kamar kos.</p>
+                        </label>
+                    </div>
+
+                @else
+                    {{-- KONDISI DEFAULT: PEMBAYARAN BARU AWAL (BISA PILIH LUNAS / DP) --}}
+                    <input type="hidden" name="tipe_pembayaran" id="tipe-pembayaran-input" value="lunas">
+
+                    <div role="radiogroup" aria-required="false" dir="ltr" class="mt-4 grid sm:grid-cols-2 gap-3" style="outline: none;">
+                        {{-- Opsi Lunas --}}
+                        <label id="label-Lunas" for="pay-Lunas" class="rounded-xl border-2 p-4 cursor-pointer transition-colors border-primary bg-primary-soft/40">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <button type="button" role="radio" aria-checked="true" data-state="checked" value="lunas" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background" id="pay-Lunas">
+                                        <span class="flex items-center justify-center" id="dot-Lunas">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle h-2.5 w-2.5 fill-current text-current">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <p class="font-medium">Lunas (100%)</p>
+                                </div>
+                                <p class="font-bold text-primary">Rp&nbsp;{{ number_format($pengajuan->kamar->harga, 0, ',', '.') }}</p>
+                            </div>
+                            <p class="text-xs text-muted-foreground mt-2 ml-7">Sewa langsung diproses untuk approval.</p>
+                        </label>
+
+                        {{-- Opsi DP --}}
+                        <label id="label-DP" for="pay-DP" class="rounded-xl border-2 p-4 cursor-pointer transition-colors border-border hover:border-primary/50">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <button type="button" role="radio" aria-checked="false" data-state="unchecked" value="dp" class="aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background" id="pay-DP">
+                                        <span class="flex items-center justify-center hidden" id="dot-DP">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle h-2.5 w-2.5 fill-current text-current">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <p class="font-medium">DP (50%)</p>
+                                </div>
+                                <p class="font-bold text-primary">Rp&nbsp;{{ number_format($pengajuan->kamar->harga / 2, 0, ',', '.') }}</p>
+                            </div>
+                            <p class="text-xs text-muted-foreground mt-2 ml-7">Status berubah menjadi Booked sampai pelunasan.</p>
+                        </label>
+                    </div>
+                @endif
             </div>
 
             <div class="bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-4">
@@ -174,18 +224,37 @@
             </div>
             <div class="space-y-2 pt-3 border-t border-border text-sm">
                 <div class="flex justify-between"><span class="text-muted-foreground">Harga / tahun</span><span>Rp&nbsp;{{ number_format($pengajuan->kamar->harga, 0, ',', '.') }}</span></div>
-                <div class="flex justify-between"><span class="text-muted-foreground">Tipe Pembayaran</span><span id="summary-tipe">Lunas</span></div>
+                <div class="flex justify-between">
+                    <span class="text-muted-foreground">Tipe Pembayaran</span>
+                    <span id="summary-tipe">
+                        @if($pembayaranTerakhir && $pembayaranTerakhir->status === 'rejected')
+                            Upload Ulang ({{ $pembayaranTerakhir->tipe_pembayaran === 'dp' ? 'DP 50%' : 'Lunas' }})
+                        @elseif($pembayaranTerakhir && $pembayaranTerakhir->tipe_pembayaran === 'dp' && $pembayaranTerakhir->status === 'approved')
+                            Pelunasan Sisa
+                        @else
+                            Lunas
+                        @endif
+                    </span>
+                </div>
                 <div class="flex justify-between"><span class="text-muted-foreground">Metode</span><span>Transfer Bank</span></div>
             </div>
             <div class="pt-3 border-t border-border flex items-baseline justify-between">
                 <p class="text-sm text-muted-foreground">Total bayar</p>
-                <p class="text-2xl font-bold text-primary" id="summary-total">Rp&nbsp;{{ number_format($pengajuan->kamar->harga, 0, ',', '.') }}</p>
+                <p class="text-2xl font-bold text-primary" id="summary-total">
+                    @if($pembayaranTerakhir && $pembayaranTerakhir->status === 'rejected')
+                        Rp&nbsp;{{ number_format($pembayaranTerakhir->tipe_pembayaran === 'dp' ? $pengajuan->kamar->harga / 2 : $pengajuan->kamar->harga, 0, ',', '.') }}
+                    @elseif($pembayaranTerakhir && $pembayaranTerakhir->tipe_pembayaran === 'dp' && $pembayaranTerakhir->status === 'approved')
+                        Rp&nbsp;{{ number_format($pengajuan->kamar->harga / 2, 0, ',', '.') }}
+                    @else
+                        Rp&nbsp;{{ number_format($pengajuan->kamar->harga, 0, ',', '.') }}
+                    @endif
+                </p>
             </div>
         </aside>
     </section>
 </form>
 
-{{-- Modal Konfirmasi yang terkunci penuh (Tombol silang dihapus, klik background dinonaktifkan) --}}
+{{-- Modal Konfirmasi yang terkunci penuh --}}
 <div id="modal-confirm" class="fixed inset-0 z-50 @if(!session('success_payment')) hidden @endif grid place-items-center p-4" style="background-color: rgba(0, 0, 0, 0.6);">
     <div class="relative bg-card border border-border/80 rounded-2xl max-w-sm sm:max-w-md w-full p-6 shadow-2xl space-y-4">
 
@@ -240,39 +309,42 @@
 
         const hargaKamar = {{ $pengajuan->kamar->harga }};
 
-        labelLunas.addEventListener("click", function() {
-            tipeInput.value = "lunas";
-            summaryTipe.textContent = "Lunas";
-            summaryTotal.innerHTML = "Rp&nbsp;" + new Intl.NumberFormat('id-ID').format(hargaKamar);
+        // Event listener hanya diaktifkan jika kedua element radio exist (Kondisi default pembayaran awal)
+        if (labelLunas && labelDP && payLunas && payDP) {
+            labelLunas.addEventListener("click", function() {
+                tipeInput.value = "lunas";
+                summaryTipe.textContent = "Lunas";
+                summaryTotal.innerHTML = "Rp&nbsp;" + new Intl.NumberFormat('id-ID').format(hargaKamar);
 
-            labelLunas.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-primary bg-primary-soft/40";
-            labelDP.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-border hover:border-primary/50";
+                labelLunas.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-primary bg-primary-soft/40";
+                labelDP.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-border hover:border-primary/50";
 
-            payLunas.setAttribute("aria-checked", "true");
-            payLunas.setAttribute("data-state", "checked");
-            payDP.setAttribute("aria-checked", "false");
-            payDP.setAttribute("data-state", "unchecked");
+                payLunas.setAttribute("aria-checked", "true");
+                payLunas.setAttribute("data-state", "checked");
+                payDP.setAttribute("aria-checked", "false");
+                payDP.setAttribute("data-state", "unchecked");
 
-            dotLunas.classList.remove("hidden");
-            dotDP.classList.add("hidden");
-        });
+                dotLunas.classList.remove("hidden");
+                dotDP.classList.add("hidden");
+            });
 
-        labelDP.addEventListener("click", function() {
-            tipeInput.value = "dp";
-            summaryTipe.textContent = "DP (50%)";
-            summaryTotal.innerHTML = "Rp&nbsp;" + new Intl.NumberFormat('id-ID').format(hargaKamar / 2);
+            labelDP.addEventListener("click", function() {
+                tipeInput.value = "dp";
+                summaryTipe.textContent = "DP (50%)";
+                summaryTotal.innerHTML = "Rp&nbsp;" + new Intl.NumberFormat('id-ID').format(hargaKamar / 2);
 
-            labelDP.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-primary bg-primary-soft/40";
-            labelLunas.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-border hover:border-primary/50";
+                labelDP.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-primary bg-primary-soft/40";
+                labelLunas.className = "rounded-xl border-2 p-4 cursor-pointer transition-colors border-border hover:border-primary/50";
 
-            payDP.setAttribute("aria-checked", "true");
-            payDP.setAttribute("data-state", "checked");
-            payLunas.setAttribute("aria-checked", "false");
-            payLunas.setAttribute("data-state", "unchecked");
+                payDP.setAttribute("aria-checked", "true");
+                payDP.setAttribute("data-state", "checked");
+                payLunas.setAttribute("aria-checked", "false");
+                payLunas.setAttribute("data-state", "unchecked");
 
-            dotDP.classList.remove("hidden");
-            dotLunas.classList.add("hidden");
-        });
+                dotDP.classList.remove("hidden");
+                dotLunas.classList.add("hidden");
+            });
+        }
 
         // Area unggah file bukti transfer bank
         if (uploadZone && fileInput) {

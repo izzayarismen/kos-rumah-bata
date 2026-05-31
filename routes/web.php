@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/pembayaran/{order_id}', [PengajuanSewaController::class, 'payment']);
 });
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     // Dashboard
     Route::get('/', [AdminDashboardController::class, 'index']);
 
@@ -113,10 +113,6 @@ Route::prefix('admin')->group(function () {
 // Route::get('/admin/pengajuan-maintenance/detail', function () {
 //     return view('admin.pengajuan_maintenance_detail');
 // });
-
-Route::get('/admin/profile', function () {
-    return view('admin.profile');
-});
 
 // Route::get('/admin/pengajuan-sewa', function () {
 //     return view('admin.pengajuan_sewa');

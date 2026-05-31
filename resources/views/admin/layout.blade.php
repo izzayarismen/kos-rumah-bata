@@ -779,14 +779,14 @@
         }
 
                 .brand-logo {
-            background: none !important;      
+            background: none !important;
             background-color: transparent !important;
-            border-radius: 0 !important;  
-            padding: 0;                   
-            
-            
-            width: 45px;                      
-            height: auto;                     
+            border-radius: 0 !important;
+            padding: 0;
+
+
+            width: 45px;
+            height: auto;
             object-fit: contain;
         }
             </style>
@@ -875,7 +875,7 @@
 
             <div class="navbar-right">
 
-                <div class="notification-wrap">
+                {{-- <div class="notification-wrap">
                     <button class="notification-button" type="button" onclick="toggleNotificationMenu()">
                         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"></path>
@@ -918,7 +918,7 @@
 
                         <a href="/" class="notification-footer">Lihat semua aktivitas</a>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="profile-wrap">
                     <button class="profile-button" type="button" onclick="toggleProfileMenu()">
@@ -937,7 +937,6 @@
                     </button>
 
                     <div class="profile-dropdown" id="profileDropdown">
-                        <a href="/admin/profile">Profile</a>
                         <a href="/logout">Logout</a>
                     </div>
                 </div>

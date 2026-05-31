@@ -128,12 +128,45 @@ class PengajuanSewaController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        return view('pembayaran', compact('pengajuan'));
+        // 1. Cari tahu apakah sudah ada DP yang disetujui oleh admin
+        $hasApprovedDP = $pengajuan->pembayarans()
+            ->where('tipe_pembayaran', 'dp')
+            ->where('status', 'disetujui')
+            ->exists();
+
+        // 2. Ambil data pembayaran yang paling terakhir untuk mendeteksi status pending/rejected
+        $pembayaranTerakhir = $pengajuan->pembayarans()->latest()->first();
+
+        // 3. Jika sudah ada DP yang disetujui, tapi pembayaran terakhirnya bukan pelunasan yang ditolak (rejected),
+        //    maka kita manipulasi objeknya agar Blade membaca ini sebagai halaman pelunasan/menunggu approval pelunasan.
+        if ($hasApprovedDP) {
+            // Cek apakah user sudah mengirim pelunasan dan sedang pending
+            $pelunasanPending = $pengajuan->pembayarans()
+                ->where('tipe_pembayaran', 'pelunasan')
+                ->where('status', 'pending')
+                ->first();
+
+            if ($pelunasanPending) {
+                // Jika pelunasan sedang ditinjau, biarkan $pembayaranTerakhir apa adanya (untuk ringkasan & status pending)
+                $pembayaranTerakhir = $pelunasanPending;
+            } elseif ($pembayaranTerakhir && $pembayaranTerakhir->status === 'rejected' && $pembayaranTerakhir->tipe_pembayaran === 'pelunasan') {
+                // Jika pelunasan ditolak, biarkan system masuk ke mode Upload Ulang Pelunasan
+                $pembayaranTerakhir = $pembayaranTerakhir;
+            } else {
+                // Jika belum bayar pelunasan sama sekali, paksa objek tiruan agar Blade mengunci ke form pelunasan (Kondisi 2)
+                $pembayaranTerakhir = new \App\Models\Pembayaran([
+                    'tipe_pembayaran' => 'dp',
+                    'status' => 'approved'
+                ]);
+            }
+        }
+
+        return view('pembayaran', compact('pengajuan', 'pembayaranTerakhir'));
     }
 
     public function payment(Request $request, $order_id)
     {
-        // Ubah validasi agar menerima 'lunas', 'dp', atau 'pelunasan' sesuai kebutuhan baru
+        // 1. Validasi input dari form (menerima 'lunas', 'dp', atau 'pelunasan')
         $request->validate([
             'tipe_pembayaran' => 'required|in:lunas,dp,pelunasan',
             'bukti_transfer'  => 'required|image|mimes:jpg,jpeg,png|max:2048'
@@ -143,48 +176,80 @@ class PengajuanSewaController extends Controller
             'bukti_transfer.image'     => 'Bukti transfer harus berupa gambar.',
         ]);
 
+        // 2. Cari data pengajuan sewa milik user yang login
         $pengajuan = PengajuanSewa::where('order_id', $order_id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
         if ($request->hasFile('bukti_transfer')) {
+            // 3. Proses penyimpanan berkas file bukti transfer bank
             $fileBukti = $request->file('bukti_transfer');
             $buktiName = time() . '-bukti.' . $fileBukti->getClientOriginalExtension();
             $fileBukti->move(public_path('images/bukti_transfer'), $buktiName);
             $buktiPath = '/images/bukti_transfer/' . $buktiName;
 
-            // --- PERBAIKAN LOGIKA NOMINAL DAN MAPPING TIPE ---
             $hargaDasarKamar = $pengajuan->kamar->harga ?? 0;
-            $tipePembayaranInv = 'full';
-            $nominalBayar = $hargaDasarKamar; // Default nominal full (lunas)
 
-            if ($request->tipe_pembayaran === 'dp') {
-                $tipePembayaranInv = 'dp';
-                $nominalBayar = $hargaDasarKamar / 2; // Jika DP, nominal dihitung setengah dari harga kamar
-            } elseif ($request->tipe_pembayaran === 'pelunasan') {
-                $tipePembayaranInv = 'pelunasan';
-                $nominalBayar = $hargaDasarKamar / 2; // Pelunasan sisa DP juga mengambil setengah sisanya
+            // 4. Ambil riwayat data pembayaran paling terakhir untuk pengecekan status
+            $pembayaranTerakhir = Pembayaran::where('pengajuan_sewa_id', $pengajuan->id)
+                ->latest()
+                ->first();
+
+            // =====================================================================
+            // KONDISI 1: UPLOAD ULANG (Jika transaksi sebelumnya berstatus rejected)
+            // =====================================================================
+            if ($pembayaranTerakhir && $pembayaranTerakhir->status === 'ditolak') {
+
+                // a. Update data transaksi pembayaran yang ditolak tersebut
+                $pembayaranTerakhir->update([
+                    'bukti_transfer' => $buktiPath,
+                    'status'         => 'pending', // Kembalikan ke pending agar ditinjau ulang oleh admin
+                    'tanggal_bayar'  => Carbon::today()->format('Y-m-d'),
+                    'deskripsi'      => 'Re-upload pembayaran dari ' . Auth::user()->nama . ' untuk Kamar ' . $pengajuan->kamar->nomor_kamar,
+                ]);
+
+                // b. KEBUTUHAN BARU: Update status dan catatan pada tabel PengajuanSewa
+                $pengajuan->update([
+                    'status'  => 'pending', // Kembalikan status pengajuan sewa menjadi pending
+                    'catatan' => 'User telah melakukan upload ulang bukti pembayaran terbaru.' // Memperbarui catatan/alasan reject sebelumnya
+                ]);
+
+            } else {
+                // =====================================================================
+                // KONDISI 2: TRANSAKSI BARU ATAU PELUNASAN SISA DP (Buat baris baru)
+                // =====================================================================
+                $tipePembayaranInv = 'full';
+                $nominalBayar = $hargaDasarKamar;
+
+                if ($request->tipe_pembayaran === 'dp') {
+                    $tipePembayaranInv = 'dp';
+                    $nominalBayar = $hargaDasarKamar / 2;
+                } elseif ($request->tipe_pembayaran === 'pelunasan') {
+                    $tipePembayaranInv = 'pelunasan';
+                    $nominalBayar = $hargaDasarKamar / 2;
+                }
+
+                // Simpan transaksi baru ke tabel pembayarans
+                Pembayaran::create([
+                    'pengajuan_sewa_id' => $pengajuan->id,
+                    'nominal'           => $nominalBayar,
+                    'tipe_pembayaran'   => $tipePembayaranInv,
+                    'tanggal_bayar'     => Carbon::today()->format('Y-m-d'),
+                    'jenis'             => 'pemasukan',
+                    'nama'              => 'Pembayaran Sewa ' . $pengajuan->kamar->nomor_kamar . ' (' . $tipePembayaranInv . ')',
+                    'deskripsi'         => 'Pembayaran dari ' . Auth::user()->nama . ' untuk Kamar ' . $pengajuan->kamar->nomor_kamar,
+                    'bukti_transfer'    => $buktiPath,
+                    'status'            => 'pending',
+                ]);
             }
 
-            // Simpan sebagai baris pemasukan baru di tabel pembayarans dengan nominal yang sudah dinamis
-            Pembayaran::create([
-                'pengajuan_sewa_id' => $pengajuan->id,
-                'nominal'           => $nominalBayar, // <-- Menggunakan nominal hasil kalkulasi di atas
-                'tipe_pembayaran'   => $tipePembayaranInv,
-                'tanggal_bayar'     => Carbon::today()->format('Y-m-d'),
-                'jenis'             => 'pemasukan',
-                'nama'              => 'Pembayaran Sewa ' . $pengajuan->kamar->nomor_kamar . ' ('.$tipePembayaranInv.')',
-                'deskripsi'         => 'Pembayaran dari ' . Auth::user()->nama . ' untuk Kamar ' . $pengajuan->kamar->nomor_kamar,
-                'bukti_transfer'    => $buktiPath,
-                'status'            => 'pending',
-            ]);
-
-            // Status kamar diubah menjadi penuh
+            // 5. Pastikan status kamar tetap terkunci penuh selama proses peninjauan
             $pengajuan->kamar->update([
                 'status' => 'penuh'
             ]);
         }
 
+        // Mengembalikan session success_payment untuk memicu modal pop-up sukses bawaan di view Anda
         return redirect()->back()->with('success_payment', 'Bukti pembayaran berhasil diunggah.');
     }
 }
