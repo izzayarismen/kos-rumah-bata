@@ -39,10 +39,18 @@ class AdminLaporanController extends Controller
             $periodeAktif = 'Tahun ' . $tahunInput;
         }
 
-        $transaksi = $query->orderBy('tanggal_bayar', 'desc')->orderBy('created_at', 'desc')->get();
+        // Urutkan query dasar
+        $baseQuery = $query->orderBy('tanggal_bayar', 'desc')->orderBy('created_at', 'desc');
+
+        // Ambil SEMUA data transaksi untuk perhitungan total & ringkasan keuangan
+        $allTransaksi = (clone $baseQuery)->get();
+
+        // Ambil data transaksi khusus untuk list tampilan yang dibatasi per halaman (misal: 5 data per halaman)
+        $transaksiPaginated = $baseQuery->paginate(4)->withQueryString();
 
         return [
-            'transaksi' => $transaksi,
+            'allTransaksi' => $allTransaksi,
+            'transaksi' => $transaksiPaginated,
             'periodeAktif' => $periodeAktif,
             'tipe' => $tipe
         ];
@@ -51,26 +59,27 @@ class AdminLaporanController extends Controller
     public function index(Request $request)
     {
         $dataLaporan = $this->getLaporanData($request);
-        $transaksi = $dataLaporan['transaksi'];
+        $transaksi = $dataLaporan['transaksi']; // Ini data yang sudah di-paginate
+        $allTransaksi = $dataLaporan['allTransaksi']; // Ini semua data untuk sum nominal
         $periodeAktif = $dataLaporan['periodeAktif'];
         $tipe = $dataLaporan['tipe'];
 
-        $totalPendapatanRaw = $transaksi->where('jenis', 'pemasukan')->sum('nominal');
-        $totalPengeluaranRaw = $transaksi->where('jenis', 'pengeluaran')->sum('nominal');
+        // Menggunakan $allTransaksi agar kalkulasi total mencakup semua data, bukan hanya data halaman aktif
+        $totalPendapatanRaw = $allTransaksi->where('jenis', 'pemasukan')->sum('nominal');
+        $totalPengeluaranRaw = $allTransaksi->where('jenis', 'pengeluaran')->sum('nominal');
         $selisihBersihRaw = $totalPendapatanRaw - $totalPengeluaranRaw;
 
-        $transaksiMasukCount = $transaksi->where('jenis', 'pemasukan')->count();
-        $maintenanceCount = $transaksi->where('jenis', 'pengeluaran')->count();
+        $transaksiMasukCount = $allTransaksi->where('jenis', 'pemasukan')->count();
+        $maintenanceCount = $allTransaksi->where('jenis', 'pengeluaran')->count();
 
         $totalPendapatan = 'Rp ' . number_format($totalPendapatanRaw, 0, ',', '.');
         $totalPengeluaran = 'Rp ' . number_format($totalPengeluaranRaw, 0, ',', '.');
         $selisihBersih = ($selisihBersihRaw < 0 ? '- Rp ' : 'Rp ') . number_format(abs($selisihBersihRaw), 0, ',', '.');
 
-        // Target progress bar (Mengembalikan ke nilai semula/dummy default 50jt bulanan & 500jt tahunan)
-        $targetPendapatan = $tipe === 'tahunan' ? 1 : 1;
+        $targetPendapatan = 1;
         $progressPemasukan = $targetPendapatan > 0 ? min(round(($totalPendapatanRaw / $targetPendapatan) * 100), 100) : 0;
 
-        $budgetPengeluaran = $tipe === 'tahunan' ? 1 : 1;
+        $budgetPengeluaran = 1;
         $progressPengeluaran = $budgetPengeluaran > 0 ? min(round(($totalPengeluaranRaw / $budgetPengeluaran) * 100), 100) : 0;
 
         return view('admin.laporan', compact(

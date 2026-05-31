@@ -258,6 +258,7 @@
         display: grid;
         grid-template-columns: 1.25fr 0.75fr;
         gap: 22px;
+        align-items: flex-start;
     }
 
     .report-section-head {
@@ -490,6 +491,60 @@
             grid-column: span 1;
         }
     }
+
+    /* CUSTOM STYLING FOR PAGINATION */
+    .pagination-wrapper {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .custom-pagination {
+        display: flex;
+        gap: 6px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        align-items: center;
+    }
+
+    .custom-pagination li a, .custom-pagination li span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 6px;
+        border: 1px solid #ead6ce;
+        border-radius: 10px;
+        background: #ffffff;
+        color: #3d332e;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s ease;
+        cursor: pointer;
+    }
+
+    .custom-pagination li a:hover {
+        background: #fbf5f1;
+        border-color: #d79b86;
+        color: #c8664a;
+    }
+
+    .custom-pagination li.active span {
+        background: #c8664a;
+        border-color: #c8664a;
+        color: #ffffff;
+        cursor: default;
+    }
+
+    .custom-pagination li.disabled span {
+        background: #fcfbfb;
+        color: #c4b9b3;
+        border-color: #f0e3dd;
+        cursor: not-allowed;
+    }
 </style>
 
 <div class="report-page">
@@ -669,6 +724,36 @@
                             </b>
                         </div>
                     @endforeach
+
+                    @if($transaksi->hasPages())
+                        <div class="pagination-wrapper">
+                            <ul class="custom-pagination">
+                                {{-- Tombol Halaman Sebelumnya (Previous) --}}
+                                @if ($transaksi->onFirstPage())
+                                    <li class="disabled"><span>&laquo;</span></li>
+                                @else
+                                    <li><a href="{{ $transaksi->previousPageUrl() }}" rel="prev">&laquo;</a></li>
+                                @endif
+
+                                {{-- Elemen Halaman-Halaman Angka --}}
+                                @foreach ($transaksi->getUrlRange(1, $transaksi->lastPage()) as $page => $url)
+                                    @if ($page == $transaksi->currentPage())
+                                        <li class="active"><span>{{ $page }}</span></li>
+                                    @else
+                                        <li><a href="{{ $url }}">{{ $page }}</a></li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Tombol Halaman Selanjutnya (Next) --}}
+                                @if ($transaksi->hasMorePages())
+                                    <li><a href="{{ $transaksi->nextPageUrl() }}" rel="next">&raquo;</a></li>
+                                @else
+                                    <li class="disabled"><span>&raquo;</span></li>
+                                @endif
+                            </ul>
+                        </div>
+                    @endif
+
                 @else
                     <div style="text-align: center; padding: 24px; color: #86766f;">
                         Tidak ada transaksi yang tercatat pada periode ini.
