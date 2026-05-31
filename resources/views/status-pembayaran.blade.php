@@ -110,7 +110,7 @@
                         <div class="bg-card border border-border/60 rounded-2xl p-5 shadow-card">
                             <div class="flex flex-wrap items-start justify-between gap-3">
                                 <div>
-                                    <h3 class="font-semibold">Kamar {{ $sewa->kamar->nomor_kamar ?? '-' }} — {{ $sewa->kamar->tipe ?? 'Deluxe' }}</h3>
+                                    <h3 class="font-semibold">Kamar {{ $sewa->kamar->nomor_kamar ?? '-' }} — Tower {{ $sewa->kamar->tower }}</h3>
                                     <p class="text-xs text-muted-foreground mt-0.5">ID {{ $sewa->order_id }} · diajukan {{ \Carbon\Carbon::parse($sewa->created_at)->translatedFormat('d F Y') }}</p>
                                 </div>
                                 <div class="flex flex-wrap gap-2">
@@ -128,7 +128,7 @@
                                             <line x1="12" x2="12.01" y1="16" y2="16"></line>
                                         </svg>
                                         <div>
-                                            <p class="font-bold text-amber-900">Catatan Admin (Upload Ulang Bukti Pembayaran):</p>
+                                            <p class="font-bold text-amber-900">Catatan Admin:</p>
                                             <p class="mt-1 text-xs leading-relaxed text-amber-800">
                                                 "{{ $pembayaranDitolak->deskripsi ?? 'Bukti transfer terpotong atau kurang jelas, harap unggah kembali struk resmi ATM/M-Banking yang mencantumkan nomor referensi bank secara utuh.' }}"
                                             </p>

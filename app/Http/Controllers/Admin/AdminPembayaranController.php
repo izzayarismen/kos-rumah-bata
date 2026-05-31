@@ -89,6 +89,7 @@ class AdminPembayaranController extends Controller
             // Update status transaksi pembayaran menjadi ditolak
             $pembayaranItem->update([
                 'status' => 'ditolak',
+                'deskripsi' => $catatanAdmin,
             ]);
 
             // Ubah status pengajuan sewa utama menjadi ditolak agar user mendapat notifikasi/instruksi upload ulang

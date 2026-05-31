@@ -704,8 +704,8 @@
                 </div>
             </div>
             <div class="report-actions">
-                <a href="#" class="report-action-btn report-action-primary">Export PDF</a>
-                <a href="#" class="report-action-btn report-action-secondary">Export Excel</a>
+                <a href="/admin/laporan/pdf?{{ http_build_query(request()->all()) }}" class="report-action-btn report-action-primary">Export PDF</a>
+                <a href="/admin/laporan/excel?{{ http_build_query(request()->all()) }}" class="report-action-btn report-action-secondary">Export Excel</a>
             </div>
         </div>
     </div>

@@ -90,6 +90,8 @@ Route::prefix('admin')->group(function () {
     // Laporan
     Route::get('/laporan', [AdminLaporanController::class, 'index']);
     Route::post('/laporan', [AdminLaporanController::class, 'store']);
+    Route::get('/laporan/pdf', [AdminLaporanController::class, 'exportPdf']);
+    Route::get('/laporan/excel', [AdminLaporanController::class, 'exportExcel']);
 });
 
 // Route::get('/admin/maintenance', function () {

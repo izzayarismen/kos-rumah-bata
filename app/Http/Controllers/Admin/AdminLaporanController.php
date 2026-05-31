@@ -5,24 +5,24 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\LaporanExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AdminLaporanController extends Controller
 {
-    public function index(Request $request)
+    // Helper privat untuk menyatukan logika filter data laporan
+    private function getLaporanData(Request $request)
     {
         $tipe = $request->get('tipe', 'bulanan');
-        $bulanInput = $request->get('bulan'); // format: januari-2026
+        $bulanInput = $request->get('bulan');
         $tahunInput = $request->get('tahun', date('Y'));
 
-        // Daftar bulan untuk mapping nama bulan ke angka (1-12)
         $daftarBulan = ['januari', 'februari', 'maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
-
-        // Setup default query berdasarkan tipe filter
         $query = Pembayaran::query();
 
         if ($tipe === 'bulanan') {
             if ($bulanInput) {
-                explode('-', $bulanInput);
                 $parts = explode('-', $bulanInput);
                 $namaBulan = $parts[0];
                 $tahun = $parts[1] ?? date('Y');
@@ -32,36 +32,41 @@ class AdminLaporanController extends Controller
             }
 
             $angkaBulan = array_search(strtolower($namaBulan), $daftarBulan) + 1;
-
-            $query->whereMonth('tanggal_bayar', $angkaBulan)
-                  ->whereYear('tanggal_bayar', $tahun);
-
+            $query->whereMonth('tanggal_bayar', $angkaBulan)->whereYear('tanggal_bayar', $tahun);
             $periodeAktif = ucfirst($namaBulan) . ' ' . $tahun;
         } else {
-            // Tahunan
             $query->whereYear('tanggal_bayar', $tahunInput);
             $periodeAktif = 'Tahun ' . $tahunInput;
         }
 
-        // Ambil semua transaksi pada periode terpilih
         $transaksi = $query->orderBy('tanggal_bayar', 'desc')->orderBy('created_at', 'desc')->get();
 
-        // Hitung Pendapatan & Pengeluaran
+        return [
+            'transaksi' => $transaksi,
+            'periodeAktif' => $periodeAktif,
+            'tipe' => $tipe
+        ];
+    }
+
+    public function index(Request $request)
+    {
+        $dataLaporan = $this->getLaporanData($request);
+        $transaksi = $dataLaporan['transaksi'];
+        $periodeAktif = $dataLaporan['periodeAktif'];
+        $tipe = $dataLaporan['tipe'];
+
         $totalPendapatanRaw = $transaksi->where('jenis', 'pemasukan')->sum('nominal');
         $totalPengeluaranRaw = $transaksi->where('jenis', 'pengeluaran')->sum('nominal');
         $selisihBersihRaw = $totalPendapatanRaw - $totalPengeluaranRaw;
 
-        // Hitung Jumlah Transaksi khusus Ringkasan
         $transaksiMasukCount = $transaksi->where('jenis', 'pemasukan')->count();
         $maintenanceCount = $transaksi->where('jenis', 'pengeluaran')->count();
 
-        // Formating Mata Uang Rupiah
         $totalPendapatan = 'Rp ' . number_format($totalPendapatanRaw, 0, ',', '.');
         $totalPengeluaran = 'Rp ' . number_format($totalPengeluaranRaw, 0, ',', '.');
         $selisihBersih = ($selisihBersihRaw < 0 ? '- Rp ' : 'Rp ') . number_format(abs($selisihBersihRaw), 0, ',', '.');
 
-        // Mengitung Target Capaian (Dummy target 50jt/bulan atau disesuaikan)
-        // Disini kita tetapkan logika persentase statis bawaan template jika kosong atau dinamis sederhana
+        // Target progress bar (Mengembalikan ke nilai semula/dummy default 50jt bulanan & 500jt tahunan)
         $targetPendapatan = $tipe === 'tahunan' ? 1 : 1;
         $progressPemasukan = $targetPendapatan > 0 ? min(round(($totalPendapatanRaw / $targetPendapatan) * 100), 100) : 0;
 
@@ -97,9 +102,33 @@ class AdminLaporanController extends Controller
             'nama' => $request->nama,
             'nominal' => $request->jumlah,
             'deskripsi' => $request->deskripsi,
-            'status' => 'disetujui', // Otomatis disetujui karena diinput oleh Admin langsung
+            'status' => 'disetujui',
         ]);
 
         return redirect()->back()->with('success', 'Transaksi berhasil disimpan!');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $dataLaporan = $this->getLaporanData($request);
+        $transaksi = $dataLaporan['transaksi'];
+        $periodeAktif = $dataLaporan['periodeAktif'];
+
+        $totalPendapatan = $transaksi->where('jenis', 'pemasukan')->sum('nominal');
+        $totalPengeluaran = $transaksi->where('jenis', 'pengeluaran')->sum('nominal');
+        $selisihBersih = $totalPendapatan - $totalPengeluaran;
+
+        $pdf = Pdf::loadView('admin.laporan_pdf', compact('transaksi', 'periodeAktif', 'totalPendapatan', 'totalPengeluaran', 'selisihBersih'));
+
+        return $pdf->download('Laporan_Keuangan_' . str_replace(' ', '_', $periodeAktif) . '.pdf');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $dataLaporan = $this->getLaporanData($request);
+        $transaksi = $dataLaporan['transaksi'];
+        $periodeAktif = $dataLaporan['periodeAktif'];
+
+        return Excel::download(new LaporanExport($transaksi), 'Laporan_Keuangan_' . str_replace(' ', '_', $periodeAktif) . '.xlsx');
     }
 }
