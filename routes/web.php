@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminActivityController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminGaleriController;
+use App\Http\Controllers\Admin\AdminLaporanController;
 use App\Http\Controllers\Admin\AdminPembayaranController;
 use App\Http\Controllers\Admin\AdminMaintenanceController;
 use App\Http\Controllers\Admin\AdminPenghuniController;
@@ -86,10 +87,9 @@ Route::prefix('admin')->group(function () {
     // CRUD Galeri Admin
     Route::resource('/konten/galeri', AdminGaleriController::class);
 
-    Route::get('/laporan', function () {
-        return view('admin.laporan');
-    });
-
+    // Laporan
+    Route::get('/laporan', [AdminLaporanController::class, 'index']);
+    Route::post('/laporan', [AdminLaporanController::class, 'store']);
 });
 
 // Route::get('/admin/maintenance', function () {

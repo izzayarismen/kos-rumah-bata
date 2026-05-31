@@ -546,21 +546,17 @@
         <div class="report-total-card">
             <div class="card-header-flex">
                 <span class="card-title">TOTAL PENDAPATAN</span>
-                <div class="trend-badge trend-up">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7" y2="7" x2="17" y1="7"></polyline></svg>
-                    12.5%
-                </div>
             </div>
-            <h3>{{ $totalPendapatan ?? 'Rp 36.000.000' }}</h3>
+            <h3>{{ $totalPendapatan }}</h3>
 
             <div class="metric-progress-container">
                 <div class="bar-base">
-                    <div class="bar-progress-fill fill-pemasukan" style="width: 78%;"></div>
+                    <div class="bar-progress-fill fill-pemasukan" style="width: {{ $progressPemasukan }}%;"></div>
                 </div>
-                <div class="metric-values">
+                {{-- <div class="metric-values">
                     <span>Target Capaian</span>
-                    <span>78%</span>
-                </div>
+                    <span>{{ $progressPemasukan }}%</span>
+                </div> --}}
             </div>
             <p class="card-desc">Pendapatan berasal dari pembayaran lunas dan DP penghuni periode terpilih.</p>
         </div>
@@ -568,31 +564,27 @@
         <div class="report-total-card">
             <div class="card-header-flex">
                 <span class="card-title">TOTAL PENGELUARAN</span>
-                <div class="trend-badge trend-down">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"></line><polyline points="17" y2="17" x2="7" y1="17"></polyline></svg>
-                    4.2%
-                </div>
             </div>
-            <h3>{{ $totalPengeluaran ?? 'Rp 2.500.000' }}</h3>
+            <h3>{{ $totalPengeluaran }}</h3>
 
             <div class="metric-progress-container">
                 <div class="bar-base">
-                    <div class="bar-progress-fill fill-pengeluaran" style="width: 23%;"></div>
+                    <div class="bar-progress-fill fill-pengeluaran" style="width: {{ $progressPengeluaran }}%;"></div>
                 </div>
-                <div class="metric-values">
+                {{-- <div class="metric-values">
                     <span>Batas Anggaran Operasional</span>
-                    <span>23%</span>
-                </div>
+                    <span>{{ $progressPengeluaran }}%</span>
+                </div> --}}
             </div>
             <p class="card-desc">Pengeluaran berasal dari biaya maintenance kamar dan kebutuhan operasional kos.</p>
         </div>
     </div>
 
     <div class="report-panel">
-        <div class="report-section-head" style="margin-bottom: 8px;">
+        <div class="report-form-grid" style="margin-top: 0px; margin-bottom: 8px;">
             <div>
-                <h3>Tambah Transaksi Baru</h3>
-                <p>Catat pemasukan atau pengeluaran operasional kos secara mandiri di sini.</p>
+                <h3 style="margin: 0; color: #211713; font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Tambah Transaksi Baru</h3>
+                <p style="margin: 7px 0 0; color: #86766f; font-size: 14px; line-height: 1.6;">Catat pemasukan atau pengeluaran operasional kos secara mandiri di sini.</p>
             </div>
         </div>
 
@@ -602,7 +594,7 @@
             </div>
         @endif
 
-        <form action="/admin/laporan/store" method="POST">
+        <form action="/admin/laporan" method="POST">
             @csrf
             <div class="report-form-grid">
                 <div class="report-form-group">
@@ -647,7 +639,7 @@
                     <h3>Rincian Transaksi</h3>
                     <p>Daftar pemasukan dan pengeluaran yang tercatat pada periode terpilih.</p>
                 </div>
-                <span class="report-period" id="display_period">{{ $periodeAktif ?? ucfirst(explode('-', $bulanSaatIni)[0]).' '.date('Y') }}</span>
+                <span class="report-period" id="display_period">{{ $periodeAktif }}</span>
             </div>
 
             <div class="transaction-list">
@@ -655,49 +647,23 @@
                     @foreach($transaksi as $t)
                         <div class="transaction-item">
                             <div>
-                                @if($t['jenis'] == 'pemasukan')
+                                @if($t->jenis == 'pemasukan')
                                     <span class="badge-transaction badge-pemasukan">Pemasukan</span>
                                 @else
                                     <span class="badge-transaction badge-pengeluaran">Pengeluaran</span>
                                 @endif
-                                <strong>{{ $t['nama'] }}</strong>
-                                <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">{{ isset($t['tanggal']) ? date('d M Y', strtotime($t['tanggal'])) : '-' }}</span>
-                                <span>{{ $t['deskripsi'] }}</span>
+                                <strong>{{ $t->nama }}</strong>
+                                <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">{{ date('d M Y', strtotime($t->tanggal_bayar)) }}</span>
+                                <span>{{ $t->deskripsi ?? '-' }}</span>
                             </div>
-                            <b class="{{ $t['jenis'] == 'pemasukan' ? 'text-pemasukan' : 'text-pengeluaran' }}">
-                                {{ $t['jenis'] == 'pemasukan' ? '+' : '-' }} {{ $t['jumlah'] }}
+                            <b class="{{ $t->jenis == 'pemasukan' ? 'text-pemasukan' : 'text-pengeluaran' }}">
+                                {{ $t->jenis == 'pemasukan' ? '+' : '-' }} Rp {{ number_format($t->nominal, 0, ',', '.') }}
                             </b>
                         </div>
                     @endforeach
                 @else
-                    <div class="transaction-item">
-                        <div>
-                            <span class="badge-transaction badge-pemasukan">Pemasukan</span>
-                            <strong>Pembayaran Lunas</strong>
-                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">05 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
-                            <span>Penghuni melakukan pembayaran penuh pada periode ini.</span>
-                        </div>
-                        <b class="text-pemasukan">+ {{ request('tipe') == 'tahunan' ? 'Rp 288.000.000' : 'Rp 24.000.000' }}</b>
-                    </div>
-
-                    <div class="transaction-item">
-                        <div>
-                            <span class="badge-transaction badge-pemasukan">Pemasukan</span>
-                            <strong>Pembayaran DP</strong>
-                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">12 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
-                            <span>Penghuni melakukan pembayaran tahap pertama (DP).</span>
-                        </div>
-                        <b class="text-pemasukan">+ {{ request('tipe') == 'tahunan' ? 'Rp 144.000.000' : 'Rp 12.000.000' }}</b>
-                    </div>
-
-                    <div class="transaction-item">
-                        <div>
-                            <span class="badge-transaction badge-pengeluaran">Pengeluaran</span>
-                            <strong>Maintenance Kamar</strong>
-                            <span style="margin-bottom: 4px; font-weight: 600; color: #a1928a;">18 {{ request('tipe') == 'tahunan' ? 'Jan - Des' : ucfirst(explode('-', $bulanSaatIni)[0]) }} {{ date('Y') }}</span>
-                            <span>Biaya perbaikan sarana AC, lampu, air, dan operasional bangunan.</span>
-                        </div>
-                        <b class="text-pengeluaran">- {{ request('tipe') == 'tahunan' ? 'Rp 30.000.000' : 'Rp 2.500.000' }}</b>
+                    <div style="text-align: center; padding: 24px; color: #86766f;">
+                        Tidak ada transaksi yang tercatat pada periode ini.
                     </div>
                 @endif
             </div>
@@ -714,27 +680,27 @@
             <div class="monthly-summary">
                 <div class="summary-row">
                     <span>Pendapatan</span>
-                    <strong>{{ $totalPendapatan ?? (request('tipe') == 'tahunan' ? 'Rp 432.000.000' : 'Rp 36.000.000') }}</strong>
+                    <strong>{{ $totalPendapatan }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Pengeluaran</span>
-                    <strong>{{ $totalPengeluaran ?? (request('tipe') == 'tahunan' ? 'Rp 30.000.000' : 'Rp 2.500.000') }}</strong>
+                    <strong>{{ $totalPengeluaran }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Selisih Bersih</span>
-                    <strong>{{ $selisihBersih ?? (request('tipe') == 'tahunan' ? 'Rp 402.000.000' : 'Rp 33.500.000') }}</strong>
+                    <strong>{{ $selisihBersih }}</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Transaksi Masuk</span>
-                    <strong>{{ request('tipe') == 'tahunan' ? '216 transaksi' : '18 transaksi' }}</strong>
+                    <strong>{{ $transaksiMasukCount }} transaksi</strong>
                 </div>
 
                 <div class="summary-row">
                     <span>Maintenance Dibayar</span>
-                    <strong>{{ request('tipe') == 'tahunan' ? '60 pekerjaan' : '5 pekerjaan' }}</strong>
+                    <strong>{{ $maintenanceCount }} pekerjaan</strong>
                 </div>
             </div>
             <div class="report-actions">

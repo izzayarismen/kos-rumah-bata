@@ -173,7 +173,7 @@ class PengajuanSewaController extends Controller
                 'tipe_pembayaran'   => $tipePembayaranInv,
                 'tanggal_bayar'     => Carbon::today()->format('Y-m-d'),
                 'jenis'             => 'pemasukan',
-                'nama'              => 'Pembayaran Sewa ' . $pengajuan->order_id,
+                'nama'              => 'Pembayaran Sewa ' . $pengajuan->kamar->nomor_kamar . ' ('.$tipePembayaranInv.')',
                 'deskripsi'         => 'Pembayaran dari ' . Auth::user()->nama . ' untuk Kamar ' . $pengajuan->kamar->nomor_kamar,
                 'bukti_transfer'    => $buktiPath,
                 'status'            => 'pending',

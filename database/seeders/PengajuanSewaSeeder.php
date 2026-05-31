@@ -15,70 +15,17 @@ class PengajuanSewaSeeder extends Seeder
     public function run(): void
     {
         // Mengambil user berdasarkan email yang telah dibuat di UserSeeder
-        $badzlan = User::where('email', 'badzlandhabith05@gmail.com')->first();
-        $izza = User::where('email', 'izzayarismennn@gmail.com')->first();
-        $faza = User::where('email', 'faza@example.com')->first();
-        $fadhil = User::where('email', 'radit@example.com')->first();
-        $putra = User::where('email', 'putra@example.com')->first();
-        $rian = User::where('email', 'user@example.com')->first();
-
-        // ==================== KONTRAK USER BADZLAN (4 STATUS BERBEDA) ====================
-
-        // [STATUS 3: APPROVE / LUNAS AMAN]
-        if ($badzlan) {
-            PengajuanSewa::create([
-                'id'            => 1,
-                'order_id'      => 'KRB-GNP-1001',
-                'user_id'       => $badzlan->id,
-                'kamar_id'      => 2,
-                'tanggal_mulai' => Carbon::now()->addDays(5)->format('Y-m-d'),
-                'durasi_sewa'   => 12,
-                'status'        => 'disetujui',
-            ]);
-
-            // [STATUS 1: PENDING / MENUNGGU VERIFIKASI]
-            PengajuanSewa::create([
-                'id'            => 6,
-                'order_id'      => 'KRB-GNP-1006',
-                'user_id'       => $badzlan->id,
-                'kamar_id'      => 6, // Asumsi ID Kamar 6
-                'tanggal_mulai' => Carbon::now()->addDays(12)->format('Y-m-d'),
-                'durasi_sewa'   => 12,
-                'status'        => 'pending',
-            ]);
-
-            // [STATUS 2: DP APPROVE (Kontrak masih pending/proses cicilan, tapi transaksi DP sudah approved)]
-            PengajuanSewa::create([
-                'id'            => 7,
-                'order_id'      => 'KRB-GNP-1007',
-                'user_id'       => $badzlan->id,
-                'kamar_id'      => 8, // Asumsi ID Kamar 7
-                'tanggal_mulai' => Carbon::now()->addDays(15)->format('Y-m-d'),
-                'durasi_sewa'   => 12,
-                'status'        => 'pending',
-            ]);
-
-            // [STATUS 4: UPLOAD ULANG / PEMBAYARAN DITOLAK]
-            PengajuanSewa::create([
-                'id'            => 8,
-                'order_id'      => 'KRB-GNP-1008',
-                'user_id'       => $badzlan->id,
-                'kamar_id'      => 10, // Asumsi ID Kamar 8
-                'tanggal_mulai' => Carbon::now()->addDays(2)->format('Y-m-d'),
-                'durasi_sewa'   => 6,
-                'catatan'       => 'Bukti transfer terpotong atau kurang jelas, harap unggah kembali struk resmi ATM/M-Banking yang mencantumkan nomor referensi bank secara utuh.',
-                'status'        => 'ditolak',
-            ]);
-        }
-
-        // ==================== KONTRAK USER LAIN (TETAP DIPERTAHANKAN) ====================
+        $satu = User::where('email', 'satu@gmail.com')->first();
+        $dua = User::where('email', 'dua@gmail.com')->first();
+        $tiga = User::where('email', 'tiga@gmail.com')->first();
+        $empat = User::where('email', 'empat@gmail.com')->first();
 
         // 2. Pengajuan Izza (Status: pending)
-        if ($izza) {
+        if ($satu) {
             PengajuanSewa::create([
-                'id'            => 2,
+                'id'            => 1,
                 'order_id'      => 'KRB-GJL-2002',
-                'user_id'       => $izza->id,
+                'user_id'       => $satu->id,
                 'kamar_id'      => 1,
                 'tanggal_mulai' => Carbon::now()->addDays(7)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
@@ -87,11 +34,11 @@ class PengajuanSewaSeeder extends Seeder
         }
 
         // 3. Pengajuan Faza (Status: pending)
-        if ($faza) {
+        if ($dua) {
             PengajuanSewa::create([
-                'id'            => 3,
+                'id'            => 2,
                 'order_id'      => 'KRB-GNP-3003',
-                'user_id'       => $faza->id,
+                'user_id'       => $dua->id,
                 'kamar_id'      => 4,
                 'tanggal_mulai' => Carbon::now()->addDays(10)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
@@ -100,11 +47,11 @@ class PengajuanSewaSeeder extends Seeder
         }
 
         // 4. Pengajuan Fadhil (Status: ditolak)
-        if ($fadhil) {
+        if ($tiga) {
             PengajuanSewa::create([
-                'id'            => 4,
+                'id'            => 3,
                 'order_id'      => 'KRB-GJL-4004',
-                'user_id'       => $fadhil->id,
+                'user_id'       => $tiga->id,
                 'kamar_id'      => 3,
                 'tanggal_mulai' => Carbon::now()->addDays(3)->format('Y-m-d'),
                 'durasi_sewa'   => 6,
@@ -113,11 +60,11 @@ class PengajuanSewaSeeder extends Seeder
         }
 
         // 5. Pengajuan Putra (Status: disetujui)
-        if ($putra) {
+        if ($empat) {
             PengajuanSewa::create([
-                'id'            => 5,
+                'id'            => 4,
                 'order_id'      => 'KRB-GNP-5005',
-                'user_id'       => $putra->id,
+                'user_id'       => $empat->id,
                 'kamar_id'      => 20,
                 'tanggal_mulai' => Carbon::now()->addDays(14)->format('Y-m-d'),
                 'durasi_sewa'   => 12,
