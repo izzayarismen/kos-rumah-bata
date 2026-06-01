@@ -36,8 +36,8 @@ class PengajuanSewaController extends Controller
             'kontak_darurat'  => 'required|string|max:20',
             'tanggal_mulai'   => 'required|date|after_or_equal:today',
             'alamat'          => 'required|string',
-            'ktp_dokumen'     => 'required_without:user_ktp|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'surat_komitmen'  => 'required_without:user_komitmen|file|mimes:pdf,doc,docx|max:2048',
+            'ktp_dokumen'     => 'required_without:user_ktp|file|mimes:jpg,jpeg,png,pdf',
+            'surat_komitmen'  => 'required_without:user_komitmen|file|mimes:pdf',
         ]);
 
         $kamar = Kamar::where('id', $id)->where('status', 'tersedia')->firstOrFail();
@@ -169,7 +169,7 @@ class PengajuanSewaController extends Controller
         // 1. Validasi input dari form (menerima 'lunas', 'dp', atau 'pelunasan')
         $request->validate([
             'tipe_pembayaran' => 'required|in:lunas,dp,pelunasan',
-            'bukti_transfer'  => 'required|image|mimes:jpg,jpeg,png|max:2048'
+            'bukti_transfer'  => 'required|image|mimes:jpg,jpeg,png'
         ], [
             'tipe_pembayaran.required' => 'Silahkan pilih tipe pembayaran.',
             'bukti_transfer.required'  => 'Silahkan unggah bukti transfer terlebih dahulu.',

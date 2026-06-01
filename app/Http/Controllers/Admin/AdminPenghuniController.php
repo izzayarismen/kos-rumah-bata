@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Kamar;
 use App\Models\PengajuanSewa;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminPenghuniController extends Controller
 {
@@ -139,5 +140,29 @@ class AdminPenghuniController extends Controller
         }
 
         return redirect()->back()->with('success', 'Penghuni berhasil dinonaktifkan dari kamar.');
+    }
+
+    public function pdf()
+    {
+        $penghuni = User::where('role', 'customer')
+            ->whereHas('pengajuanSewa.pembayarans', function ($query) {
+                $query->where('status', 'disetujui');
+            })
+            ->with(['pengajuanSewa' => function($query) {
+                $query->whereHas('pembayarans', function($q) {
+                    $q->where('status', 'disetujui');
+                })->with(['kamar', 'pembayarans' => function($q) {
+                    $q->where('status', 'disetujui');
+                }]);
+            }])
+            ->orderBy('nama', 'asc')
+            ->get();
+
+        $totalPenghuni = $penghuni->count();
+        $tanggalCetak = date('d M Y');
+
+        $pdf = Pdf::loadView('admin.penghuni_pdf', compact('penghuni', 'totalPenghuni', 'tanggalCetak'));
+
+        return $pdf->download('Data_Penghuni_Kos_Rumah_Bata_' . date('Y-m-d') . '.pdf');
     }
 }

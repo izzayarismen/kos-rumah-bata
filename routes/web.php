@@ -65,6 +65,7 @@ Route::prefix('admin')->middleware('auth', 'admin')->group(function () {
     Route::resource('/kamar', AdminKamarController::class);
 
     // Penghuni
+    Route::get('/penghuni/pdf', [AdminPenghuniController::class, 'pdf']);
     Route::resource('/penghuni', AdminPenghuniController::class);
 
     // Pembayaran

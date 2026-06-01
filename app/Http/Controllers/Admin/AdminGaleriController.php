@@ -22,7 +22,7 @@ class AdminGaleriController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
             'status' => 'required|in:aktif,nonaktif',
             'sort_order' => 'required|integer|min:1',
         ]);
@@ -63,7 +63,7 @@ class AdminGaleriController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'status' => 'required|in:aktif,nonaktif',
             'sort_order' => 'required|integer|min:1',
         ]);

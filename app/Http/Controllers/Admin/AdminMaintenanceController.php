@@ -109,7 +109,7 @@ class AdminMaintenanceController extends Controller
             'tanggal_laporan'   => 'nullable|date',
             'estimasi_selesai'  => 'nullable|date',
             'deskripsi'         => 'nullable|string',
-            'foto_maintenance'  => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto_maintenance'  => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         $biayaCleaned = null;

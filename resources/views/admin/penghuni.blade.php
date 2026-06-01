@@ -381,9 +381,9 @@
                 <p>Data penghuni yang sudah diverifikasi dan sedang menempati kamar.</p>
             </div>
             <div class="tenant-top-actions">
-                <button class="tenant-add-btn">
+                <a href="/admin/penghuni/pdf" class="tenant-add-btn" style="text-decoration: none;">
                     Export PDF
-                </button>
+                </a>
             </div>
         </div>
 

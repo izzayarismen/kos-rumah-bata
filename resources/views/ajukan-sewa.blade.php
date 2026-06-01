@@ -182,11 +182,11 @@
                                 Klik untuk pilih file surat komitmen
                             @endif
                         </p>
-                        <p class="text-xs text-muted-foreground">Format yang didukung: PDF/JPG/PNG.</p>
+                        <p class="text-xs text-muted-foreground">Format yang didukung: PDF.</p>
                     </div>
                 </div>
             </button>
-            <input type="file" id="input-komitmen" name="surat_komitmen" accept=".pdf,.jpg,.jpeg,.png" class="hidden">
+            <input type="file" id="input-komitmen" name="surat_komitmen" accept=".pdf" class="hidden">
 
             <div id="preview-container-komitmen" class="mt-3 @if(empty($userLogedIn->surat_komitmen)) hidden @endif border rounded-xl p-2 bg-muted/30">
                 <p class="text-xs font-medium text-muted-foreground mb-1">Preview Surat Komitmen:</p>
