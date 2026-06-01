@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminPenghuniController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KamarController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\PengajuanSewaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -46,7 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword']);
     Route::get('/profile/status-pembayaran', [ProfileController::class, 'statusPembayaran']);
 
-    // Route::get('/profile/laporan-fasilitas', [MaintenanceController::class, 'index']);
+    Route::get('/profile/laporan-fasilitas', [MaintenanceController::class, 'index']);
+    Route::post('/profile/laporan-fasilitas', [MaintenanceController::class, 'store']);
 
     // Flow Sewa
     Route::get('/kamar/{id}/ajukan-sewa', [PengajuanSewaController::class, 'create']);

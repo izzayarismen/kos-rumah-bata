@@ -499,11 +499,6 @@
                         <input type="date" name="estimasi_selesai" value="{{ old('estimasi_selesai', $maintenance->estimasi_selesai) }}">
                     </div>
 
-                    <div class="decision-field">
-                        <label>Catatan / Tambahan Deskripsi</label>
-                        <textarea name="deskripsi" placeholder="Tambahkan catatan pengerjaan atau keluhan terbaru.">{{ old('deskripsi', $maintenance->deskripsi) }}</textarea>
-                    </div>
-
                     <div class="decision-actions">
                         <button type="submit" class="decision-btn decision-approve">
                             Edit Data Maintenance
