@@ -115,7 +115,7 @@
 
                                 <div class="sm:col-span-2 space-y-1.5">
                                     <label class="text-sm font-medium leading-none">Dokumen KTP</label>
-                                    <input type="file" id="ktpInput" name="ktp_dokumen" class="editable-file hidden my-1 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" accept="image/*,application/pdf">
+                                    <input type="file" id="ktpInput" name="ktp_dokumen" class="editable-file hidden my-1 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" accept="image/*">
 
                                     <div class="flex items-center gap-3 p-3 border border-input bg-secondary/30 rounded-md text-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text text-muted-foreground h-4 w-4 shrink-0">
@@ -131,7 +131,7 @@
 
                                 <div class="sm:col-span-2 space-y-1.5">
                                     <label class="text-sm font-medium leading-none">Dokumen Surat Komitmen</label>
-                                    <input type="file" id="suratInput" name="surat_komitmen" class="editable-file hidden my-1 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" accept="image/*,application/pdf">
+                                    <input type="file" id="suratInput" name="surat_komitmen" class="editable-file hidden my-1 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" accept="application/pdf">
 
                                     <div class="flex items-center gap-3 p-3 border border-input bg-secondary/30 rounded-md text-sm">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text text-muted-foreground h-4 w-4 shrink-0">

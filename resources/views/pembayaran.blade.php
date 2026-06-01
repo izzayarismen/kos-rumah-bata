@@ -294,6 +294,7 @@
         const previewContainer = document.getElementById("preview-container");
 
         const formPembayaran = document.getElementById("form-pembayaran");
+        const btnSubmitBukti = document.getElementById("btn-submit-bukti");
 
         // Penanganan Switch Pilihan Tipe Pembayaran (Lunas / DP)
         const payLunas = document.getElementById("pay-Lunas");
@@ -384,12 +385,16 @@
             });
         }
 
-        // Intersept submit form untuk validasi input file kosong di client-side
-        if (formPembayaran) {
+        // Intersept submit form untuk validasi input file kosong & proteksi double submit
+        if (formPembayaran && btnSubmitBukti) {
             formPembayaran.addEventListener("submit", function(e) {
                 if (!fileInput.files.length) {
                     e.preventDefault();
                     alert('Silahkan pilih berkas foto bukti transfer terlebih dahulu!');
+                } else {
+                    // Jika validasi file lolos, kunci tombol agar tidak terjadi double submit data
+                    btnSubmitBukti.setAttribute('disabled', 'true');
+                    btnSubmitBukti.innerText = 'Mengirim Bukti Pembayaran...';
                 }
             });
         }
