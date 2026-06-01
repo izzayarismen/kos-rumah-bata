@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('page-title', 'Edit Maintenance')
+@section('page-title', 'Cek Laporan Maintenance')
 @section('page-subtitle', 'Periksa laporan dan status kerusakan dari maintenance.')
 
 @section('content')
