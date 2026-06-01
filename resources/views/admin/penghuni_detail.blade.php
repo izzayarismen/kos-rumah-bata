@@ -546,7 +546,7 @@
             </div>
 
             <div class="tenant-detail-actions">
-                <a href="/admin/penghuni/edit/{{ $penghuni->id }}" class="tenant-detail-action-btn tenant-detail-action-edit">Edit Data</a>
+                <a href="/admin/penghuni/{{ $penghuni->id }}/edit" class="tenant-detail-action-btn tenant-detail-action-edit">Edit Data</a>
                 <a href="/admin/penghuni" class="tenant-detail-action-btn tenant-detail-action-back">Kembali ke Data Penghuni</a>
             </div>
 

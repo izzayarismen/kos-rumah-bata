@@ -247,7 +247,7 @@
             </div>
         @endif
 
-        <form action="/admin/penghuni/update/{{ $penghuni->id }}" method="POST" enctype="multipart/form-data">
+        <form action="/admin/penghuni/{{ $penghuni->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -310,11 +310,11 @@
                         <div class="tenant-doc-grid">
                             <div class="tenant-upload">
                                 <label>Ganti Foto KTP</label>
-                                <input type="file" name="foto_ktp" accept="image/*">
+                                <input type="file" name="foto_ktp" accept="image/*,.pdf">
                                 <div class="tenant-current-file">
                                     File saat ini:
                                     @if($penghuni->ktp_dokumen)
-                                        <a href="{{ asset($penghuni->ktp_dokumen) }}" target="_blank" style="color: #c8664a; font-weight: 600;">{{ $penghuni->ktp_dokumen }}</a>
+                                        <a href="{{ $penghuni->ktp_dokumen }}" target="_blank" style="color: #c8664a; font-weight: 600;">Lihat KTP Saat Ini</a>
                                     @else
                                         <span style="color: #c0392b;">Belum ada dokumen</span>
                                     @endif
@@ -327,7 +327,7 @@
                                 <div class="tenant-current-file">
                                     File saat ini:
                                     @if($penghuni->surat_komitmen)
-                                        <a href="{{ asset($penghuni->surat_komitmen) }}" target="_blank" style="color: #c8664a; font-weight: 600;">{{ $penghuni->surat_komitmen }}</a>
+                                        <a href="{{ $penghuni->surat_komitmen }}" target="_blank" style="color: #c8664a; font-weight: 600;">Lihat Surat Komitmen Saat Ini</a>
                                     @else
                                         <span style="color: #c0392b;">Belum ada dokumen</span>
                                     @endif
