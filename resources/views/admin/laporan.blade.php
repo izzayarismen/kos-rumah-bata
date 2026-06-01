@@ -657,7 +657,7 @@
             </div>
         @endif
 
-        <form action="/admin/laporan/store" method="POST">
+        <form action="/admin/laporan" method="POST">
             @csrf
             <div class="report-form-grid">
                 <div class="report-form-group">
