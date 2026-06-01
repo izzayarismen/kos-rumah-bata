@@ -71,7 +71,7 @@ class AdminDashboardController extends Controller
             $aktivitas->push([
                 'icon' => 'P',
                 'title' => 'Pembayaran diterima',
-                'description' => "{$nama} mengirim bukti DP Kamar {$noKamarPad}.",
+                'description' => "{$nama} mengirim bukti Transfer Kamar {$noKamarPad}.",
                 'time' => Carbon::parse($p->created_at),
             ]);
         }
@@ -96,7 +96,7 @@ class AdminDashboardController extends Controller
         }
 
         // C. Log Laporan Maintenance Riil (M)
-        $maintenancesLog = Maintenance::with(['user', 'kamar'])
+        $maintenancesLog = Maintenance::with(['kamar'])
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();

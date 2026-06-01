@@ -376,7 +376,9 @@
                             <p>{{ $act['description'] }}</p>
                         </div>
 
-                        <div class="activity-time">{{ $act['time']->format('H.i') }}</div>
+                        <div class="activity-time">
+                            {{ \Carbon\Carbon::parse($act['time'])->timezone('Asia/Jakarta')->format('H.i') }}
+                        </div>
                     </div>
                 @empty
                     <div style="padding: 24px; text-align: center; color: #806f66; font-size: 13px;">
@@ -398,11 +400,11 @@
                 <div class="room-map">
                     @forelse($kamars as $kamar)
                         @php
-                            $classStatus = 'empty'; // default / tersedia / kosong (#ffffff)
+                            $classStatus = 'empty';
                             if ($kamar->status_visual === 'maintenance') {
-                                $classStatus = 'fix'; // perbaikan (#fef3e0 / #b77700)
+                                $classStatus = 'fix';
                             } elseif ($kamar->status_visual === 'terisi') {
-                                $classStatus = 'filled'; // penuh (#faf1ed / #c8664a)
+                                $classStatus = 'filled';
                             }
                         @endphp
                         <div class="room {{ $classStatus }}">{{ str_pad($kamar->nomor_kamar, 2, '0', STR_PAD_LEFT) }}</div>
