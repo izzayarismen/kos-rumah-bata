@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             PembayaranSeeder::class,
             FaqSeeder::class,
             ActivitySeeder::class,
-            GaleriSeeder::class,
+            // GaleriSeeder::class,
         ]);
     }
 }

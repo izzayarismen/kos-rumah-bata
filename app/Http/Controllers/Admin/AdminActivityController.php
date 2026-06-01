@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File; // Tambah import Facade File mengikut gaya luwihaja-hill
 
 class AdminActivityController extends Controller
 {
@@ -50,11 +51,13 @@ class AdminActivityController extends Controller
             $data['is_pinned'] = 0;
         }
 
-        // Proses upload gambar
+        // --- UPDATE PROSES UPLOAD GAMBAR BARU (Gaya Luwihaja-Hill) ---
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images/activities'), $imageName);
-            $data['image'] = $imageName;
+            $file = $request->file('image');
+            $imageName = time() . '-activity.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/activities'), $imageName);
+            // Menyimpan path lengkap dengan awalan slash ke pangkalan data
+            $data['image'] = '/images/activities/' . $imageName;
         }
 
         Activity::create($data);
@@ -104,15 +107,21 @@ class AdminActivityController extends Controller
             $data['is_pinned'] = 0;
         }
 
-        // Ganti gambar baru jika ada
+        // --- UPDATE PROSES GANTI GAMBAR (Gaya Luwihaja-Hill) ---
         if ($request->hasFile('image')) {
-            if ($activity->image && file_exists(public_path('images/activities/' . $activity->image))) {
-                unlink(public_path('images/activities/' . $activity->image));
+            // Hapus file fisik lama menggunakan Facade File jika sebelumnya path sudah tersimpan
+            if ($activity->image) {
+                $oldPath = public_path($activity->image);
+                if (File::exists($oldPath)) {
+                    File::delete($oldPath);
+                }
             }
 
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images/activities'), $imageName);
-            $data['image'] = $imageName;
+            $file = $request->file('image');
+            $imageName = time() . '-activity.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/activities'), $imageName);
+            // Menyimpan path lengkap dengan awalan slash ke pangkalan data
+            $data['image'] = '/images/activities/' . $imageName;
         }
 
         $activity->update($data);
@@ -125,8 +134,12 @@ class AdminActivityController extends Controller
     {
         $activity = Activity::findOrFail($id);
 
-        if ($activity->image && file_exists(public_path('images/activities/' . $activity->image))) {
-            unlink(public_path('images/activities/' . $activity->image));
+        // --- UPDATE PROSES HAPUS GAMBAR TOTAL (Gaya Luwihaja-Hill) ---
+        if ($activity->image) {
+            $path = public_path($activity->image);
+            if (File::exists($path)) {
+                File::delete($path);
+            }
         }
 
         $activity->delete();

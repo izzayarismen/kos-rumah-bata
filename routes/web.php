@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/pembayaran/{order_id}', [PengajuanSewaController::class, 'payment']);
 });
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware('auth', 'admin')->group(function () {
     // Dashboard
     Route::get('/', [AdminDashboardController::class, 'index']);
 
@@ -90,15 +90,3 @@ Route::prefix('admin')->group(function () {
     Route::get('/laporan/pdf', [AdminLaporanController::class, 'exportPdf']);
     Route::get('/laporan/excel', [AdminLaporanController::class, 'exportExcel']);
 });
-
-// Route::get('/admin/maintenance', function () {
-//     return view('admin.maintenance');
-// });
-
-// Route::get('/admin/maintenance/create', function () {
-//     return view('admin.maintenance_create');
-// });
-
-// Route::get('/admin/maintenance/edit', function () {
-//     return view('admin.maintenance_edit');
-// });

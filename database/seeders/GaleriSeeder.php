@@ -12,65 +12,54 @@ class GaleriSeeder extends Seeder
      */
     public function run(): void
     {
-        // 8 Data bawaan yang sesuai persis dengan isi dummy about.blade.php Anda sebelumnya
+        // Data bawaan diperbarui berdasarkan JSON terbaru Anda
         $dataGaleri = [
             [
-                'image' => 'galeri/2.jpg', // Folder storage/app/public/galeri/
-                'title' => 'Kamar Standard',
-                'description' => 'Desain minimalis dan fungsional untuk kenyamanan belajar.',
+                'image' => '/images/galeri/galeri-1.jpeg',
+                'title' => 'Kumpul Pertemuan',
+                'description' => 'Momen berkumpul dan berbincang bersama untuk mempererat kebersamaan.',
                 'status' => 'aktif',
                 'sort_order' => 1,
             ],
             [
-                'image' => 'galeri/2.jpg',
-                'title' => 'Kamar Deluxe AC',
-                'description' => 'Fasilitas pendingin ruangan dan kamar mandi dalam premium.',
+                'image' => '/images/galeri/galeri-2.jpeg',
+                'title' => 'Halal Bihalal',
+                'description' => 'Acara silaturahmi yang penuh kehangatan setelah Hari Raya Idulfitri.',
                 'status' => 'aktif',
                 'sort_order' => 2,
             ],
             [
-                'image' => 'galeri/3.jpg',
-                'title' => 'Dapur Bersama',
-                'description' => 'Bersih, luas, dan dilengkapi peralatan masak lengkap.',
+                'image' => '/images/galeri/galeri-3.jpeg',
+                'title' => 'Kumpul Pertemuan 2',
+                'description' => 'Momen berkumpul dan berbincang bersama untuk mempererat kebersamaan.',
                 'status' => 'aktif',
                 'sort_order' => 3,
             ],
             [
-                'image' => 'galeri/6.jpg',
-                'title' => 'Area Terbuka',
-                'description' => 'Area terbuka hijau untuk melepas penat di sore hari.',
+                'image' => '/images/galeri/galeri-4.jpeg',
+                'title' => 'Buka Bersama 2026',
+                'description' => 'Kegiatan buka puasa bersama tahun 2026 yang penuh kehangatan, kebersamaan, dan kebahagiaan.',
                 'status' => 'aktif',
                 'sort_order' => 4,
             ],
             [
-                'image' => 'galeri/5.jpg',
-                'title' => 'Area Parkir',
-                'description' => 'Sistem parkir kendaraan roda dua yang luas dan aman.',
+                'image' => '/images/galeri/galeri-5.jpeg',
+                'title' => 'Kumpul Pertemuan 3',
+                'description' => 'Momen berkumpul dan berbincang bersama untuk mempererat kebersamaan.',
                 'status' => 'aktif',
                 'sort_order' => 5,
             ],
             [
-                'image' => 'galeri/1.jpg',
-                'title' => 'Fas d Bangunan',
-                'description' => 'Sentuhan arsitektur bata ekspos yang ikonik dan estetik.',
+                'image' => '/images/galeri/galeri-.6jpeg',
+                'title' => 'Foto Angkatan 61',
+                'description' => 'Potret kebersamaan seluruh anggota Angkatan 61 yang menjadi kenangan dan simbol kekompakan angkatan.',
                 'status' => 'aktif',
                 'sort_order' => 6,
             ],
-            [
-                'image' => 'galeri/5.jpg',
-                'title' => 'Kamar Premium',
-                'description' => 'Pencahayaan alami maksimal dengan jendela besar.',
-                'status' => 'aktif',
-                'sort_order' => 7,
-            ],
-            [
-                'image' => 'galeri/1.jpg',
-                'title' => 'Kumpul Bersama Penghuni Kos',
-                'description' => 'Keseruan momentum syukuran menyambut tahun ajaran baru bersama seluruh mahasiswi Kos Rumah Bata.',
-                'status' => 'aktif',
-                'sort_order' => 8,
-            ],
         ];
+
+        // Kosongkan data galeri lama terlebih dahulu agar tidak duplikat saat seeding ulang
+        Galeri::truncate();
 
         foreach ($dataGaleri as $galeri) {
             Galeri::create($galeri);

@@ -398,8 +398,8 @@
 
             @forelse($galeris as $index => $item)
                 <div class="gallery-card" data-search="{{ strtolower($item->title) }} {{ strtolower($item->status) }} urutan-{{ $item->sort_order }}">
-                    
-                    <div class="gallery-image" style="background-image: url('{{ asset('storage/' . $item->image) }}');"></div>
+
+                    <div class="gallery-image" style="background-image: url('{{ asset($item->image) }}');"></div>
 
                     <div class="gallery-info">
                         <h4 class="gallery-title-text">{{ $item->title }}</h4>

@@ -374,7 +374,7 @@
             </form>
 
             <div class="gallery-preview-card">
-                <div class="gallery-preview-image" id="cardImagePreview" style="background-image: url('{{ asset('storage/' . $galeri->image) }}');">
+                <div class="gallery-preview-image" id="cardImagePreview" style="background-image: url('{{ asset($galeri->image) }}');">
                     <div class="gallery-hover-content">
                         <h4 class="gallery-hover-title" id="previewTitle">{{ $galeri->title }}</h4>
                         <p class="gallery-hover-desc" id="previewDesc">{{ $galeri->description }}</p>
