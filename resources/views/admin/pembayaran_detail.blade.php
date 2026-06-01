@@ -971,7 +971,7 @@
                     <div class="doc-box">
                         <h4>Surat Komitmen</h4>
                         <div class="doc-preview">
-                            <span style="color: #c8664a; font-size: 28px; display:block; margin-bottom:4px;">📄</span>
+                            {{-- <span style="color: #c8664a; font-size: 28px; display:block; margin-bottom:4px;">📄</span> --}}
                             Surat Komitmen Penghuni
                         </div>
                         <a href="{{ asset($pembayaranItem->pengajuanSewa->user->surat_komitmen ?? '#') }}" target="_blank" class="doc-link">Lihat Surat</a>

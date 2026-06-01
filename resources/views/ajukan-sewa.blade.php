@@ -1,6 +1,7 @@
 @extends("layouts/main")
 
 @section("content")
+
 <div class="container-app pt-6">
     <a href="/kamar/{{ $kamar->id }}" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
@@ -11,8 +12,8 @@
     </a>
 </div>
 <section class="container-app py-6 grid lg:grid-cols-3 gap-6">
-    {{-- Form Utama --}}
-    <form action="/kamar/{{ $kamar->id }}/ajukan-sewa" method="POST" enctype="multipart/form-data" class="lg:col-span-2 bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-5">
+    {{-- Form Utama (Ditambahkan id="rentForm") --}}
+    <form id="rentForm" action="/kamar/{{ $kamar->id }}/ajukan-sewa" method="POST" enctype="multipart/form-data" class="lg:col-span-2 bg-card border border-border/60 rounded-2xl p-6 shadow-card space-y-5">
         @csrf
         <input type="hidden" name="user_ktp" value="{{ $userLogedIn->ktp_dokumen }}">
         <input type="hidden" name="user_komitmen" value="{{ $userLogedIn->surat_komitmen }}">
@@ -182,7 +183,7 @@
                                 Klik untuk pilih file surat komitmen
                             @endif
                         </p>
-                        <p class="text-xs text-muted-foreground">Format yang didukung: PDF.</p>
+                        <p class="text-xs text-muted-foreground">Format yang didukung: .PDF (Maksimal 2MB)</p>
                     </div>
                 </div>
             </button>
@@ -212,7 +213,8 @@
             Data Anda aman dan hanya digunakan untuk proses sewa.
         </div>
 
-        <button type="submit" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full">
+        {{-- Mengimbuhkan id="btnSubmitRent" untuk dibaca oleh script ganda di bawah --}}
+        <button type="submit" id="btnSubmitRent" class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 w-full rounded-full">
             Kirim Pengajuan Sewa
         </button>
     </form>
@@ -248,9 +250,20 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Logika pencegahan Double Submit Data Pengajuan
+        const rentForm = document.getElementById('rentForm');
+        const btnSubmitRent = document.getElementById('btnSubmitRent');
+
+        if (rentForm && btnSubmitRent) {
+            rentForm.addEventListener('submit', function () {
+                btnSubmitRent.setAttribute('disabled', 'true');
+                btnSubmitRent.innerText = 'Mengirim Pengajuan Sewa...';
+            });
+        }
+
         // Data dasar periode hitungan dan tanggal otomatis dari backend laravel
         const hitunganKamar = "{{ $kamar->dalam_hitungan ?? 'tahun' }}";
-        const tanggalMulaiOtomatis = "{{ $tanggalMulaiOtomatis }}"; // Mengambil 'Y-m-d' (Format: 2026-06-01)
+        const tanggalMulaiOtomatis = "{{ $tanggalMulaiOtomatis }}"; // Mengambil 'Y-m-d'
 
         // Ambil element input dan summary teks
         const startDateInput = document.getElementById('startDate');
@@ -289,13 +302,12 @@
                 // 1. Update Teks Tanggal Mulai secara Live mengikuti pilihan user
                 summaryStartDate.textContent = formatIndonesianDate(selectedDateValue);
 
-                // 2. Update Teks Durasi dengan tanggal "s.d." yang FIX ke tanggalMulaiOtomatis (1 Juni)
+                // 2. Update Teks Durasi dengan tanggal "s.d." yang FIX ke tanggalMulaiOtomatis
                 let durasiText = hitunganKamar;
                 const tanggalFixJuni = formatIndonesianDate(tanggalMulaiOtomatis);
 
                 if (hitunganKamar.toLowerCase().includes('bulan')) {
                     const angkaBulan = parseInt(hitunganKamar) || 1;
-                    // Teks s.d. akan selalu mengarah ke 1 Juni dari variabel tanggalMulaiOtomatis
                     durasiText = `${angkaBulan} Bulan (s.d. ${tanggalFixJuni})`;
                 } else if (hitunganKamar.toLowerCase() === 'tahun' || hitunganKamar.toLowerCase() === 'tahunan') {
                     durasiText = `1 Tahun (s.d. ${tanggalFixJuni})`;
@@ -305,7 +317,7 @@
             }
         });
 
-        // Setup File Upload & Preview (Tetap seperti kode Anda sebelumnya)
+        // Setup File Upload & Preview
         setupFilePreview('btn-ktp', 'input-ktp', 'label-ktp', 'preview-container-ktp', 'preview-content-ktp', 'Klik untuk pilih file KTP');
         setupFilePreview('btn-komitmen', 'input-komitmen', 'label-komitmen', 'preview-container-komitmen', 'preview-content-komitmen', 'Klik untuk pilih file surat komitmen');
 
