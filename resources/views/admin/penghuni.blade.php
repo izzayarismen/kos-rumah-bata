@@ -384,10 +384,6 @@
                 <button class="tenant-add-btn">
                     Export PDF
                 </button>
-                <button class="rent-request-btn">
-                    Export Excel
-                    {{-- <span class="rent-request-count">2</span> --}}
-                </button>
             </div>
         </div>
 

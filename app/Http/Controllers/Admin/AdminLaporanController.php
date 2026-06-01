@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Exports\LaporanExport;
-use Maatwebsite\Excel\Facades\Excel;
 
 class AdminLaporanController extends Controller
 {
@@ -134,12 +132,12 @@ class AdminLaporanController extends Controller
     }
 
     // METHOD BARU: EXPORT EXCEL
-    public function exportExcel(Request $request)
-    {
-        $dataLaporan = $this->getLaporanData($request);
-        $transaksi = $dataLaporan['transaksi'];
-        $periodeAktif = $dataLaporan['periodeAktif'];
+    // public function exportExcel(Request $request)
+    // {
+    //     $dataLaporan = $this->getLaporanData($request);
+    //     $transaksi = $dataLaporan['transaksi'];
+    //     $periodeAktif = $dataLaporan['periodeAktif'];
 
-        return Excel::download(new LaporanExport($transaksi), 'Laporan_Keuangan_' . str_replace(' ', '_', $periodeAktif) . '.xlsx');
-    }
+    //     return Excel::download(new LaporanExport($transaksi), 'Laporan_Keuangan_' . str_replace(' ', '_', $periodeAktif) . '.xlsx');
+    // }
 }

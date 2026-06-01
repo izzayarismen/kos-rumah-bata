@@ -88,5 +88,4 @@ Route::prefix('admin')->middleware('auth', 'admin')->group(function () {
     Route::get('/laporan', [AdminLaporanController::class, 'index']);
     Route::post('/laporan', [AdminLaporanController::class, 'store']);
     Route::get('/laporan/pdf', [AdminLaporanController::class, 'exportPdf']);
-    Route::get('/laporan/excel', [AdminLaporanController::class, 'exportExcel']);
 });
