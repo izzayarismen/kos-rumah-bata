@@ -197,7 +197,7 @@
     .photo-preview {
         min-height: 220px;
         border-radius: 18px;
-        border: 1px dashed #dca999;
+        border: 1px solid #eee1da;
         background: #fffaf7;
         color: #c8664a;
         display: flex;
@@ -206,11 +206,20 @@
         text-align: center;
         font-size: 14px;
         font-weight: 600;
-        padding: 18px;
+        padding: 8px;
         margin-bottom: 14px;
+        overflow: hidden;
     }
 
-    .photo-action {
+    .photo-preview img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 12px;
+        display: block;
+        object-fit: contain;
+    }
+
+    .photo-action-btn {
         min-height: 42px;
         border-radius: 14px;
         background: #c8664a;
@@ -223,9 +232,11 @@
         font-size: 14px;
         font-weight: 600;
         transition: 0.2s ease;
+        border: none;
+        cursor: pointer;
     }
 
-    .photo-action:hover {
+    .photo-action-btn:hover {
         background: #b75a41;
     }
 
@@ -284,46 +295,6 @@
         box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
     }
 
-    .decision-checklist {
-        display: grid;
-        gap: 12px;
-    }
-
-    .decision-check {
-        border: 1px solid #ead6ce;
-        background: #fffdfb;
-        border-radius: 18px;
-        padding: 15px;
-        display: grid;
-        grid-template-columns: 20px 1fr;
-        gap: 12px;
-        align-items: start;
-        cursor: pointer;
-    }
-
-    .decision-check input {
-        width: 17px;
-        height: 17px;
-        margin-top: 2px;
-        accent-color: #c8664a;
-    }
-
-    .decision-check strong {
-        display: block;
-        color: #211713;
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 1.5;
-    }
-
-    .decision-check span {
-        display: block;
-        color: #86766f;
-        font-size: 12px;
-        line-height: 1.5;
-        margin-top: 4px;
-    }
-
     .decision-actions {
         display: grid;
         gap: 10px;
@@ -349,15 +320,6 @@
 
     .decision-approve:hover {
         background: #b75a41;
-    }
-
-    .decision-reject {
-        background: #f4ddd4;
-        color: #c8664a;
-    }
-
-    .decision-reject:hover {
-        background: #ebcec2;
     }
 
     .decision-note {
@@ -420,63 +382,85 @@
                 <p>Periksa laporan dan status data maintenance yang akan diproses perbaikan.</p>
             </div>
 
-            <a href="/admin/pengajuan-maintenance" class="maintenance-back">Kembali</a>
+            <a href="{{ route('maintenance.index') }}" class="maintenance-back">Kembali</a>
         </div>
+
+        @if ($errors->any())
+            <div style="background: #fdf2f2; color: #ec5b5b; padding: 16px; border-radius: 15px; border: 1px solid #fde8e8; margin-bottom: 20px; font-size: 14px;">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @php
+            $nomorKamar = $maintenance->kamar ? $maintenance->kamar->nomor_kamar : $maintenance->kamar_id;
+            $tipeKamar = $maintenance->kamar ? $maintenance->kamar->tower : 'Tower';
+            $badgeText = ucfirst($maintenance->status === 'proses' ? 'Dalam Proses' : $maintenance->status);
+            $tanggal = $maintenance->tanggal_laporan ? \Carbon\Carbon::parse($maintenance->tanggal_laporan)->translatedFormat('j F Y') : '-';
+            $biayaInputVal = $maintenance->biaya ? 'Rp ' . number_format($maintenance->biaya, 0, ',', '.') : '';
+
+        @endphp
 
         <div class="maintenance-detail-grid">
 
             <div class="maintenance-card">
 
                 <div class="report-profile">
-                    <div class="report-avatar">08</div>
+                    <div class="report-avatar">{{ sprintf("%02d", $nomorKamar) }}</div>
 
                     <div>
-                        <h3>Lampu Kamar Mati</h3>
-                        <p>Dilaporkan oleh Rani Amelia · Kamar 08</p>
-                        <span class="report-status">Menunggu</span>
+                        <h3>{{ $maintenance->nama_perbaikan }}</h3>
+                        <span class="report-status">{{ $badgeText }}</span>
                     </div>
                 </div>
 
                 <div class="report-info-list">
                     <div class="report-info-row">
                         <span>Kamar</span>
-                        <strong>Kamar 08 · Tower Genap</strong>
-                    </div>
-
-                    <div class="report-info-row">
-                        <span>Nama Penghuni</span>
-                        <strong>Rani Amelia</strong>
+                        <strong>Kamar {{ sprintf("%02d", $nomorKamar) }} · {{ $tipeKamar }}</strong>
                     </div>
 
                     <div class="report-info-row">
                         <span>Tanggal Laporan</span>
-                        <strong>5 Juni 2026</strong>
+                        <strong>{{ $tanggal }}</strong>
                     </div>
 
                     <div class="report-info-row">
-                        <span>Jenis Kerusakan</span>
-                        <strong>Lampu kamar tidak menyala</strong>
+                        <span>Jenis / Nama Perbaikan</span>
+                        <strong>{{ $maintenance->nama_perbaikan }}</strong>
                     </div>
 
                     <div class="report-info-row">
-                        <span>Status Laporan</span>
-                        <strong>Menunggu</strong>
+                        <span>Status Saat Ini</span>
+                        <strong>{{ $badgeText }}</strong>
                     </div>
                 </div>
 
                 <div class="report-description">
                     <h4>Deskripsi Keluhan</h4>
                     <p>
-                        Lampu utama kamar tidak menyala sejak tadi malam. Penghuni sudah mencoba menyalakan saklar beberapa kali, tetapi lampu tetap mati.
+                        {{ $maintenance->deskripsi ?? 'Tidak ada catatan keluhan tambahan.' }}
                     </p>
                 </div>
 
                 <div class="report-photo">
                     <h4>Foto Kerusakan</h4>
                     <div class="photo-preview">
-                        Preview foto kerusakan akan tampil di sini
+                        @if($maintenance->foto_maintenance && file_exists(public_path('images/maintenance/' . $maintenance->foto_maintenance)))
+                            <img id="imagePreview" src="{{ asset('images/maintenance/' . $maintenance->foto_maintenance) }}" alt="Foto Kerusakan">
+                        @else
+                            <img id="imagePreview" src="#" alt="Pratinjau Foto" style="display: none;">
+                            <span id="previewPlaceholder">Belum ada foto kerusakan yang diunggah</span>
+                        @endif
                     </div>
-                    <a href="#" class="photo-action">Lihat Foto Kerusakan</a>
+
+                    <label class="photo-action-btn" style="text-align: center; cursor: pointer;">
+                        Ganti Foto Kerusakan
+                        <input type="file" id="fotoMaintenanceInput" name="foto_maintenance" form="updateMaintenanceForm" accept="image/*" style="display: none;">
+                    </label>
                 </div>
 
             </div>
@@ -485,69 +469,45 @@
 
                 <h3 class="decision-title">Keputusan Admin</h3>
                 <p class="decision-desc">
-                    Jika laporan valid, admin bisa membuat data maintenance agar perbaikan dapat dicatat dan diproses.
+                    Sesuaikan status perbaikan, estimasi biaya, dan tanggal target selesai secara berkala hingga perbaikan rampung.
                 </p>
 
-                <form action="/admin/maintenance/create" method="GET" class="decision-form">
+                <form action="{{ route('maintenance.update', $maintenance->id) }}" method="POST" enctype="multipart/form-data" id="updateMaintenanceForm" class="decision-form">
+                    @csrf
+                    @method('PUT')
+
+                    <input type="hidden" name="kamar" value="{{ $maintenance->kamar_id }}">
+                    <input type="hidden" name="nama_perbaikan" value="{{ $maintenance->nama_perbaikan }}">
+                    <input type="hidden" name="tanggal_laporan" value="{{ $maintenance->tanggal_laporan }}">
 
                     <div class="decision-field">
                         <label>Status Maintenance</label>
                         <select name="status">
-                            <option selected>Menunggu</option>
-                            <option>Dalam Proses</option>
-                            <option>Selesai</option>
+                            <option value="menunggu" {{ old('status', $maintenance->status) === 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                            <option value="proses" {{ old('status', $maintenance->status) === 'proses' ? 'selected' : '' }}>Dalam Proses</option>
+                            <option value="selesai" {{ old('status', $maintenance->status) === 'selesai' ? 'selected' : '' }}>Selesai</option>
                         </select>
                     </div>
 
                     <div class="decision-field">
                         <label>Estimasi Biaya</label>
-                        <input type="text" name="estimasi_biaya" placeholder="Contoh: Rp 200.000">
+                        <input type="text" name="biaya" value="{{ old('biaya', $biayaInputVal) }}" placeholder="Contoh: Rp 200.000">
                     </div>
 
                     <div class="decision-field">
                         <label>Estimasi Selesai</label>
-                        <input type="date" name="estimasi_selesai">
-                    </div>
-
-                    {{-- <div class="decision-checklist">
-                        <label class="decision-check">
-                            <input type="checkbox">
-                            <div>
-                                <strong>Laporan kerusakan jelas.</strong>
-                                <span>Keluhan sudah cukup detail untuk dibuat data maintenance.</span>
-                            </div>
-                        </label>
-
-                        <label class="decision-check">
-                            <input type="checkbox">
-                            <div>
-                                <strong>Kamar dan penghuni sesuai.</strong>
-                                <span>Data pelapor sesuai dengan kamar yang ditempati.</span>
-                            </div>
-                        </label>
-
-                        <label class="decision-check">
-                            <input type="checkbox">
-                            <div>
-                                <strong>Perbaikan perlu diproses.</strong>
-                                <span>Laporan dapat diteruskan menjadi pekerjaan maintenance.</span>
-                            </div>
-                        </label>
+                        <input type="date" name="estimasi_selesai" value="{{ old('estimasi_selesai', $maintenance->estimasi_selesai) }}">
                     </div>
 
                     <div class="decision-field">
-                        <label>Catatan Admin</label>
-                        <textarea name="catatan_admin" placeholder="Tambahkan catatan untuk teknisi atau admin."></textarea>
-                    </div> --}}
+                        <label>Catatan / Tambahan Deskripsi</label>
+                        <textarea name="deskripsi" placeholder="Tambahkan catatan pengerjaan atau keluhan terbaru.">{{ old('deskripsi', $maintenance->deskripsi) }}</textarea>
+                    </div>
 
                     <div class="decision-actions">
                         <button type="submit" class="decision-btn decision-approve">
                             Edit Data Maintenance
                         </button>
-
-                        {{-- <button type="button" class="decision-btn decision-reject" onclick="alert('Laporan ditolak. Nantinya backend akan menyimpan alasan penolakan.')">
-                            Tolak Laporan
-                        </button> --}}
                     </div>
 
                     <p class="decision-note">
@@ -561,5 +521,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('fotoMaintenanceInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const previewImage = document.getElementById('imagePreview');
+        const placeholder = document.getElementById('previewPlaceholder');
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                if (placeholder) placeholder.style.display = 'none';
+            }
+
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 
 @endsection

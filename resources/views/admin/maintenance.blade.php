@@ -101,7 +101,7 @@
 
     .maintenance-summary {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 14px;
     }
 
@@ -213,8 +213,8 @@
     }
 
     .maintenance-filter-btn.active {
-        background: #211713;
-        border-color: #211713;
+        background: #c8664a;
+        border-color: #c8664a;
         color: #ffffff;
     }
 
@@ -282,11 +282,9 @@
         display: inline-flex;
         padding: 6px 10px;
         border-radius: 999px;
-        background: #fbf5f1;
-        color: #7a5d52;
         font-size: 12px;
         font-weight: 600;
-        border: 1px solid #eee1da;
+        border: 1px solid transparent;
     }
 
     .maintenance-date {
@@ -441,6 +439,12 @@
 
 <div class="maintenance-page">
 
+    @if(session('success'))
+        <div style="background: #e8f8f5; color: #27ae60; padding: 16px; border-radius: 15px; border: 1px solid #d4efdf; font-weight: 600; font-size: 14px;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="maintenance-hero">
         <div>
             <h2>Maintenance Kamar</h2>
@@ -448,12 +452,7 @@
         </div>
 
         <div class="maintenance-actions">
-            {{-- <a href="/admin/pengajuan-maintenance" class="maintenance-request-btn">
-                Pengajuan Maintenance
-                <span class="maintenance-count">3</span>
-            </a> --}}
-
-            <a href="/admin/maintenance/create" class="maintenance-add-btn">
+            <a href="{{ route('maintenance.create') }}" class="maintenance-add-btn">
                 Tambah Maintenance
             </a>
         </div>
@@ -461,26 +460,20 @@
 
     <div class="maintenance-summary">
         <div class="maintenance-summary-card">
-            <span>Pengajuan Baru</span>
-            <strong>3</strong>
-            <small>Laporan dari penghuni.</small>
-        </div>
-
-        <div class="maintenance-summary-card">
             <span>Menunggu</span>
-            <strong>2</strong>
+            <strong>{{ $maintenances->where('status', 'menunggu')->count() }}</strong>
             <small>Belum mulai dikerjakan.</small>
         </div>
 
         <div class="maintenance-summary-card">
             <span>Dalam Proses</span>
-            <strong>3</strong>
+            <strong>{{ $maintenances->where('status', 'proses')->count() }}</strong>
             <small>Sedang ditangani.</small>
         </div>
 
         <div class="maintenance-summary-card">
             <span>Selesai</span>
-            <strong>5</strong>
+            <strong>{{ $maintenances->where('status', 'selesai')->count() }}</strong>
             <small>Perbaikan sudah selesai.</small>
         </div>
     </div>
@@ -505,68 +498,66 @@
 
         <div class="maintenance-list" id="maintenanceList">
 
-            <div class="maintenance-item" data-name="kamar 08 lampu kamar mati" data-status="waiting">
-                <div class="maintenance-avatar">08</div>
+            @if($maintenances->isEmpty())
+                <div class="empty-maintenance show" id="emptyMaintenance" style="display: block;">
+                    <strong>Belum ada pengajuan maintenance</strong>
+                    <span>Data perbaikan kamar masih kosong di sistem.</span>
+                </div>
+            @else
+                @foreach($maintenances as $maintenance)
+                    @php
+                        $jsStatus = 'waiting';
+                        $badgeText = 'Menunggu';
 
-                <div class="maintenance-main">
-                    <h3>Kamar 08</h3>
-                    <p>Perbaikan lampu kamar</p>
+                        // Konfigurasi warna spesifik dinamis sesuai status laporan
+                        $badgeStyle = "background: #fef9e7; color: #f1c40f; border-color: #fcf3cf;"; // Menunggu: Kuning
 
-                    <div class="maintenance-meta">
-                        <span class="maintenance-badge">Menunggu</span>
-                        <span class="maintenance-date">1 Juni 2026 · Rp 200.000</span>
+                        if($maintenance->status === 'proses') {
+                            $jsStatus = 'process';
+                            $badgeText = 'Dalam Proses';
+                            $badgeStyle = "background: #ebf5fb; color: #2980b9; border-color: #d4e6f1;"; // Proses: Biru
+                        } elseif($maintenance->status === 'selesai') {
+                            $jsStatus = 'done';
+                            $badgeText = 'Selesai';
+                            $badgeStyle = "background: #e8f8f5; color: #27ae60; border-color: #d1f2eb;"; // Selesai: Hijau
+                        }
+
+                        $nomorKamar = $maintenance->kamar ? $maintenance->kamar->nomor_kamar : $maintenance->kamar_id;
+                        $tanggal = $maintenance->tanggal_laporan ? \Carbon\Carbon::parse($maintenance->tanggal_laporan)->translatedFormat('j F Y') : '-';
+                        $biaya = $maintenance->biaya ? 'Rp ' . number_format($maintenance->biaya, 0, ',', '.') : 'Rp 0';
+                    @endphp
+
+                    <div class="maintenance-item" data-name="kamar {{ $nomorKamar }} {{ strtolower($maintenance->nama_perbaikan) }}" data-status="{{ $jsStatus }}">
+                        <div class="maintenance-avatar">{{ sprintf("%02d", $nomorKamar) }}</div>
+
+                        <div class="maintenance-main">
+                            <h3>Kamar {{ sprintf("%02d", $nomorKamar) }}</h3>
+                            <p>{{ $maintenance->nama_perbaikan }}</p>
+
+                            <div class="maintenance-meta">
+                                <span class="maintenance-badge" style="{{ $badgeStyle }}">{{ $badgeText }}</span>
+                                <span class="maintenance-date">{{ $tanggal }} · {{ $biaya }}</span>
+                            </div>
+                        </div>
+
+                        <div class="maintenance-item-actions">
+                            <a href="{{ route('maintenance.edit', $maintenance->id) }}" class="maintenance-btn maintenance-btn-edit">Cek Laporan</a>
+
+                            <form action="{{ route('maintenance.destroy', $maintenance->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data perbaikan ini?')" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="maintenance-btn maintenance-btn-delete">Hapus</button>
+                            </form>
+                        </div>
                     </div>
+                @endforeach
+
+                <div class="empty-maintenance" id="emptyMaintenance">
+                    <strong>Data maintenance tidak ditemukan</strong>
+                    <span>Coba gunakan kata kunci atau filter yang lain.</span>
                 </div>
+            @endif
 
-                <div class="maintenance-item-actions">
-                    <a href="/admin/maintenance/edit" class="maintenance-btn maintenance-btn-edit">Cek Laporan</a>
-                    <button type="button" class="maintenance-btn maintenance-btn-delete">Hapus</button>
-                </div>
-            </div>
-
-            <div class="maintenance-item" data-name="kamar 03 ac rusak perbaikan ac" data-status="process">
-                <div class="maintenance-avatar">03</div>
-
-                <div class="maintenance-main">
-                    <h3>Kamar 03</h3>
-                    <p>Perbaikan AC</p>
-
-                    <div class="maintenance-meta">
-                        <span class="maintenance-badge">Dalam Proses</span>
-                        <span class="maintenance-date">12 Juni 2026 · Rp 500.000</span>
-                    </div>
-                </div>
-
-                <div class="maintenance-item-actions">
-                    <a href="/admin/maintenance/edit" class="maintenance-btn maintenance-btn-edit">Cek Laporan</a>
-                    <button type="button" class="maintenance-btn maintenance-btn-delete">Hapus</button>
-                </div>
-            </div>
-
-            <div class="maintenance-item" data-name="kamar 01 cat ulang kamar" data-status="done">
-                <div class="maintenance-avatar">01</div>
-
-                <div class="maintenance-main">
-                    <h3>Kamar 01</h3>
-                    <p>Cat ulang kamar</p>
-
-                    <div class="maintenance-meta">
-                        <span class="maintenance-badge">Selesai</span>
-                        <span class="maintenance-date">5 Mei 2026 · Rp 800.000</span>
-                    </div>
-                </div>
-
-                <div class="maintenance-item-actions">
-                    <a href="/admin/maintenance/edit" class="maintenance-btn maintenance-btn-edit">Cek Laporan</a>
-                    <button type="button" class="maintenance-btn maintenance-btn-delete">Hapus</button>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="empty-maintenance" id="emptyMaintenance">
-            <strong>Data maintenance tidak ditemukan</strong>
-            <span>Coba gunakan kata kunci atau filter yang lain.</span>
         </div>
 
     </div>
@@ -600,7 +591,19 @@
             }
         });
 
-        emptyMaintenance.classList.toggle('show', visibleCount === 0);
+        if (emptyMaintenance) {
+            if (visibleCount === 0) {
+                emptyMaintenance.style.display = 'block';
+                emptyMaintenance.classList.add('show');
+                if (maintenanceItems.length > 0) {
+                    emptyMaintenance.querySelector('strong').textContent = 'Data maintenance tidak ditemukan';
+                    emptyMaintenance.querySelector('span').textContent = 'Coba gunakan kata kunci atau filter yang lain.';
+                }
+            } else {
+                emptyMaintenance.style.display = 'none';
+                emptyMaintenance.classList.remove('show');
+            }
+        }
     }
 
     maintenanceButtons.forEach(button => {

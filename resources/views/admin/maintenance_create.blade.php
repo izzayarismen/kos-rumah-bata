@@ -125,6 +125,24 @@
         min-width: 120px;
     }
 
+    /* Style tambahan untuk pratinjau foto agar selaras dengan desain panel */
+    .maintenance-preview-wrapper {
+        display: none;
+        margin-top: 14px;
+        border: 1px solid #ead6ce;
+        border-radius: 16px;
+        padding: 8px;
+        background: #ffffff;
+        max-width: 320px;
+    }
+
+    .maintenance-preview-wrapper img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        display: block;
+    }
+
     @media (max-width: 900px) {
         .maintenance-form-grid {
             grid-template-columns: 1fr;
@@ -159,7 +177,17 @@
             <p>Tambah data kamar, keluhan, biaya, status pengerjaan, dan catatan perbaikan.</p>
         </div>
 
-        <form action="/admin/maintenance" method="POST" enctype="multipart/form-data">
+        @if ($errors->any())
+            <div style="background: #fdf2f2; color: #ec5b5b; padding: 16px; border-radius: 15px; border: 1px solid #fde8e8; margin-bottom: 20px; font-size: 14px;">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('maintenance.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="maintenance-form-grid">
@@ -167,55 +195,58 @@
                 <div class="maintenance-form-group">
                     <label>Kamar</label>
                     <select name="kamar">
-                        <option value="01">Kamar 01 · Tower Ganjil</option>
-                        <option value="02">Kamar 02 · Tower Genap</option>
-                        <option value="03">Kamar 03 · Tower Ganjil</option>
-                        <option value="04">Kamar 04 · Tower Genap</option>
-                        <option value="08">Kamar 08 · Tower Genap</option>
-                        <option value="12">Kamar 12 · Tower Genap</option>
+                        @foreach($kamars as $kamar)
+                            <option value="{{ $kamar->id }}" {{ old('kamar') == $kamar->id ? 'selected' : '' }}>
+                                Kamar {{ sprintf("%02d", $kamar->nomor_kamar) }} · Tower {{ $kamar->tower ?? 'Tower' }}
+                            </option>
+                        @endforeach
                     </select>
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Status Maintenance</label>
                     <select name="status">
-                        <option value="menunggu">Menunggu</option>
-                        <option value="proses">Dalam Proses</option>
-                        <option value="selesai">Selesai</option>
+                        <option value="menunggu" {{ old('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="proses" {{ old('status') == 'proses' ? 'selected' : '' }}>Dalam Proses</option>
+                        <option value="selesai" {{ old('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                     </select>
                 </div>
 
                 <div class="maintenance-form-group">
-                    <label>Jenis Perbaikan</label>
-                    <input type="text" name="jenis_perbaikan" placeholder="AC Kamar 40 Bocor">
+                    <label>Nama Perbaikan</label>
+                    <input type="text" name="nama_perbaikan" value="{{ old('nama_perbaikan') }}" placeholder="AC Kamar 40 Bocor">
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Biaya</label>
-                    <input type="text" name="biaya" placeholder="Rp 250.000">
+                    <input type="text" name="biaya" value="{{ old('biaya') }}" placeholder="Rp 250.000">
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Tanggal Laporan</label>
-                    <input type="date" name="tanggal_laporan">
+                    <input type="date" name="tanggal_laporan" value="{{ old('tanggal_laporan') }}">
                 </div>
 
                 <div class="maintenance-form-group">
                     <label>Estimasi Selesai</label>
-                    <input type="date" name="estimasi_selesai">
+                    <input type="date" name="estimasi_selesai" value="{{ old('estimasi_selesai') }}">
                 </div>
 
                 <div class="maintenance-form-full maintenance-form-group">
                     <label>Keluhan / Kerusakan</label>
-                    <textarea name="keluhan" placeholder="AC kamar tidak dingin dan perlu dicek oleh teknisi."></textarea>
+                    <textarea name="deskripsi" placeholder="AC kamar tidak dingin dan perlu dicek oleh teknisi.">{{ old('deskripsi') }}</textarea>
                 </div>
 
                 <div class="maintenance-form-full maintenance-form-group">
                     <label>Foto Kerusakan</label>
                     <div class="maintenance-upload-box">
-                        <input type="file" name="foto_maintenance" accept="image/*">
+                        <input type="file" id="fotoMaintenanceInput" name="foto_maintenance" accept="image/*">
                         <div class="maintenance-current-file">
-                            File saat ini: maintenance_kamar_03.jpg
+                            Pilih file gambar baru jika ingin mengunggah dokumen/foto kerusakan.
+                        </div>
+
+                        <div class="maintenance-preview-wrapper" id="imagePreviewWrapper">
+                            <img id="imagePreview" src="#" alt="Pratinjau Foto Kerusakan">
                         </div>
                     </div>
                 </div>
@@ -224,11 +255,34 @@
 
             <div class="maintenance-form-actions">
                 <button type="submit" class="btn">Tambah</button>
-                <a href="/admin/maintenance" class="btn btn-secondary">Batal</a>
+                <a href="{{ route('maintenance.index') }}" class="btn btn-secondary">Batal</a>
             </div>
         </form>
 
     </div>
 </div>
+
+<script>
+    // JavaScript Logic untuk menghandle Real-time Image Preview
+    document.getElementById('fotoMaintenanceInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const previewWrapper = document.getElementById('imagePreviewWrapper');
+        const previewImage = document.getElementById('imagePreview');
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewWrapper.style.display = 'block'; // Tampilkan container preview
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.src = '#';
+            previewWrapper.style.display = 'none'; // Sembunyikan jika batal memilih gambar
+        }
+    });
+</script>
 
 @endsection

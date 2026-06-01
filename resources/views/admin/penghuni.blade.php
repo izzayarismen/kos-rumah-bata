@@ -380,7 +380,17 @@
                 <h2>Penghuni Aktif</h2>
                 <p>Data penghuni yang sudah diverifikasi dan sedang menempati kamar.</p>
             </div>
+            <div class="tenant-top-actions">
+                <button class="tenant-add-btn">
+                    Export PDF
+                </button>
+                <button class="rent-request-btn">
+                    Export Excel
+                    {{-- <span class="rent-request-count">2</span> --}}
+                </button>
+            </div>
         </div>
+
 
         <div class="tenant-toolbar">
             <input type="text" id="tenantSearch" class="tenant-search" placeholder="Cari nama penghuni atau kamar...">

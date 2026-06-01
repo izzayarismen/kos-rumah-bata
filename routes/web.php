@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminActivityController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminGaleriController;
 use App\Http\Controllers\Admin\AdminLaporanController;
+use App\Http\Controllers\Admin\AdminMaintenanceController;
 use App\Http\Controllers\Admin\AdminPembayaranController;
 use App\Http\Controllers\Admin\AdminPenghuniController;
 use App\Http\Controllers\AuthController;
@@ -69,6 +70,9 @@ Route::prefix('admin')->group(function () {
     Route::get('/pembayaran/{order_id}', [AdminPembayaranController::class, 'show']);
     Route::put('/pembayaran/{order_id}/verifikasi', [AdminPembayaranController::class, 'verifikasi']);
 
+    // CRUD Maintenance Admin
+    Route::resource('/maintenance', AdminMaintenanceController::class);
+
     // CRUD FAQ Admin
     Route::resource('/konten/faq', AdminFaqController::class);
 
@@ -85,31 +89,14 @@ Route::prefix('admin')->group(function () {
     Route::get('/laporan/excel', [AdminLaporanController::class, 'exportExcel']);
 });
 
-Route::get('/admin/maintenance', function () {
-    return view('admin.maintenance');
-});
-
-Route::get('/admin/maintenance/create', function () {
-    return view('admin.maintenance_create');
-});
-
-Route::get('/admin/maintenance/edit', function () {
-    return view('admin.maintenance_edit');
-});
-
-// Route::get('/admin/pengajuan-maintenance', function () {
-//     return view('admin.pengajuan_maintenance');
+// Route::get('/admin/maintenance', function () {
+//     return view('admin.maintenance');
 // });
 
-// Route::get('/admin/pengajuan-maintenance/detail', function () {
-//     return view('admin.pengajuan_maintenance_detail');
+// Route::get('/admin/maintenance/create', function () {
+//     return view('admin.maintenance_create');
 // });
 
-// Route::get('/admin/pengajuan-sewa', function () {
-//     return view('admin.pengajuan_sewa');
+// Route::get('/admin/maintenance/edit', function () {
+//     return view('admin.maintenance_edit');
 // });
-
-// Route::get('/admin/pengajuan-sewa/detail', function () {
-//     return view('admin.pengajuan_sewa_detail');
-// });
-
