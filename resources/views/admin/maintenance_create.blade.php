@@ -1,87 +1,234 @@
 @extends('admin.layout')
 
+@section('page-title', 'Tambah Maintenance')
+@section('page-subtitle', 'Ajukan perbaikan kamar yang akan diproses admin.')
+
 @section('content')
 
-<div class="topbar">
-    <h2>Tambah Maintenance</h2>
-</div>
+<style>
+    .maintenance-form-page {
+        display: grid;
+        gap: 22px;
+    }
 
-<div class="section">
-    @if ($errors->any())
-        <div style="background: #fde8e8; border: 1px solid #f8b4b4; color: #9b1c1c; padding: 16px; border-radius: 16px; margin-bottom: 20px; font-weight: 600;">
-            <ul style="margin: 0; padding-left: 20px;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+    .maintenance-form-panel {
+        background: #ffffff;
+        border: 1px solid #ead6ce;
+        border-radius: 26px;
+        padding: 28px;
+    }
+
+    .maintenance-form-head {
+        margin-bottom: 24px;
+    }
+
+    .maintenance-form-head h2 {
+        margin: 0;
+        color: #211713;
+        font-size: 27px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .maintenance-form-head p {
+        margin: 8px 0 0;
+        color: #86766f;
+        font-size: 15px;
+        line-height: 1.6;
+        max-width: 620px;
+    }
+
+    .maintenance-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .maintenance-form-full {
+        grid-column: 1 / -1;
+    }
+
+    .maintenance-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #211713;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .maintenance-form-group input,
+    .maintenance-form-group select,
+    .maintenance-form-group textarea {
+        width: 100%;
+        border: 1px solid #ead6ce;
+        border-radius: 15px;
+        padding: 14px 16px;
+        font-size: 14px;
+        color: #211713;
+        font-family: inherit;
+        outline: none;
+        background: #ffffff;
+    }
+
+    .maintenance-form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .maintenance-form-group input:focus,
+    .maintenance-form-group select:focus,
+    .maintenance-form-group textarea:focus {
+        border-color: #d79b86;
+        box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
+    }
+
+    .maintenance-form-hint {
+        display: block;
+        margin-top: 7px;
+        color: #9a8d85;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .maintenance-upload-box {
+        border: 1px dashed #dca999;
+        background: #fbf5f1;
+        border-radius: 18px;
+        padding: 18px;
+    }
+
+    .maintenance-upload-box input {
+        width: 100%;
+        border: 1px solid #eee1da;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 11px;
+        font-size: 13px;
+        font-family: inherit;
+    }
+
+    .maintenance-current-file {
+        margin-top: 8px;
+        color: #86766f;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .maintenance-form-actions {
+        margin-top: 24px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .maintenance-form-actions .btn {
+        min-width: 120px;
+    }
+
+    @media (max-width: 900px) {
+        .maintenance-form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .maintenance-form-panel {
+            padding: 22px;
+        }
+
+        .maintenance-form-head h2 {
+            font-size: 24px;
+        }
+
+        .maintenance-form-actions {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .maintenance-form-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="maintenance-form-page">
+    <div class="maintenance-form-panel">
+
+        <div class="maintenance-form-head">
+            <h2>Form Tambah Maintenance</h2>
+            <p>Tambah data kamar, keluhan, biaya, status pengerjaan, dan catatan perbaikan.</p>
         </div>
-    @endif
 
-    <form action="/admin/maintenance" method="POST">
-        @csrf
+        <form action="/admin/maintenance" method="POST" enctype="multipart/form-data">
+            @csrf
 
-        <div class="form-group" style="margin-bottom: 15px;">
-            <label>Penghuni / Pelapor</label>
-            <select name="user_id">
-                <option value="">-- Pilih Penghuni --</option>
-                @foreach($users as $user)
-                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                        {{ $user->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+            <div class="maintenance-form-grid">
 
-        <div class="form-group">
-            <label>Kamar</label>
-            <select name="kamar_id">
-                <option value="">-- Pilih Kamar --</option>
-                @foreach($kamars as $kamar)
-                    @php
-                        $nomorKamar = is_numeric($kamar->nomor_kamar) ? sprintf('%02d', $kamar->nomor_kamar) : $kamar->nomor_kamar;
-                    @endphp
-                    <option value="{{ $kamar->id }}" {{ old('kamar_id') == $kamar->id ? 'selected' : '' }}>
-                        Kamar {{ $nomorKamar }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+                <div class="maintenance-form-group">
+                    <label>Kamar</label>
+                    <select name="kamar">
+                        <option value="01">Kamar 01 · Tower Ganjil</option>
+                        <option value="02">Kamar 02 · Tower Genap</option>
+                        <option value="03">Kamar 03 · Tower Ganjil</option>
+                        <option value="04">Kamar 04 · Tower Genap</option>
+                        <option value="08">Kamar 08 · Tower Genap</option>
+                        <option value="12">Kamar 12 · Tower Genap</option>
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label>Jenis Perbaikan</label>
-            <input type="text" name="title" value="{{ old('title') }}" placeholder="Contoh: Perbaikan AC">
-        </div>
+                <div class="maintenance-form-group">
+                    <label>Status Maintenance</label>
+                    <select name="status">
+                        <option value="menunggu">Menunggu</option>
+                        <option value="proses">Dalam Proses</option>
+                        <option value="selesai">Selesai</option>
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label>Tanggal</label>
-            {{-- Perbaikan dari 'Y-m-day' menjadi 'Y-m-d' --}}
-            <input type="date" name="date" value="{{ old('date', date('Y-m-d')) }}">
-        </div>
+                <div class="maintenance-form-group">
+                    <label>Jenis Perbaikan</label>
+                    <input type="text" name="jenis_perbaikan" placeholder="AC Kamar 40 Bocor">
+                </div>
 
-        <div class="form-group">
-            <label>Biaya</label>
-            <input type="number" name="cost" value="{{ old('cost', 0) }}" placeholder="Contoh: 500000" min="0">
-            <small style="color: #9a8d85; display: block; margin-top: 4px;">Masukkan angka murni tanpa titik/Rp, contoh: 500000</small>
-        </div>
+                <div class="maintenance-form-group">
+                    <label>Biaya</label>
+                    <input type="text" name="biaya" placeholder="Rp 250.000">
+                </div>
 
-        <div class="form-group">
-            <label>Status</label>
-            <select name="status">
-                <option value="waiting" {{ old('status') === 'waiting' ? 'selected' : '' }}>Menunggu</option>
-                <option value="process" {{ old('status') === 'process' ? 'selected' : '' }}>Proses</option>
-                <option value="done" {{ old('status') === 'done' ? 'selected' : '' }}>Selesai</option>
-            </select>
-        </div>
+                <div class="maintenance-form-group">
+                    <label>Tanggal Laporan</label>
+                    <input type="date" name="tanggal_laporan">
+                </div>
 
-        <div class="form-group">
-            <label>Catatan / Deskripsi Kerusakan</label>
-            <textarea name="description" placeholder="Tuliskan detail keluhan kerusakan di sini...">{{ old('description') }}</textarea>
-        </div>
+                <div class="maintenance-form-group">
+                    <label>Estimasi Selesai</label>
+                    <input type="date" name="estimasi_selesai">
+                </div>
 
-        <button type="submit" class="btn" style="background: #c8664a; color: #ffffff; border: 1px solid #c8664a; border-radius: 15px; font-weight: 600; cursor: pointer; padding: 10px 20px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 14px;">Simpan</button>
-        <a href="/admin/maintenance" class="btn btn-secondary">Batal</a>
+                <div class="maintenance-form-full maintenance-form-group">
+                    <label>Keluhan / Kerusakan</label>
+                    <textarea name="keluhan" placeholder="AC kamar tidak dingin dan perlu dicek oleh teknisi."></textarea>
+                </div>
 
-    </form>
+                <div class="maintenance-form-full maintenance-form-group">
+                    <label>Foto Kerusakan</label>
+                    <div class="maintenance-upload-box">
+                        <input type="file" name="foto_maintenance" accept="image/*">
+                        <div class="maintenance-current-file">
+                            File saat ini: maintenance_kamar_03.jpg
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="maintenance-form-actions">
+                <button type="submit" class="btn">Update</button>
+                <a href="/admin/maintenance" class="btn btn-secondary">Batal</a>
+            </div>
+        </form>
+
+    </div>
 </div>
 
 @endsection

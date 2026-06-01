@@ -1,28 +1,32 @@
 @extends('admin.layout')
 
 @section('page-title', 'Edit Maintenance')
-@section('page-subtitle', 'Perbarui data perbaikan kamar yang sedang diproses admin.')
+@section('page-subtitle', 'Periksa laporan dan status kerusakan dari maintenance.')
 
 @section('content')
 
 <style>
-    .maintenance-form-page {
+    .maintenance-detail-page {
         display: grid;
         gap: 22px;
     }
 
-    .maintenance-form-panel {
+    .maintenance-detail-panel {
         background: #ffffff;
         border: 1px solid #ead6ce;
         border-radius: 26px;
         padding: 28px;
     }
 
-    .maintenance-form-head {
+    .maintenance-detail-head {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        gap: 18px;
         margin-bottom: 24px;
     }
 
-    .maintenance-form-head h2 {
+    .maintenance-detail-head h2 {
         margin: 0;
         color: #211713;
         font-size: 27px;
@@ -30,25 +34,222 @@
         letter-spacing: -0.02em;
     }
 
-    .maintenance-form-head p {
+    .maintenance-detail-head p {
         margin: 8px 0 0;
         color: #86766f;
         font-size: 15px;
         line-height: 1.6;
-        max-width: 620px;
+        max-width: 650px;
     }
 
-    .maintenance-form-grid {
+    .maintenance-back {
+        height: 44px;
+        border: 1px solid #ead6ce;
+        background: #fbf5f1;
+        color: #c8664a;
+        border-radius: 14px;
+        padding: 0 18px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .maintenance-back:hover {
+        background: #f4ddd4;
+    }
+
+    .maintenance-detail-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
+        grid-template-columns: 1.35fr 0.85fr;
+        gap: 22px;
+        align-items: start;
     }
 
-    .maintenance-form-full {
-        grid-column: 1 / -1;
+    .maintenance-card {
+        background: #ffffff;
+        border: 1px solid #ead6ce;
+        border-radius: 24px;
+        padding: 24px;
     }
 
-    .maintenance-form-group label {
+    .report-profile {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 22px;
+        margin-bottom: 22px;
+        border-bottom: 1px solid #f0e3dd;
+    }
+
+    .report-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 22px;
+        background: #fbf5f1;
+        color: #c8664a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .report-profile h3 {
+        margin: 0;
+        color: #211713;
+        font-size: 23px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .report-profile p {
+        margin: 7px 0 0;
+        color: #86766f;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .report-status {
+        display: inline-flex;
+        margin-top: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #fbf5f1;
+        color: #7a5d52;
+        border: 1px solid #eee1da;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .report-info-list {
+        display: grid;
+        gap: 0;
+        border: 1px solid #ead6ce;
+        border-radius: 20px;
+        overflow: hidden;
+        background: #fffdfb;
+        margin-bottom: 22px;
+    }
+
+    .report-info-row {
+        display: grid;
+        grid-template-columns: 210px 1fr;
+        gap: 16px;
+        padding: 16px 18px;
+        border-bottom: 1px solid #f0e3dd;
+        align-items: center;
+    }
+
+    .report-info-row:last-child {
+        border-bottom: none;
+    }
+
+    .report-info-row span {
+        color: #8f8179;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .report-info-row strong {
+        color: #211713;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.5;
+    }
+
+    .report-description {
+        border: 1px solid #ead6ce;
+        border-radius: 20px;
+        padding: 18px;
+        background: #ffffff;
+        margin-bottom: 22px;
+    }
+
+    .report-description h4,
+    .report-photo h4 {
+        margin: 0 0 12px;
+        color: #211713;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+
+    .report-description p {
+        margin: 0;
+        color: #6f625c;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .report-photo {
+        border: 1px solid #ead6ce;
+        border-radius: 20px;
+        padding: 18px;
+        background: #ffffff;
+    }
+
+    .photo-preview {
+        min-height: 220px;
+        border-radius: 18px;
+        border: 1px dashed #dca999;
+        background: #fffaf7;
+        color: #c8664a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 18px;
+        margin-bottom: 14px;
+    }
+
+    .photo-action {
+        min-height: 42px;
+        border-radius: 14px;
+        background: #c8664a;
+        color: #ffffff;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .photo-action:hover {
+        background: #b75a41;
+    }
+
+    .decision-title {
+        margin: 0 0 10px;
+        color: #211713;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .decision-desc {
+        margin: 0 0 18px;
+        color: #86766f;
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+    .decision-form {
+        display: grid;
+        gap: 16px;
+    }
+
+    .decision-field label {
         display: block;
         margin-bottom: 8px;
         color: #211713;
@@ -56,9 +257,9 @@
         font-weight: 600;
     }
 
-    .maintenance-form-group input,
-    .maintenance-form-group select,
-    .maintenance-form-group textarea {
+    .decision-field input,
+    .decision-field select,
+    .decision-field textarea {
         width: 100%;
         border: 1px solid #ead6ce;
         border-radius: 15px;
@@ -70,189 +271,294 @@
         background: #ffffff;
     }
 
-    .maintenance-form-group textarea {
-        min-height: 120px;
+    .decision-field textarea {
+        min-height: 115px;
         resize: vertical;
+        line-height: 1.6;
     }
 
-    .maintenance-form-group input:focus,
-    .maintenance-form-group select:focus,
-    .maintenance-form-group textarea:focus {
+    .decision-field input:focus,
+    .decision-field select:focus,
+    .decision-field textarea:focus {
         border-color: #d79b86;
         box-shadow: 0 0 0 4px rgba(200, 102, 74, 0.08);
     }
 
-    .maintenance-form-hint {
+    .decision-checklist {
+        display: grid;
+        gap: 12px;
+    }
+
+    .decision-check {
+        border: 1px solid #ead6ce;
+        background: #fffdfb;
+        border-radius: 18px;
+        padding: 15px;
+        display: grid;
+        grid-template-columns: 20px 1fr;
+        gap: 12px;
+        align-items: start;
+        cursor: pointer;
+    }
+
+    .decision-check input {
+        width: 17px;
+        height: 17px;
+        margin-top: 2px;
+        accent-color: #c8664a;
+    }
+
+    .decision-check strong {
         display: block;
-        margin-top: 7px;
-        color: #9a8d85;
-        font-size: 12px;
+        color: #211713;
+        font-size: 14px;
+        font-weight: 600;
         line-height: 1.5;
     }
 
-    .maintenance-upload-box {
-        border: 1px dashed #dca999;
-        background: #fbf5f1;
-        border-radius: 18px;
-        padding: 18px;
-    }
-
-    .maintenance-upload-box input {
-        width: 100%;
-        border: 1px solid #eee1da;
-        background: #ffffff;
-        border-radius: 12px;
-        padding: 11px;
-        font-size: 13px;
-        font-family: inherit;
-    }
-
-    .maintenance-current-file {
-        margin-top: 8px;
+    .decision-check span {
+        display: block;
         color: #86766f;
         font-size: 12px;
         line-height: 1.5;
+        margin-top: 4px;
     }
 
-    .maintenance-form-actions {
-        margin-top: 24px;
-        display: flex;
+    .decision-actions {
+        display: grid;
         gap: 10px;
-        flex-wrap: wrap;
+        margin-top: 4px;
     }
 
-    .maintenance-form-actions .btn {
-        min-width: 120px;
+    .decision-btn {
+        min-height: 46px;
+        border: none;
+        border-radius: 15px;
+        padding: 0 18px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
     }
 
-    @media (max-width: 900px) {
-        .maintenance-form-grid {
+    .decision-approve {
+        background: #c8664a;
+        color: #ffffff;
+    }
+
+    .decision-approve:hover {
+        background: #b75a41;
+    }
+
+    .decision-reject {
+        background: #f4ddd4;
+        color: #c8664a;
+    }
+
+    .decision-reject:hover {
+        background: #ebcec2;
+    }
+
+    .decision-note {
+        margin: 12px 0 0;
+        color: #86766f;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 1100px) {
+        .maintenance-detail-grid {
             grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .maintenance-detail-panel,
+        .maintenance-card {
+            padding: 22px;
+        }
+
+        .maintenance-detail-head {
+            grid-template-columns: 1fr;
+        }
+
+        .maintenance-back {
+            width: 100%;
+        }
+
+        .report-info-row {
+            grid-template-columns: 1fr;
+            gap: 6px;
         }
     }
 
     @media (max-width: 520px) {
-        .maintenance-form-panel {
-            padding: 22px;
-        }
-
-        .maintenance-form-head h2 {
+        .maintenance-detail-head h2 {
             font-size: 24px;
         }
 
-        .maintenance-form-actions {
-            display: grid;
-            grid-template-columns: 1fr;
+        .report-profile {
+            flex-direction: column;
+            align-items: flex-start;
         }
 
-        .maintenance-form-actions .btn {
-            width: 100%;
+        .report-avatar {
+            width: 62px;
+            height: 62px;
+            border-radius: 20px;
         }
     }
 </style>
 
-<div class="maintenance-form-page">
-    <div class="maintenance-form-panel">
+<div class="maintenance-detail-page">
+    <div class="maintenance-detail-panel">
 
-        <div class="maintenance-form-head">
-            <h2>Form Edit Maintenance</h2>
-            <p>Ubah data kamar, keluhan, biaya, status pengerjaan, dan catatan perbaikan.</p>
+        <div class="maintenance-detail-head">
+            <div>
+                <h2>Cek Laporan Kerusakan</h2>
+                <p>Periksa laporan dan status data maintenance yang akan diproses perbaikan.</p>
+            </div>
+
+            <a href="/admin/pengajuan-maintenance" class="maintenance-back">Kembali</a>
         </div>
 
-        @if ($errors->any())
-            <div style="background: #fde8e8; border: 1px solid #f8b4b4; color: #9b1c1c; padding: 16px; border-radius: 16px; margin-bottom: 20px; font-weight: 600;">
-                <ul style="margin: 0; padding-left: 20px;">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        <div class="maintenance-detail-grid">
 
-        <form action="/admin/maintenance/{{ $maintenance->id }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+            <div class="maintenance-card">
 
-            <div class="maintenance-form-grid">
+                <div class="report-profile">
+                    <div class="report-avatar">08</div>
 
-                <div class="maintenance-form-group">
-                    <label>Kamar</label>
-                    <select name="kamar_id">
-                        @foreach($kamars as $kamar)
-                            @php
-                                $nomorKamar = is_numeric($kamar->nomor_kamar) ? sprintf('%02d', $kamar->nomor_kamar) : $kamar->nomor_kamar;
-                            @endphp
-                            <option value="{{ $kamar->id }}" {{ $maintenance->kamar_id == $kamar->id ? 'selected' : '' }}>
-                                Kamar {{ $nomorKamar }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="maintenance-form-group">
-                    <label>Status Maintenance</label>
-                    <select name="status">
-                        <option value="waiting" {{ $maintenance->status === 'waiting' ? 'selected' : '' }}>Menunggu</option>
-                        <option value="process" {{ $maintenance->status === 'process' ? 'selected' : '' }}>Dalam Proses</option>
-                        <option value="done" {{ $maintenance->status === 'done' ? 'selected' : '' }}>Selesai</option>
-                    </select>
-                </div>
-
-                <div class="maintenance-form-group">
-                    <label>Jenis Perbaikan</label>
-                    <input type="text" name="title" value="{{ old('title', $maintenance->title) }}">
-                </div>
-
-                <div class="maintenance-form-group">
-                    <label>Biaya</label>
-                    <input type="number" name="cost" value="{{ old('cost', $maintenance->cost) }}" min="0">
-                    <span class="maintenance-form-hint">Nilai disimpan sebagai angka murni, misal: 500000</span>
-                </div>
-
-                <div class="maintenance-form-group">
-                    <label>Tanggal Laporan</label>
-                    <input type="date" name="date" value="{{ old('date', $maintenance->date) }}">
-                </div>
-
-                <div class="maintenance-form-group">
-                    <label>Estimasi Selesai (Opsional)</label>
-                    <input type="date" name="estimasi_selesai" value="{{ old('estimasi_selesai', $maintenance->estimasi_selesai ?? '') }}">
-                </div>
-
-                <div class="maintenance-form-full maintenance-form-group">
-                    <label>Keluhan / Kerusakan</label>
-                    <textarea name="description">{{ old('description', $maintenance->description) }}</textarea>
-                </div>
-
-                <div class="maintenance-form-full maintenance-form-group">
-                    <label>Catatan Admin (Opsional)</label>
-                    <textarea name="catatan_admin">{{ old('catatan_admin', $maintenance->catatan_admin ?? '') }}</textarea>
-                </div>
-
-                <div class="maintenance-form-full maintenance-form-group">
-                    <label>Foto Kerusakan / Bukti Perbaikan (Opsional)</label>
-                    <div class="maintenance-upload-box">
-                        <input type="file" name="foto_maintenance" accept="image/*">
-                        @if(!empty($maintenance->foto_maintenance))
-                            <div class="maintenance-current-file">
-                                File saat ini: <a href="{{ asset('images/maintenance/' . $maintenance->foto_maintenance) }}" target="_blank" style="color: #c8664a; font-weight: 600;">{{ $maintenance->foto_maintenance }}</a>
-                            </div>
-                        @else
-                            <div class="maintenance-current-file">
-                                Belum ada file foto yang diunggah.
-                            </div>
-                        @endif
+                    <div>
+                        <h3>Lampu Kamar Mati</h3>
+                        <p>Dilaporkan oleh Rani Amelia · Kamar 08</p>
+                        <span class="report-status">Menunggu</span>
                     </div>
                 </div>
 
+                <div class="report-info-list">
+                    <div class="report-info-row">
+                        <span>Kamar</span>
+                        <strong>Kamar 08 · Tower Genap</strong>
+                    </div>
+
+                    <div class="report-info-row">
+                        <span>Nama Penghuni</span>
+                        <strong>Rani Amelia</strong>
+                    </div>
+
+                    <div class="report-info-row">
+                        <span>Tanggal Laporan</span>
+                        <strong>5 Juni 2026</strong>
+                    </div>
+
+                    <div class="report-info-row">
+                        <span>Jenis Kerusakan</span>
+                        <strong>Lampu kamar tidak menyala</strong>
+                    </div>
+
+                    <div class="report-info-row">
+                        <span>Status Laporan</span>
+                        <strong>Menunggu</strong>
+                    </div>
+                </div>
+
+                <div class="report-description">
+                    <h4>Deskripsi Keluhan</h4>
+                    <p>
+                        Lampu utama kamar tidak menyala sejak tadi malam. Penghuni sudah mencoba menyalakan saklar beberapa kali, tetapi lampu tetap mati.
+                    </p>
+                </div>
+
+                <div class="report-photo">
+                    <h4>Foto Kerusakan</h4>
+                    <div class="photo-preview">
+                        Preview foto kerusakan akan tampil di sini
+                    </div>
+                    <a href="#" class="photo-action">Lihat Foto Kerusakan</a>
+                </div>
+
             </div>
 
-            <div class="maintenance-form-actions">
-                <button type="submit" class="btn" style="background: #c8664a; color: #ffffff; border: 1px solid #c8664a; border-radius: 15px; font-weight: 600; cursor: pointer;">Update</button>
-                <a href="/admin/maintenance" class="btn btn-secondary">Batal</a>
-            </div>
-        </form>
+            <div class="maintenance-card">
 
+                <h3 class="decision-title">Keputusan Admin</h3>
+                <p class="decision-desc">
+                    Jika laporan valid, admin bisa membuat data maintenance agar perbaikan dapat dicatat dan diproses.
+                </p>
+
+                <form action="/admin/maintenance/create" method="GET" class="decision-form">
+
+                    <div class="decision-field">
+                        <label>Status Maintenance</label>
+                        <select name="status">
+                            <option selected>Menunggu</option>
+                            <option>Dalam Proses</option>
+                            <option>Selesai</option>
+                        </select>
+                    </div>
+
+                    <div class="decision-field">
+                        <label>Estimasi Biaya</label>
+                        <input type="text" name="estimasi_biaya" placeholder="Contoh: Rp 200.000">
+                    </div>
+
+                    <div class="decision-field">
+                        <label>Estimasi Selesai</label>
+                        <input type="date" name="estimasi_selesai">
+                    </div>
+
+                    {{-- <div class="decision-checklist">
+                        <label class="decision-check">
+                            <input type="checkbox">
+                            <div>
+                                <strong>Laporan kerusakan jelas.</strong>
+                                <span>Keluhan sudah cukup detail untuk dibuat data maintenance.</span>
+                            </div>
+                        </label>
+
+                        <label class="decision-check">
+                            <input type="checkbox">
+                            <div>
+                                <strong>Kamar dan penghuni sesuai.</strong>
+                                <span>Data pelapor sesuai dengan kamar yang ditempati.</span>
+                            </div>
+                        </label>
+
+                        <label class="decision-check">
+                            <input type="checkbox">
+                            <div>
+                                <strong>Perbaikan perlu diproses.</strong>
+                                <span>Laporan dapat diteruskan menjadi pekerjaan maintenance.</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="decision-field">
+                        <label>Catatan Admin</label>
+                        <textarea name="catatan_admin" placeholder="Tambahkan catatan untuk teknisi atau admin."></textarea>
+                    </div> --}}
+
+                    <div class="decision-actions">
+                        <button type="submit" class="decision-btn decision-approve">
+                            Edit Data Maintenance
+                        </button>
+
+                        {{-- <button type="button" class="decision-btn decision-reject" onclick="alert('Laporan ditolak. Nantinya backend akan menyimpan alasan penolakan.')">
+                            Tolak Laporan
+                        </button> --}}
+                    </div>
+
+                    <p class="decision-note">
+                        Data ini masuk ke daftar maintenance dan bisa dipantau status pengerjaannya.
+                    </p>
+
+                </form>
+
+            </div>
+
+        </div>
     </div>
 </div>
 

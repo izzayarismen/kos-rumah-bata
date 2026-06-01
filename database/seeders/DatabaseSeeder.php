@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             ActivitySeeder::class,
             GaleriSeeder::class,
-            MaintenanceSeeder::class,
         ]);
     }
 }
