@@ -17,7 +17,7 @@ class ActivitySeeder extends Seeder
                 'title' => 'Promo Khusus Penghuni Baru Bulan Ini',
                 'description' => 'Diskon 10% untuk pembayaran 3 bulan di muka. Berlaku sampai akhir bulan, klik tautan di bawah ini atau DM admin untuk klaim sekarang.',
                 'image' => null,
-                'link_url' => 'https://wa.me/6281234567890',
+                'link_url' => 'https://wa.me/628194001701',
                 'link_label' => 'Klaim Promo via WhatsApp',
                 'category' => 'Promo',
                 'date' => now()->format('Y-m-d'),

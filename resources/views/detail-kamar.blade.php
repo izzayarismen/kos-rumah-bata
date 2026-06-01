@@ -169,7 +169,7 @@
         <div class="bg-secondary/60 rounded-2xl p-5 text-sm w-full">
             <p class="font-semibold">Butuh bantuan?</p>
             <p class="text-muted-foreground mt-1">Hubungi admin via WhatsApp untuk pertanyaan seputar kamar ini.</p>
-            <a href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20tanya%20mengenai%20Kamar%20{{ $kamar->nomor_kamar }}%20Tower%20{{ $kamar->tower }}" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-3 w-full">Chat Admin</a>
+            <a href="https://wa.me/628194001701?text=Halo%20Admin,%20saya%20ingin%20tanya%20mengenai%20Kamar%20{{ $kamar->nomor_kamar }}%20Tower%20{{ $kamar->tower }}" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 mt-3 w-full">Chat Admin</a>
         </div>
     </aside>
 </section>
