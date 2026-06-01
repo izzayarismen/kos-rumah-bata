@@ -64,7 +64,7 @@
                     @endif
 
                     <div class="space-y-6">
-                        <form id="profileForm" action="{{ url('/profile') }}" method="POST" enctype="multipart/form-data" class="bg-card border border-border/60 rounded-2xl p-6 shadow-card">
+                        <form id="profileForm" action="/profile" method="POST" enctype="multipart/form-data" class="bg-card border border-border/60 rounded-2xl p-6 shadow-card">
                             @csrf
                             @method('PUT')
 
@@ -153,7 +153,7 @@
                             </div>
                         </form>
 
-                        <form action="{{ url('/profile/password') }}" method="POST" class="bg-card border border-border/60 rounded-2xl p-6 shadow-card">
+                        <form action="/profile/password" method="POST" class="bg-card border border-border/60 rounded-2xl p-6 shadow-card">
                             @csrf
                             @method('PUT')
                             <h2 class="font-semibold mb-4">Ubah Password</h2>
