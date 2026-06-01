@@ -247,7 +247,7 @@
             </div>
         @endif
 
-        <form action="/admin/penghuni/update/{{ $penghuni->id }}" method="POST" enctype="multipart/form-data">
+        <form action="/admin/penghuni/{{ $penghuni->id }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

@@ -42,7 +42,7 @@
                         </nav>
                         <div class="flex items-center gap-2">
                             @auth
-                            <a href="/profile"><button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-2 rounded-full pl-1.5 pr-3"><span class="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">{{ Str::upper(substr(auth()->user()->nama, 0, 1)) }}</span><span class="hidden sm:inline text-sm">{{ auth()->user()->nama }}</span></button></a>
+                            <a href="{{ auth()->user()->role == 'admin' ? '/admin' :'/profile' }}"><button class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 gap-2 rounded-full pl-1.5 pr-3"><span class="grid h-7 w-7 place-items-center rounded-full bg-primary text-primary-foreground text-xs font-semibold">{{ Str::upper(substr(auth()->user()->nama, 0, 1)) }}</span><span class="hidden sm:inline text-sm">{{ auth()->user()->nama }}</span></button></a>
                             @else
                             <a href="/login"><button class="items-center justify-center gap-2 whitespace-nowrap text-sm font-medium hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 hidden sm:inline-flex">Login</button></a>
                             <a href="/register"><button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">Register</button></a>
@@ -66,7 +66,7 @@
                     <a href="/aktivitas" class="block px-4 py-2.5 text-sm font-medium rounded-lg {{ request()->is('aktivitas*') ? 'text-primary bg-primary-soft' : 'text-foreground/70 hover:bg-secondary' }}">Aktivitas</a>
                     @auth
                         <hr class="border-border/40 my-2">
-                        <a href="/profile" class="block px-4 py-2.5 text-sm font-medium rounded-lg text-foreground/70 hover:bg-secondary">Profil Saya ({{ auth()->user()->nama }})</a>
+                        <a href="{{ auth()->user()->role == 'admin' ? '/admin' :'/profile' }}" class="block px-4 py-2.5 text-sm font-medium rounded-lg text-foreground/70 hover:bg-secondary">Profil Saya ({{ auth()->user()->nama }})</a>
                     @else
                         <div class="grid grid-cols-2 gap-2 pt-2 sm:hidden">
                             <a href="/login" class="text-center py-2 text-sm font-medium border border-input rounded-md hover:bg-accent">Login</a>
