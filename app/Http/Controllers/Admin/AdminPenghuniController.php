@@ -112,7 +112,7 @@ class AdminPenghuniController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.penghuni.index')->with('success', 'Data penghuni berhasil diperbarui.');
+        return redirect()->route('/admin/penghuni')->with('success', 'Data penghuni berhasil diperbarui.');
     }
 
     /**
