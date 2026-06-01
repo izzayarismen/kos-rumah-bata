@@ -8,6 +8,7 @@ use App\Models\Kamar;
 use App\Models\PengajuanSewa;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\File;
 
 class AdminPenghuniController extends Controller
 {
@@ -85,19 +86,63 @@ class AdminPenghuniController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validasi input data profil dasar penghuni (Menyesuaikan kolom 'nama' dari model User)
+        // 1. Validasi input data profil dasar penghuni lengkap dengan data diri baru
         $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'kamar_id' => 'required|exists:kamars,id',
+            'nama'           => 'required|string|max:255',
+            'email'          => 'required|email|unique:users,email,' . $id,
+            'kamar_id'       => 'required|exists:kamars,id',
+            'no_hp'          => 'nullable|string|max:20',
+            'kontak_darurat' => 'nullable|string|max:20',
+            'alamat'         => 'nullable|string',
+            'foto_ktp'       => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:3072',
+            'surat_komitmen' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:3072',
         ]);
 
-        // Update data user/penghuni
         $penghuni = User::findOrFail($id);
-        $penghuni->update([
-            'nama' => $request->nama, // Menggunakan 'nama' sesuai konfigurasi fillable model User
-            'email' => $request->email,
-        ]);
+
+        // Kumpulkan data teks untuk di-update di tabel users
+        $userData = [
+            'nama'           => $request->nama,
+            'email'          => $request->email,
+            'no_hp'          => $request->no_hp,
+            'kontak_darurat' => $request->kontak_darurat,
+            'alamat'         => $request->alamat,
+        ];
+
+        // --- HANDLER UPLOAD FOTO KTP (Gaya Lokal Public Luwihaja-Hill) ---
+        if ($request->hasFile('foto_ktp')) {
+            // Hapus berkas KTP fisik lama jika sebelumnya sudah ada path yang tersimpan
+            if ($penghuni->ktp_dokumen) {
+                $oldKtpPath = public_path($penghuni->ktp_dokumen);
+                if (File::exists($oldKtpPath)) {
+                    File::delete($oldKtpPath);
+                }
+            }
+
+            $fileKtp = $request->file('foto_ktp');
+            $ktpName = time() . '-ktp.' . $fileKtp->getClientOriginalExtension();
+            $fileKtp->move(public_path('documents/ktp'), $ktpName);
+            $userData['ktp_dokumen'] = '/documents/ktp/' . $ktpName;
+        }
+
+        // --- HANDLER UPLOAD SURAT KOMITMEN (Gaya Lokal Public Luwihaja-Hill) ---
+        if ($request->hasFile('surat_komitmen')) {
+            // Hapus berkas komitmen fisik lama jika sebelumnya sudah ada path yang tersimpan
+            if ($penghuni->surat_komitmen) {
+                $oldSuratPath = public_path($penghuni->surat_komitmen);
+                if (File::exists($oldSuratPath)) {
+                    File::delete($oldSuratPath);
+                }
+            }
+
+            $fileSurat = $request->file('surat_komitmen');
+            $suratName = time() . '-komitmen.' . $fileSurat->getClientOriginalExtension();
+            $fileSurat->move(public_path('documents/surat_komitmen'), $suratName);
+            $userData['surat_komitmen'] = '/documents/surat_komitmen/' . $suratName;
+        }
+
+        // Eksekusi update langsung memperbarui semua data diri ke tabel users
+        $penghuni->update($userData);
 
         // Update kamar melalui pengajuan sewa yang terkait dengan pembayaran disetujui
         $sewaAktif = PengajuanSewa::where('user_id', $id)
@@ -108,7 +153,14 @@ class AdminPenghuniController extends Controller
 
         if ($sewaAktif) {
             $sewaAktif->update([
-                'kamar_id' => $request->kamar_id
+                'kamar_id'       => $request->kamar_id,
+                'nama'           => $request->nama,
+                'no_hp'          => $request->no_hp,
+                'kontak_darurat' => $request->kontak_darurat,
+                'alamat'         => $request->alamat,
+                // Sinkronisasikan berkas baru jika user melakukan re-upload dokumen
+                'ktp_dokumen'    => $penghuni->ktp_dokumen,
+                'surat_komitmen' => $penghuni->surat_komitmen,
             ]);
         }
 
