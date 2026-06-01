@@ -223,7 +223,7 @@
             </div>
 
             <div class="maintenance-form-actions">
-                <button type="submit" class="btn">Update</button>
+                <button type="submit" class="btn">Tambah</button>
                 <a href="/admin/maintenance" class="btn btn-secondary">Batal</a>
             </div>
         </form>
